@@ -81,15 +81,12 @@ stage('Master Branch Tasks') {
              }
 } // STAGES
 
-
- //post {      
-
-  //SLACK IS CURRENTLY COMMENTED OUT, you will have to add your custom integration. 
-  //   success {
-  //          slackSend (baseUrl: "https://nu-cs5500.slack.com/services/hooks/jenkins-ci/", token: "gO2JO0o8DG11Syjwl6UDDAQy", channel: "#cs5500-team-XXX-SP19", color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME}")
-  //          }
-  // failure {  
-  //       slackSend (baseUrl: "https://nu-cs5500.slack.com/services/hooks/jenkins-ci/", token: "gO2JO0o8DG11Syjwl6UDDAQy", channel: "#cs5500-team-XXX-SP19", color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME}")
-  //        }
-  //  }
+ post {      
+     success {
+            slackSend (baseUrl: "https://nu-cs5500.slack.com/services/hooks/jenkins-ci/", token: "8zTqJQakWDTMyJOoX4lXHJQl", channel: "#cs5500-team-212-SP19", color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME}")
+            }
+   failure {  
+         slackSend (baseUrl: "https://nu-cs5500.slack.com/services/hooks/jenkins-ci/", token: "8zTqJQakWDTMyJOoX4lXHJQl", channel: "#cs5500-team-212-SP19", color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME}")
+         }
+   }
 } //pipeline
