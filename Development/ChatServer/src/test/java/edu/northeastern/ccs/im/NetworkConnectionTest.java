@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -13,11 +14,9 @@ import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 public class NetworkConnectionTest {
 
@@ -83,4 +82,42 @@ public class NetworkConnectionTest {
 		boolean b = netConn.sendMessage(Message.makeHelloMessage("Hello"));
 		assertEquals(true, b);
 	}
+	
+
+	@Test
+	public void test_sendMessage_empty() throws IOException, InterruptedException {
+		synchronized (this) {
+			
+			wait(1000);
+		}
+		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
+		clientSocket = SocketChannel.open(hostAddress);
+		netConn = new NetworkConnection(clientSocket);
+		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
+		assertEquals(true, b);
+	}
+	
+	@Test
+	public void test_iterator() throws IOException, InterruptedException {
+		synchronized (this) {
+			
+			wait(1000);
+		}
+		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
+		clientSocket = SocketChannel.open(hostAddress);
+		netConn = new NetworkConnection(clientSocket);
+		String str= Message.makeHelloMessage("hellow world").toString();
+		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
+		serverSocketChannel.write(wrapper);
+		Iterator<Message> messageItr = netConn.iterator();
+		
+		//serverSocketChannel.write(src)
+		while (messageItr.hasNext()) {
+			//System.out.println(messageItr.next().getText());
+			messageItr.next().getText();
+		}
+		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
+		assertEquals(true, b);
+	}
+	
 }
