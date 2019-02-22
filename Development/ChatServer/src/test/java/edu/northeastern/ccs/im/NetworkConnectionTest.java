@@ -187,7 +187,7 @@ public class NetworkConnectionTest {
 	}
 	
 	
-	//@Test
+	@Test
 	public void test2() throws Exception {
 		synchronized (this) {	
 			wait(1000);
