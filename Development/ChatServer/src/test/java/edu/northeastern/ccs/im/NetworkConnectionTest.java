@@ -236,7 +236,7 @@ public class NetworkConnectionTest {
 		
 	}
 	
-	@Test(expected = AssertionError.class)
+	@Test
 	public void test1() throws Exception {
 		synchronized (this) {	
 			wait(1000);

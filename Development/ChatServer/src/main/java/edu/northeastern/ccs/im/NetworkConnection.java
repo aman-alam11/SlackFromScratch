@@ -91,7 +91,6 @@ public class NetworkConnection implements Iterable<Message> {
 		} catch (IOException e) {
 			// For the moment we are going to simply cover up that there was a problem.
 			ChatLogger.error(e.toString());
-			assert false;
 		}
 	}
 
