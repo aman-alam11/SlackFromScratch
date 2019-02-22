@@ -39,6 +39,7 @@ public abstract class Prattle {
    */
   private static boolean isReady = false;
 
+  @SuppressWarnings({"squid:S1450"})
   private static SelectionKey key;
 
   /**
