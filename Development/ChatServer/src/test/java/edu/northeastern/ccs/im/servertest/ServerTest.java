@@ -3,6 +3,7 @@ package edu.northeastern.ccs.im.servertest;
 
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -51,8 +52,8 @@ public class ServerTest {
   }
 
 
-  @Before
-  public void init() {
+  @BeforeClass
+  public static void init() {
 
     // Initialize All Tests params
     try {
@@ -61,13 +62,13 @@ public class ServerTest {
       Logger.getLogger(e.getMessage());
     }
 
-    synchronized (this) {
-      try {
-        wait(1000);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+    synchronized (ServerTest.class) {
+        try {
+        	ServerTest.class.wait(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
       }
-    }
 
     InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4545);
     try {
