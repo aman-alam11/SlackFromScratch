@@ -261,6 +261,7 @@ public class NetworkConnectionTest {
 		netConn.close();
 	}
 	
+	
 	private String longString = "Based on your input, get a random alpha numeric string. The random string generator creates a series of numbers and letters that have no pattern. These can be helpful for creating security codes.\n" + 
 			"\n" + 
 			"\n" + 

@@ -84,8 +84,6 @@ public class ChatLogger {
     case BOTH:
       switchToBoth();
       break;
-    default:
-      throw new IllegalArgumentException("Invalid handler type.");
     }
     LOGGER.setLevel(Level.ALL);
     LOGGER.setUseParentHandlers(false);
