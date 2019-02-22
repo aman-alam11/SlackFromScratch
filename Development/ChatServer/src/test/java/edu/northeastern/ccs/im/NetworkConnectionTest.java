@@ -111,6 +111,10 @@ public class NetworkConnectionTest {
 		String str= Message.makeHelloMessage("hellow world").toString();
 		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
 		serverSocketChannel.write(wrapper);
+		synchronized (this) {
+			
+			wait(1000);
+		}
 		Iterator<Message> messageItr = netConn.iterator();
 		
 		//serverSocketChannel.write(src)
@@ -121,6 +125,35 @@ public class NetworkConnectionTest {
 		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
 		netConn.close();
 		assertEquals(true, b);
+	}
+	
+	
+	@Test
+	public void test_sendMessage_exception() throws IOException, InterruptedException {
+		synchronized (this) {
+			
+			wait(1000);
+		}
+		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
+		clientSocket = SocketChannel.open(hostAddress);
+		netConn = new NetworkConnection(clientSocket);
+		String str= Message.makeHelloMessage("hellow world").toString();
+		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
+		serverSocketChannel.write(wrapper);
+		synchronized (this) {
+			
+			wait(1000);
+		}
+		Iterator<Message> messageItr = netConn.iterator();
+		clientSocket.close();
+		//serverSocketChannel.write(src)
+		while (messageItr.hasNext()) {
+			//System.out.println(messageItr.next().getText());
+			messageItr.next().getText();
+		}
+		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
+		netConn.close();
+		assertEquals(false, b);
 	}
 	
 	@Test(expected = NoSuchElementException.class)
