@@ -22,8 +22,9 @@ public class ChatLogger {
   private static final Logger LOGGER = Logger.getLogger(LOGNAME);
   /** The directory holding the log file. */
   private static final String DIR = System.getProperty("user.dir");
+  public static String ID = "%s/%s.log";
   /** The path for the directory. */
-  private static final String PATH = String.format("%s/%s.log", DIR, LOGNAME);
+  private static final String PATH = String.format(ID, DIR, LOGNAME);
 
   /**
    * Static initializations for this class.

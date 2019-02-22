@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import edu.northeastern.ccs.im.ChatLogger;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class ChatLoggerTest {
@@ -27,13 +28,23 @@ public class ChatLoggerTest {
     } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchFieldException e) {
       assertNull(e.getMessage());
     }
-
-
   }
 
   @Test
   public void tes(){
     ChatLogger.setMode(ChatLogger.HandlerType.CONSOLE);
     ChatLogger.setMode(ChatLogger.HandlerType.FILE);
+
+    Constructor<ChatLogger> privateConstructor = null;
+    try {
+      ChatLogger.error("Error Message");
+      privateConstructor = ChatLogger.class.getDeclaredConstructor();
+      privateConstructor.setAccessible(true);
+      privateConstructor.newInstance();
+
+    } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+      assertNull(e.getMessage());
+    }
+
   }
 }

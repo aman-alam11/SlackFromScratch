@@ -211,6 +211,7 @@ public class ClientRunnable implements Runnable {
 			ChatLogger.error("Timing out or forcing off a user " + name);
 			terminate = true;
 		}
+
 		if (terminate) {
 			terminateClient();
 		}
