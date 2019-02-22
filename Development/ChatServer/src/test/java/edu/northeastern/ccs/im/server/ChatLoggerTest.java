@@ -54,4 +54,8 @@ public class ChatLoggerTest {
         ChatLogger.warning("message");
     }
 
+	@Test
+    public void testLoggerInfo(){
+        ChatLogger.info("message");
+    }
 }
