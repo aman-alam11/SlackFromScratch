@@ -1,15 +1,14 @@
 package edu.northeastern.ccs.im.server;
 
-import org.junit.Test;
+import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import edu.northeastern.ccs.im.ChatLogger;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import edu.northeastern.ccs.im.ChatLogger;
 
 public class ChatLoggerTest {
 
@@ -58,4 +57,5 @@ public class ChatLoggerTest {
     public void testLoggerInfo(){
         ChatLogger.info("message");
     }
+
 }
