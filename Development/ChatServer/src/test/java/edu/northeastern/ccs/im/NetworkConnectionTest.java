@@ -1,6 +1,7 @@
 package edu.northeastern.ccs.im;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -14,6 +15,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.Set;
 
 import org.junit.BeforeClass;
@@ -260,6 +262,35 @@ public class NetworkConnectionTest {
 		netConn = new NetworkConnection(clientSocket2);
 		netConn.close();
 	}
+	
+	
+	@Test (expected = AssertionError.class)
+   public void coverMoreBranchesNetworkConnection() throws IOException {
+	   try {
+		   InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
+		   clientSocket = SocketChannel.open(hostAddress);
+	       NetworkConnection connection = new NetworkConnection(clientSocket);
+	       Field selectorField = NetworkConnection.class.getDeclaredField("selector");
+	       selectorField.setAccessible(true);
+	       Selector selector = (Selector) selectorField.get(connection);
+	       selectorField.set(connection, null);
+	       connection.close();
+	   } catch (NoSuchFieldException | IllegalAccessException e) {
+	       e.printStackTrace();
+	   }
+   }
+	
+	@Test
+    public void testEmptyIterator() throws NoSuchFieldException, IllegalAccessException, IOException {
+		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
+		 clientSocket = SocketChannel.open(hostAddress);
+        NetworkConnection connection = new NetworkConnection(clientSocket);
+        Field messageQueueField = NetworkConnection.class.getDeclaredField("messages");
+        messageQueueField.setAccessible(true);
+        Queue<Message> queue = (Queue<Message>) messageQueueField.get(connection);
+        queue.add(Message.makeBroadcastMessage("dummy", "STRING"));
+        assertTrue(connection.iterator().hasNext());
+    }
 	
 	
 	private String longString = "Based on your input, get a random alpha numeric string. The random string generator creates a series of numbers and letters that have no pattern. These can be helpful for creating security codes.\n" + 

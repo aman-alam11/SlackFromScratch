@@ -134,7 +134,7 @@ public class NetworkConnection implements Iterable<Message> {
 		try {
 			selector.close();
 			channel.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			ChatLogger.error("Caught exception: " + e.toString());
 			assert false;
 		}
