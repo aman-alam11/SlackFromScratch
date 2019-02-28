@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
-public final class ClientDispatcher {
+public final class ClientHandler {
 
   private static final int INITIAL_CLIENT_QUOTA = 8;
   private static final int USER_INPUT_CREATE_GROUP = 1;
@@ -15,7 +15,7 @@ public final class ClientDispatcher {
   private TopModelLayer modelLayer;
 
 
-  public ClientDispatcher(TopModelLayer model) {
+  public ClientHandler(TopModelLayer model) {
     modelLayer = model;
     if (modelLayer == null) {
       throw new IllegalArgumentException("Model can't be null");
