@@ -8,20 +8,6 @@ import java.util.Scanner;
 public interface OptionsFactory {
 
   /**
-   * Login User Object is returned.
-   * @param scanner - Scanner input for user input.
-   * @return - CoreOperation Object of required Class.
-   */
-   CoreOperation getLoginUser(Scanner scanner);
-
-  /**
-   * Register User Object is returned.
-   * @param scanner - Scanner input for user input.
-   * @return - CoreOperation Object of required Class.
-   */
-   CoreOperation getRegisterUser(Scanner scanner);
-
-  /**
    * UnreadMessages Object is returned.
    * @param scanner - Scanner input for user input.
    * @return - CoreOperation Object of required Class.
@@ -29,7 +15,7 @@ public interface OptionsFactory {
    CoreOperation getUnreadMessages(Scanner scanner);
 
   /**
-   * UserChat Object is returned.
+   * AllUserChats Object is returned.
    * @param scanner - Scanner input for user input.
    * @return - CoreOperation Object of required Class.
    */

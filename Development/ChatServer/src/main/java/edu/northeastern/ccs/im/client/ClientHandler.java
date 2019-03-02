@@ -16,34 +16,22 @@ public final class ClientHandler {
 
   private Map<Integer, Function<Scanner, CoreOperation>> mClientMap;
 
-  private TopModelLayer modelLayer;
+  private ParentModel modelLayer;
 
 
-  public ClientHandler(TopModelLayer model) {
+  public ClientHandler(ParentModel model) {
     modelLayer = model;
     if (modelLayer == null) {
       throw new IllegalArgumentException("Model can't be null");
     }
 
-    // A default initial size
     mClientMap = new HashMap<>(INITIAL_CLIENT_QUOTA);
-    OptionsFactory optionsFactory = new OptionsFactoryImpl();
-
-    // Add all operations of same level here below this
-    mClientMap.put(USER_INPUT_LOGIN, optionsFactory::getLoginUser);
-    mClientMap.put(USER_INPUT_REGISTRATION, optionsFactory::getRegisterUser);
   }
 
 
   public void initClientOperations() {
 
     Scanner scanner = new Scanner(System.in);
-    FrontEnd frontEnd = FrontEnd.getView();
-    frontEnd.sendToView("Welcome to Chatter Application");
-    frontEnd.sendToView("1. Login");
-    frontEnd.sendToView("2. Registration");
-    frontEnd.sendToView("3. Quit");
-    frontEnd.sendToView("Enter From above Options: ");
 
     while (scanner.hasNext()) {
       int userChoice = 0;
@@ -54,7 +42,7 @@ public final class ClientHandler {
         }
       } catch (Exception e) {
         // Handle with default implementation
-        frontEnd.sendToView(  "Wrong input, try again.");
+        FrontEnd.getView().sendToView("Wrong input, try again.");
       }
 
       CoreOperation initialCoreOperation;

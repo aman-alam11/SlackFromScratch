@@ -13,7 +13,7 @@ public class UnReadMessages implements CoreOperation {
 
 
   @Override
-  public void passControl(TopModelLayer userModelTopLayer) {
+  public void passControl(ParentModel userModelTopLayer) {
 
   }
 }

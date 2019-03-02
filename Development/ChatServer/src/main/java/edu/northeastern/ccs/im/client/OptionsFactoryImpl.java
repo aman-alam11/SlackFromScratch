@@ -2,17 +2,10 @@ package edu.northeastern.ccs.im.client;
 
 import java.util.Scanner;
 
+import edu.northeastern.ccs.im.client.FirstLevel.AllUserChats;
+import edu.northeastern.ccs.im.client.FirstLevel.CreateGroup;
+
 public class OptionsFactoryImpl implements OptionsFactory {
-
-  @Override
-  public CoreOperation getLoginUser(Scanner scanner) {
-    return new LoginUser(scanner);
-  }
-
-  @Override
-  public CoreOperation getRegisterUser(Scanner scanner) {
-    return new RegisterUser(scanner);
-  }
 
   @Override
   public CoreOperation getUnreadMessages(Scanner scanner) {
@@ -21,7 +14,7 @@ public class OptionsFactoryImpl implements OptionsFactory {
 
   @Override
   public CoreOperation getUserChat(Scanner scanner) {
-    return new UserChat(scanner);
+    return new AllUserChats(scanner);
   }
 
   @Override
