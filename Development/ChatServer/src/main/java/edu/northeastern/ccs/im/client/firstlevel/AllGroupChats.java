@@ -1,12 +1,11 @@
-package edu.northeastern.ccs.im.client;
+package edu.northeastern.ccs.im.client.firstlevel;
 
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.client.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.client.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.client.clientinterfaces.ParentModel;
 
-public class DefaultOperation implements CoreOperation {
-
+public class AllGroupChats extends CommonOperations {
 
   private Scanner mScanner;
 

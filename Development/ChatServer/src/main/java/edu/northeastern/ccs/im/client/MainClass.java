@@ -1,10 +1,13 @@
 package edu.northeastern.ccs.im.client;
 
+import edu.northeastern.ccs.im.client.firstlevel.FirstLevelModel;
+import edu.northeastern.ccs.im.client.clientinterfaces.ParentModel;
+
 public class MainClass {
 
   public static void main(String[] args) {
-//    ParentModel topModelLayer =  new TopModelLayer();
-//    ClientHandler clientHandler = new ClientHandler(topModelLayer);
-//    clientHandler.initClientOperations();
+    ParentModel topModelLayer =  new FirstLevelModel();
+    ClientHandler clientHandler = new ClientHandler(topModelLayer);
+    clientHandler.initClientOperations();
   }
 }

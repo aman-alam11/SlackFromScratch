@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.client;
+package edu.northeastern.ccs.im.client.clientinterfaces;
 
 import java.util.Scanner;
 

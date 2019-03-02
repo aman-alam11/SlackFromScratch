@@ -5,8 +5,7 @@ import java.util.Scanner;
 import edu.northeastern.ccs.im.client.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.client.clientinterfaces.ParentModel;
 
-public class DefaultOperation implements CoreOperation {
-
+public class UnreadMessages implements CoreOperation {
 
   private Scanner mScanner;
 

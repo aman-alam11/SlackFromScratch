@@ -1,21 +1,17 @@
 package edu.northeastern.ccs.im.client;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import edu.northeastern.ccs.im.client.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.client.clientinterfaces.ParentModel;
+import edu.northeastern.ccs.im.client.clientutils.CurrentLevel;
+import edu.northeastern.ccs.im.client.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class ClientHandler {
 
-  private static final int INITIAL_CLIENT_QUOTA = 8;
-  private static final int USER_INPUT_LOGIN = 1;
-  private static final int USER_INPUT_REGISTRATION = 2;
   private static final int USER_INPUT_QUIT = 3;
-
-  private Map<Integer, Function<Scanner, CoreOperation>> mClientMap;
-
   private ParentModel modelLayer;
 
 
@@ -25,7 +21,9 @@ public final class ClientHandler {
       throw new IllegalArgumentException("Model can't be null");
     }
 
-    mClientMap = new HashMap<>(INITIAL_CLIENT_QUOTA);
+    // Start with 1st Level as default
+    InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+
   }
 
 
@@ -46,16 +44,18 @@ public final class ClientHandler {
       }
 
       CoreOperation initialCoreOperation;
-      Function<Scanner, CoreOperation> mTransformationFunction = mClientMap.getOrDefault(userChoice,
-              null);
+      Function<Scanner, CoreOperation> mTransformationFunction =
+              InjectLevelUtil
+                      .getOptionsMap()
+                      .getOrDefault(userChoice, null);
 
       if (mTransformationFunction == null) {
         // Handle with some default operation
-        new DefaultOperation().passControl(modelLayer);
+        new DefaultOperation().passControl(scanner, modelLayer);
       } else {
         // Apply Transformation
         initialCoreOperation = mTransformationFunction.apply(scanner);
-        initialCoreOperation.passControl(modelLayer);
+        initialCoreOperation.passControl(scanner, modelLayer);
       }
     }
   }
