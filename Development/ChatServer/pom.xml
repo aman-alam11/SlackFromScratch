@@ -23,10 +23,18 @@
 		<version>1.9.5</version>
 		 <scope>test</scope>
 	</dependency>
-  </dependencies>
 
-  <build>
-		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+			<version>5.1.4.RELEASE</version>
+		</dependency>
+
+	</dependencies>
+
+    <build>
+        <pluginManagement><!-- lock down plugins versions to avoid using Maven
 				defaults (may be moved to parent pom) -->
 			<plugins>
 				<!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
@@ -110,11 +118,11 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.4.0.905</version>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.4.0.905</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
