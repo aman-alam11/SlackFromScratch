@@ -5,10 +5,14 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import edu.northeastern.ccs.im.view.FrontEnd;
+
 public final class ClientHandler {
 
   private static final int INITIAL_CLIENT_QUOTA = 8;
-  private static final int USER_INPUT_CREATE_GROUP = 1;
+  private static final int USER_INPUT_LOGIN = 1;
+  private static final int USER_INPUT_REGISTRATION = 2;
+  private static final int USER_INPUT_QUIT = 3;
 
   private Map<Integer, Function<Scanner, CoreOperation>> mClientMap;
 
@@ -23,23 +27,34 @@ public final class ClientHandler {
 
     // A default initial size
     mClientMap = new HashMap<>(INITIAL_CLIENT_QUOTA);
+    OptionsFactory optionsFactory = new OptionsFactoryImpl();
 
     // Add all operations of same level here below this
-    mClientMap.put(USER_INPUT_CREATE_GROUP, scanner -> new CreateGroup());
+    mClientMap.put(USER_INPUT_LOGIN, optionsFactory::getLoginUser);
+    mClientMap.put(USER_INPUT_REGISTRATION, optionsFactory::getRegisterUser);
   }
 
 
   public void initClientOperations() {
 
     Scanner scanner = new Scanner(System.in);
+    FrontEnd frontEnd = FrontEnd.getView();
+    frontEnd.sendToView("Welcome to Chatter Application");
+    frontEnd.sendToView("1. Login");
+    frontEnd.sendToView("2. Registration");
+    frontEnd.sendToView("3. Quit");
+    frontEnd.sendToView("Enter From above Options: ");
 
     while (scanner.hasNext()) {
-      int userChoice;
+      int userChoice = 0;
       try {
         userChoice = Integer.parseInt(scanner.next().toLowerCase().trim());
+        if (userChoice == USER_INPUT_QUIT) {
+          return;
+        }
       } catch (Exception e) {
         // Handle with default implementation
-        return;
+        frontEnd.sendToView(  "Wrong input, try again.");
       }
 
       CoreOperation initialCoreOperation;

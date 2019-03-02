@@ -1,7 +1,14 @@
 package edu.northeastern.ccs.im.client;
 
+import java.util.Scanner;
+
 public class CreateGroup implements CoreOperation {
 
+  private Scanner scanner;
+
+  public CreateGroup(Scanner scanner) {
+    this.scanner = scanner;
+  }
 
   /**
    * This is where the control is passed to when a create group operation is performed.
