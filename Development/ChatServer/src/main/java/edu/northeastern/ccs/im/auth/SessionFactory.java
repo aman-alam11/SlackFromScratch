@@ -1,5 +1,8 @@
 package edu.northeastern.ccs.im.auth;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
 /**
  * A class which mimics the session as we are not required to implement session. We perform Auth
  * related operations here.
@@ -45,19 +48,8 @@ public final class SessionFactory {
    * @param rawPassword The raw String entered by user as password.
    */
   private void sanitizeInput(String rawUsername, String rawPassword) {
-    // TODO: Sanitize username and password and then assign
-    this.mUsername = rawUsername;
-    this.mPassword = rawPassword;
-  }
-
-
-  /**
-   * Encrypt the password using salting and Hashing (Used internally by BCrypt).
-   *
-   * @param rawPassword The sanitized raw password String.
-   */
-  private void encryptPassword(String rawPassword) {
-    // TODO
+    this.mUsername = Jsoup.clean(rawUsername, Whitelist.basic());
+    this.mPassword = Jsoup.clean(rawPassword, Whitelist.basic());
   }
 
 
@@ -66,16 +58,31 @@ public final class SessionFactory {
       return true;
     }
 
-    return mAuthModules.loginIn(mUsername, mPassword);
+    boolean loginSuccessful = mAuthModules.loginIn(mUsername, mPassword);
+    this.mPassword = null;
+    return loginSuccessful;
   }
 
   public boolean createAccount() {
-    return mAuthModules.createAccount(mUsername, mPassword);
+    boolean createAccountSuccess = mAuthModules.createAccount(mUsername, mPassword);
+    this.mPassword = null;
+    return createAccountSuccess;
   }
 
 
   public boolean logoutUser() {
     return mAuthModules.logout();
+  }
+
+
+  public static void logoutAllUsers(String mUsername) {
+    // If current user has admin privileges, logout all users
+    AuthModules authModule = new AuthModulesImpl();
+    if (authModule.isLoggedIn(mUsername) && authModule.isSuperUser()) {
+      authModule.logoutAllUsers();
+    } else {
+      throw new UnsupportedOperationException("You do not have admin rights to perform this operation");
+    }
   }
 
 

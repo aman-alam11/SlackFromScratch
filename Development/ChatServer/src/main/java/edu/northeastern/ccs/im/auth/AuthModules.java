@@ -41,4 +41,18 @@ public interface AuthModules {
   boolean isLoggedIn(String username);
 
 
+  /**
+   * A security tap in for admins for logging out all users. This is equivalent to expiring the
+   * session for all users.
+   */
+  void logoutAllUsers();
+
+
+  /**
+   * Users with Administrative rights.
+   *
+   * @return If user is super user or not.
+   */
+  boolean isSuperUser();
+
 }

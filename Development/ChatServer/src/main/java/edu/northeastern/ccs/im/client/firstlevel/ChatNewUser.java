@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.client.clientinterfaces.ParentModel;
+import edu.northeastern.ccs.im.client.clientutils.CurrentLevel;
+import edu.northeastern.ccs.im.client.clientutils.InjectLevelUtil;
 
 public class ChatNewUser extends CommonOperations {
 

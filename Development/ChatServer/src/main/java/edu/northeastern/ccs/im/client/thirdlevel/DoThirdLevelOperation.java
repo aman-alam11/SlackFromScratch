@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.client.thirdlevel.secondlevel;
+package edu.northeastern.ccs.im.client.thirdlevel;
 
 import java.util.Scanner;
 

@@ -12,7 +12,7 @@ import edu.northeastern.ccs.im.client.firstlevel.AllUserChats;
 import edu.northeastern.ccs.im.client.firstlevel.ChatNewUser;
 import edu.northeastern.ccs.im.client.firstlevel.CreateGroup;
 import edu.northeastern.ccs.im.client.secondlevel.ChatUser;
-import edu.northeastern.ccs.im.client.thirdlevel.secondlevel.DoThirdLevelOperation;
+import edu.northeastern.ccs.im.client.thirdlevel.DoThirdLevelOperation;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class InjectLevelUtil {
@@ -24,9 +24,7 @@ public final class InjectLevelUtil {
     return Collections.unmodifiableMap(mClientOptionsMap);
   }
 
-
   private InjectLevelUtil() {
-
   }
 
   public static InjectLevelUtil getInstance() {
