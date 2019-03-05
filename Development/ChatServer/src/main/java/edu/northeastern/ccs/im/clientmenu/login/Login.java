@@ -12,6 +12,9 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
+/**
+ * This is the Login class which is being used for the Login level
+ */
 public class Login extends CommonOperations {
 
   @Override
