@@ -22,7 +22,7 @@ public class AuthModulesImpl implements AuthModules {
     // Get the hash for the username from user and verify using
 //    String hash = DatabaseLayer.getHashForUsername(username);
 //    return BCrypt.checkpw(password, hash);
-    return false;
+    return true;
   }
 
   @Override
@@ -32,7 +32,7 @@ public class AuthModulesImpl implements AuthModules {
 
   @Override
   public boolean isLoggedIn(String username) {
-    return false;
+    return true;
   }
 
   @Override

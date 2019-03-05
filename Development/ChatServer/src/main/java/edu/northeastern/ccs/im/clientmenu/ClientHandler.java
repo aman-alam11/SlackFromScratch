@@ -11,7 +11,6 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class ClientHandler {
 
-  private static final int USER_INPUT_QUIT = 3;
   private ParentModel modelLayer;
 
 
@@ -22,8 +21,7 @@ public final class ClientHandler {
     }
 
     // Start with 1st Level as default
-    InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
-
+    InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
   }
 
 
@@ -33,14 +31,18 @@ public final class ClientHandler {
 
     while (scanner.hasNext()) {
       int userChoice = 0;
+      String choiceString = "";
       try {
-        userChoice = Integer.parseInt(scanner.next().toLowerCase().trim());
-        if (userChoice == USER_INPUT_QUIT) {
-          return;
-        }
+        choiceString = scanner.nextLine().trim().toLowerCase();
+        userChoice = Integer.parseInt(choiceString);
       } catch (Exception e) {
         // Handle with default implementation
-        FrontEnd.getView().sendToView("Wrong input, try again.");
+        if (choiceString.equals("\\q")) {
+          return;
+        }
+        else {
+          FrontEnd.getView().sendToView("Wrong input, try again.");
+        }
       }
 
       CoreOperation initialCoreOperation;

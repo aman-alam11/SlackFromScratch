@@ -16,5 +16,6 @@ public class CreateGroup extends CommonOperations {
   @Override
   public void passControl(Scanner scanner, ParentModel model) {
     this.mScanner = scanner;
+    System.out.println("create group");
   }
 }

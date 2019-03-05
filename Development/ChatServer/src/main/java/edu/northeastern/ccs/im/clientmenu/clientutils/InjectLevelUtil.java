@@ -7,10 +7,12 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.firstlevel.AllGroupChats;
-import edu.northeastern.ccs.im.clientmenu.firstlevel.AllUserChats;
-import edu.northeastern.ccs.im.clientmenu.firstlevel.ChatNewUser;
+import edu.northeastern.ccs.im.clientmenu.firstlevel.GroupChat;
 import edu.northeastern.ccs.im.clientmenu.firstlevel.CreateGroup;
+import edu.northeastern.ccs.im.clientmenu.firstlevel.UnreadMessages;
+import edu.northeastern.ccs.im.clientmenu.firstlevel.UserChat;
+import edu.northeastern.ccs.im.clientmenu.login.Login;
+import edu.northeastern.ccs.im.clientmenu.login.Registration;
 import edu.northeastern.ccs.im.clientmenu.secondlevel.ChatUser;
 import edu.northeastern.ccs.im.clientmenu.thirdlevel.DoThirdLevelOperation;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -44,6 +46,7 @@ public final class InjectLevelUtil {
 
     switch (currentLevel) {
       case LOGIN_LEVEL:
+        injectLoginLevel();
         break;
 
       case LEVEL1:
@@ -74,14 +77,16 @@ public final class InjectLevelUtil {
 
   private void injectLoginLevel() {
     FrontEnd.getView().showMainMenu();
+    mClientOptionsMap.put(1, scanner -> new Login());
+    mClientOptionsMap.put(2, scanner -> new Registration());
   }
 
   private void injectFirstLevel() {
-    FrontEnd.getView().showClientOptions();
-    mClientOptionsMap.put(1, scanner -> new ChatNewUser());
+    FrontEnd.getView().showFirestLEvelOptions();
+    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
     mClientOptionsMap.put(2, scanner -> new CreateGroup());
-    mClientOptionsMap.put(3, scanner -> new AllUserChats());
-    mClientOptionsMap.put(4, scanner -> new AllGroupChats());
+    mClientOptionsMap.put(3, scanner -> new UserChat());
+    mClientOptionsMap.put(4, scanner -> new GroupChat());
   }
 
   private void injectSecondLevel() {

@@ -15,7 +15,7 @@ public interface OptionsFactory {
    CoreOperation getUnreadMessages(Scanner scanner);
 
   /**
-   * AllUserChats Object is returned.
+   * UserChat Object is returned.
    * @param scanner - Scanner input for user input.
    * @return - CoreOperation Object of required Class.
    */

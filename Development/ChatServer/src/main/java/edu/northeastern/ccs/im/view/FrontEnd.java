@@ -30,16 +30,17 @@ public class FrontEnd {
     System.out.println("Welcome to Chatter Application");
     System.out.println("1. Login");
     System.out.println("2. Registration");
-    System.out.println("3. Quit");
+    System.out.println("Or Enter \\q to quit");
     System.out.println("Enter From above Options: ");
   }
 
 
-  public void showClientOptions() {
-    System.out.println("Welcome!");
+  public void showFirestLEvelOptions() {
     System.out.println("1. Unread Messages");
     System.out.println("2. Create Group");
-    System.out.println("3. Chat");
+    System.out.println("3. Chat user");
+    System.out.println("4. Chat group");
+    System.out.println("Or type logout to logout user");
     System.out.println("Enter From above Options: ");
   }
 

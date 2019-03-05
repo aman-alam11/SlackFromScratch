@@ -55,13 +55,11 @@ public class NetworkConnectionTest {
 									SelectionKey key = it.next();
 									it.remove();
 									serverSocketChannel = serverSocket.accept();
-
 								}
 							}
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						;
 					}
 
 				}

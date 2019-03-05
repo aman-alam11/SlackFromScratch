@@ -36,7 +36,6 @@ public final class SessionFactory {
     if (mLoginInstance == null) {
       mLoginInstance = new SessionFactory(rawUsername, rawPassword);
     }
-
     return mLoginInstance;
   }
 
