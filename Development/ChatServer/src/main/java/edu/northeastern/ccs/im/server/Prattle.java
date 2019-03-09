@@ -7,17 +7,20 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
 
 /**
  * A network server that communicates with IM clients that connect to it. This version of the server
@@ -43,14 +46,20 @@ public abstract class Prattle {
   private static SelectionKey key;
 
   /**
-   * Collection of threads that are currently being used.
+   * Collection of users connected as threads that are currently not authenticated.
    */
-  private static ConcurrentLinkedQueue<ClientRunnable> active;
+  private static Set<ClientRunnable> unAuthenticatedActiveUsers;
+  
+  /**
+   * Collection of users connected as threads that are currently authenticated  with key as userName.
+   */
+  private static ConcurrentHashMap<String, ClientRunnable> authenticatedActiveUsers;
 
   /** All of the static initialization occurs in this "method" */
   static {
     // Create the new queue of active threads.
-    active = new ConcurrentLinkedQueue<>();
+    unAuthenticatedActiveUsers = Collections.newSetFromMap(new ConcurrentHashMap<ClientRunnable, Boolean>());
+    authenticatedActiveUsers = new ConcurrentHashMap<>();
   }
 
 
@@ -63,7 +72,7 @@ public abstract class Prattle {
    */
   public static void broadcastMessage(Message message) {
     // Loop through all of our active threads
-    for (ClientRunnable tt : active) {
+    for (ClientRunnable tt : unAuthenticatedActiveUsers) {
       // Do not send the message to any clients that are not ready to receive it.
       if (tt.isInitialized()) {
         tt.enqueueMessage(message);
@@ -71,6 +80,25 @@ public abstract class Prattle {
     }
   }
 
+ /**
+  *  This method is used to change an unauthenticated user thread to authenticated
+  * @param clientThread
+  * @param userName
+  * @return true if succeeded else false
+  */
+  public static boolean changeToAuthenciatedUser(ClientRunnable clientThread, String userName) {
+		synchronized (Prattle.class) {
+			if (unAuthenticatedActiveUsers.contains(clientThread)) {
+				unAuthenticatedActiveUsers.remove(clientThread);
+				authenticatedActiveUsers.put(userName, clientThread);
+				clientThread.setState(ClientState.LOGGED_IN);
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+  }
   /**
    * Remove the given IM client from the list of active threads.
    *
@@ -79,7 +107,7 @@ public abstract class Prattle {
   public static void removeClient(ClientRunnable dead) {
     // Test and see if the thread was in our list of active clients so that we
     // can remove it.
-    if (!active.remove(dead)) {
+    if (!unAuthenticatedActiveUsers.remove(dead)) {
       ChatLogger.info("Could not find a thread that I tried to remove!\n");
     }
   }
@@ -159,10 +187,10 @@ public abstract class Prattle {
       SocketChannel socket = serverSocket.accept();
 
       // Make sure we have a connection to work with.
-      NetworkConnection connection = new NetworkConnection(socket);
+      NetworkConnection connection = new NetworkConnection(socket, new JsonMessageHandlerFactory());
       ClientRunnable tt = new ClientRunnable(connection);
       // Add the thread to the queue of active threads
-      active.add(tt);
+      unAuthenticatedActiveUsers.add(tt);
       // Have the client executed by our pool of threads.
       ScheduledFuture<?> clientFuture = threadPool.scheduleAtFixedRate(tt, ServerConstants.CLIENT_CHECK_DELAY,
               ServerConstants.CLIENT_CHECK_DELAY, TimeUnit.MILLISECONDS);

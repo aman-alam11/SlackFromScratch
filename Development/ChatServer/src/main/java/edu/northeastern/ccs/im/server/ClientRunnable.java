@@ -5,9 +5,18 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.LoginCredentials;
 
 /**
  * Instances of this class handle all of the incoming communication from a
@@ -47,7 +56,7 @@ public class ClientRunnable implements Runnable {
 	 * Whether this client has been terminated, either because he quit or due to
 	 * prolonged inactivity.
 	 */
-	private boolean terminate;
+	private Boolean terminate;
 
 	/** The timer that keeps track of the clients activity. */
 	private ClientTimer timer;
@@ -60,7 +69,12 @@ public class ClientRunnable implements Runnable {
 
 	/** Collection of messages queued up to be sent to this client. */
 	private Queue<Message> waitingList;
-
+	
+	/** This enum holds the state, whether user is logged in or not */
+	private ClientState state;
+	
+	private Iterator<edu.northeastern.ccs.im.message.Message> messageIter;
+	
 	/**
 	 * Create a new thread with which we will communicate with this single client.
 	 * 
@@ -78,26 +92,10 @@ public class ClientRunnable implements Runnable {
 		// Mark that the client is active now and start the timer until we
 		// terminate for inactivity.
 		timer = new ClientTimer();
-	}
-
-	/**
-	 * Check to see for an initialization attempt and process the message sent.
-	 */
-	private void checkForInitialization() {
-		// Check if there are any input messages to read
-		Iterator<Message> messageIter = connection.iterator();
-		if (messageIter.hasNext()) {
-			// If a message exists, try to use it to initialize the connection
-			Message msg = messageIter.next();
-			if (setUserName(msg.getName())) {
-				// Update the time until we terminate this client due to inactivity.
-				timer.updateAfterInitialization();
-				// Set that the client is initialized.
-				initialized = true;
-			} else {
-				initialized = false;
-			}
-		}
+		// not logged in initially
+		state = ClientState.LOGGED_OUT;
+		//Message iterator
+		messageIter = connection.iterator();
 	}
 
 	/**
@@ -198,13 +196,16 @@ public class ClientRunnable implements Runnable {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
-		// The client must be initialized before we can do anything else
-		if (!initialized) {
-			checkForInitialization();
+		if (state.equals(ClientState.LOGGED_OUT)) {
+			//handle unauthenticated message
+			handleUnauthIncomingMessages();
+			//handleUnauthOutgoingMessages();
 		} else {
 			handleIncomingMessages();
 			handleOutgoingMessages();
 		}
+		
+		//}
 		// Finally, check if this client have been inactive for too long and,
 		// when they have, terminate the client.
 		if (timer.isBehind()) {
@@ -216,39 +217,40 @@ public class ClientRunnable implements Runnable {
 			terminateClient();
 		}
 	}
+	
+	private void handleUnauthIncomingMessages() {
+		if (messageIter.hasNext()) {
+			edu.northeastern.ccs.im.message.Message msg = messageIter.next();
+			MessageHandler msgHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
+			boolean response = msgHandler.handleMessage("", msg.getMessage());
+			if(msg.getMessageType().equals(MessageType.LOGIN) && response) {
+				//change to authenticated user
+				LoginCredentials lc = new Gson().fromJson(msg.getMessage(), LoginCredentials.class);
+				signInUser(lc.getUserName());
+				
+			}
+		}
+	}
+	
+	private void signInUser(String userName) {
+		setName(userName);
+		Prattle.changeToAuthenciatedUser(this, userName);
+	}
 
 	/**
 	 * Checks incoming messages and performs appropriate actions based on the type
 	 * of message.
 	 */
 	protected void handleIncomingMessages() {
-		// Client has already been initialized, so we should first check
-		// if there are any input
-		// messages.
-		Iterator<Message> messageIter = connection.iterator();
+		// Client has already been logged in
 		if (messageIter.hasNext()) {
-			// Get the next message
-			Message msg = messageIter.next();
-			// If the message is a broadcast message, send it out
-			if (msg.terminate()) {
-				// Stop sending the poor client message.
+			edu.northeastern.ccs.im.message.Message msg = messageIter.next();
+			if (msg.getMessageType().equals(MessageType.LOG_OUT)) {
 				terminate = true;
-				// Reply with a quit message.
-				enqueueMessage(Message.makeQuitMessage(name));
+				//enqueueMessage(Message.makeQuitMessage(name));
 			} else {
-				// Check if the message is legal formatted
-				if (messageChecks(msg)) {
-					// Check for our "special messages"
-					if (msg.isBroadcastMessage()) {
-						// Check for our "special messages"
-						Prattle.broadcastMessage(msg);
-					}
-				} else {
-					Message sendMsg;
-					sendMsg = Message.makeBroadcastMessage(ServerConstants.BOUNCER_ID,
-							"Last message was rejected because it specified an incorrect user name.");
-					enqueueMessage(sendMsg);
-				}
+				MessageHandler messageHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
+				messageHandler.handleMessage(name, msg.getMessage());
 			}
 		}
 	}
@@ -297,5 +299,13 @@ public class ClientRunnable implements Runnable {
 		Prattle.removeClient(this);
 		// And remove the client from our client pool.
 		runnableMe.cancel(false);
+	}
+	
+	public ClientState getState() {
+		return state;
+	}
+
+	public void setState(ClientState state) {
+		this.state = state;
 	}
 }
