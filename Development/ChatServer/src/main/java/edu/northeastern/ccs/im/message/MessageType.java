@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im;
+package edu.northeastern.ccs.im.message;
 
 /**
  * Enumeration for the different types of messages.
@@ -17,7 +17,25 @@ public enum MessageType {
 	 */
 	QUIT("BYE"),
 	/** Message whose contents is broadcast to all connected users. */
-	BROADCAST("BCT");
+	BROADCAST("BCT"),
+	
+	/** Message whose contents are login credentials */ 
+	LOGIN("LGN"),
+	
+	/** Message whose contents are user to user chat */ 
+	USER_CHAT("UCT"),
+	
+	/** Message whose contents are user to group chat */
+	GROUP_CHAT("GCT"),
+
+	/** Message whose contents are for user creation */
+	CREATE_USER("CUR"),
+	
+	/** Message whose contents are for group creation */
+	CREATE_GROUP("CGR"),
+	
+	/** Message to prompt quit */
+	LOG_OUT("LGO");
 
 	/** Store the short name of this message type. */
 	private String abbreviation;

@@ -13,6 +13,13 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import edu.northeastern.ccs.im.business.logic.MessageHandlerFactory;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
+
 /**
  * This class is similar to the java.io.PrintWriter class, but this class's
  * methods work with our non-blocking Socket classes. This class could easily be
@@ -27,10 +34,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 
  * @version 1.4
  */
-public class NetworkConnection implements Iterable<Message> {
+public class NetworkConnection implements Iterable<edu.northeastern.ccs.im.message.Message> {
 
 	/** The size of the incoming buffer. */
 	private static final int BUFFER_SIZE = 64 * 1024;
+	
+	private static final String MESSAGE_START_KEY = "#{";
+	
+	private static final String MESSAGE_END_KEY = "}#";
 
 	/** The base for number conversions. */
 	private static final int DECIMAL_RADIX = 10;
@@ -62,7 +73,16 @@ public class NetworkConnection implements Iterable<Message> {
 	private ByteBuffer buff;
 
 	/** Queue of messages for this client. */
-	private Queue<Message> messages;
+	private Queue<edu.northeastern.ccs.im.message.Message> messages;
+	
+	/** String Buffer to hold the messages, till we get the whole message */
+	private StringBuilder messageBuffer;
+	
+	private MessageHandlerFactory messageHandlerFactory;
+
+	public MessageHandlerFactory getMessageHandlerFactory() {
+		return messageHandlerFactory;
+	}
 
 	/**
 	 * Creates a new instance of this class. Since, by definition, this class sends
@@ -74,7 +94,7 @@ public class NetworkConnection implements Iterable<Message> {
 	 * @throws IOException Exception thrown if we have trouble completing this
      *                     connection
 	 */
-	public NetworkConnection(SocketChannel sockChan) {
+	public NetworkConnection(SocketChannel sockChan, MessageHandlerFactory messageHandlerFactory) {
 		// Create the queue that will hold the messages received from over the network
 		messages = new ConcurrentLinkedQueue<>();
 		// Allocate the buffer we will use to read data
@@ -82,6 +102,10 @@ public class NetworkConnection implements Iterable<Message> {
 		// Remember the channel that we will be using.
 	   // Set up the SocketChannel over which we will communicate.
 		channel = sockChan;
+		
+		this.messageHandlerFactory = messageHandlerFactory;
+		
+		messageBuffer = new StringBuilder();
 		try {
 			channel.configureBlocking(false);
 			// Open the selector to handle our non-blocking I/O
@@ -141,7 +165,7 @@ public class NetworkConnection implements Iterable<Message> {
 	}
 	
 	  @Override
-	  public Iterator<Message> iterator() {
+	  public Iterator<edu.northeastern.ccs.im.message.Message> iterator() {
 	    return new MessageIterator();
 	  }
 
@@ -151,80 +175,88 @@ public class NetworkConnection implements Iterable<Message> {
 	   * @author Riya Nadkarni
 	   * @version 12-27-2018
 	   */
-	  private class MessageIterator implements Iterator<Message> {
+	  private class MessageIterator implements Iterator<edu.northeastern.ccs.im.message.Message> {
+		  
+		  Gson gson;
 
 	    /** Default constructor. */
 	    public MessageIterator() {
-	      // nothing to do here
+	    	gson = new Gson();
 	    }
 
 	    @Override
-	    public boolean hasNext() {
-	      boolean result = false;
-	        try {
-	            // If we have messages waiting for us, return true.
-	            if (!messages.isEmpty()) {
-	                result = true;
-	            }
-	            // Otherwise, check if we can read in at least one new message
-	            else if (selector.selectNow() != 0) {
-	                assert key.isReadable();
-	                // Read in the next set of commands from the channel.
-	                channel.read(buff);
-	                selector.selectedKeys().remove(key);
-	                buff.flip();
-	                // Create a decoder which will convert our traffic to something useful
-	                Charset charset = Charset.forName(CHARSET_NAME);
-	                CharsetDecoder decoder = charset.newDecoder();
-	                // Convert the buffer to a format that we can actually use.
-	                CharBuffer charBuffer = decoder.decode(buff);
-	                // get rid of any extra whitespace at the beginning
-	                // Start scanning the buffer for any and all messages.
-	                int start = 0;
-	                // Scan through the entire buffer; check that we have the minimum message size
-	                while ((start + MIN_MESSAGE_LENGTH) <= charBuffer.limit()) {
-	                    // If this is not the first message, skip extra space.
-	                    if (start != 0) {
-	                        charBuffer.position(start);
-	                    }
-	                    // First read in the handle
-	                    String handle = charBuffer.subSequence(0, HANDLE_LENGTH).toString();
-	                    // Skip past the handle
-	                    charBuffer.position(start + HANDLE_LENGTH + 1);
-	                    // Read the first argument containing the sender's name
-	                    String sender = readArgument(charBuffer);
-	                    // Skip past the leading space
-	                    charBuffer.position(charBuffer.position() + 2);
-	                    // Read in the second argument containing the message
-	                    String message = readArgument(charBuffer);
-	                    // Add this message into our queue
-	                    Message newMsg = Message.makeMessage(handle, sender, message);
-	                    messages.add(newMsg);
-	                    // And move the position to the start of the next character
-	                    start = charBuffer.position() + 1;
-	                }
-	                // Move any read messages out of the buffer so that we can add to the end.
-	                buff.position(start);
-	                // Move all of the remaining data to the start of the buffer.
-	                buff.compact();
-	                result = true;
-	            }
-	        } catch (IOException ioe) {
-	            // For the moment, we will cover up this exception and hope it never occurs.
-	            assert false;
-	        }
-	        // Do we now have any messages?
-	        return result;
-	    }
+		public boolean hasNext() {
+			boolean result = false;
+			try {
+				// If we have messages waiting for us, return true.
+				if (!messages.isEmpty()) {
+					result = true;
+				}
+				// Otherwise, check if we can read in at least one new message
+				else if (selector.selectNow() != 0) {
+					assert key.isReadable();
+					// Read in the next set of commands from the channel.
+					int dataRead = channel.read(buff);
+					//Check if client in dead
+					if (dataRead < 0) {
+						//Client is dead, add a logout message
+						messages.add(new MessageJson(MessageType.LOG_OUT));
+					} else {
+						selector.selectedKeys().remove(key);
+						buff.flip();
+						// Create a decoder which will convert our traffic to something useful
+						Charset charset = Charset.forName(CHARSET_NAME);
+						CharsetDecoder decoder = charset.newDecoder();
+						// Convert the buffer to a format that we can actually use.
+						CharBuffer charBuffer = decoder.decode(buff);
+						messageBuffer.append(charBuffer);
+						// Move all of the remaining data to the start of the buffer.
+						buff.compact();
+					}
+					result = decodeMessage();
+				}
+			} catch (IOException ioe) {
+				// For the moment, we will cover up this exception and hope it never occurs.
+				assert false;
+			}
+			return result;
+		}
 	    
 	    @Override
-	    public Message next() {
+	    public edu.northeastern.ccs.im.message.Message next() {
 	      if (messages.isEmpty()) {
 	        throw new NoSuchElementException("No next line has been typed in at the keyboard");
 	      }
-	      Message msg = messages.remove();
+	      edu.northeastern.ccs.im.message.Message msg = messages.remove();
 	      ChatLogger.info(msg.toString());
 	      return msg;
+	    }
+	    
+	    private boolean decodeMessage() {
+	    	boolean isMessageDecoded = false;
+	    	if (messageBuffer.length() > 0) {
+	    		String msgBufferString = messageBuffer.toString();
+	    		if (msgBufferString.contains(MESSAGE_START_KEY) && msgBufferString.contains(MESSAGE_END_KEY)) {
+	    			int start = msgBufferString.indexOf(MESSAGE_START_KEY) + 1;
+		    		int end = msgBufferString.indexOf(MESSAGE_END_KEY) + 1;
+		    		String msg = msgBufferString.substring(start, end);
+		    		try {
+		    			//Extract message
+		    			MessageJson extractedMessage = gson.fromJson(msg, MessageJson.class);
+		    			isMessageDecoded  = true;
+		    			messages.add(extractedMessage);
+		    		} catch (JsonSyntaxException e) {
+		    			ChatLogger.error(e.getMessage());
+					} finally {
+						//remove the particular message extracted
+						messageBuffer.delete(start -1, end + 1);
+					}
+		    		
+		    		
+	    		}
+	    		
+	    	}
+	    	return isMessageDecoded;
 	    }
 	    
 	    /**
@@ -264,5 +296,6 @@ public class NetworkConnection implements Iterable<Message> {
 	        }
 	        return result;
 	    }
+	    
 	  }
 }
