@@ -75,10 +75,10 @@ public class ChatDao {
    	Query query = session.createNativeQuery(sql, Chat.class);
    	query.setParameter(1, receiver_id);
    	List<Chat> chat = query.getResultList();
-   	
+
    	return chat;
    }
-   
+
    /**
     * Delete the chat for a particular user or a group.
     * @param receiver_id
@@ -90,7 +90,7 @@ public class ChatDao {
            // Begin a transaction
            transaction = session.beginTransaction();
            String sql = "delete from chat where chat.To_id = ?";
-       	
+
 	   	   	Query query = session.createNativeQuery(sql, Chat.class);
 	   	   	query.setParameter(1, receiver_id);
 	   	   	query.executeUpdate();
@@ -108,7 +108,7 @@ public class ChatDao {
            session.close();
        }
    }
-   
+
    /**
     * Delete a particular message.
     * @param id
@@ -121,7 +121,7 @@ public class ChatDao {
            // Begin a transaction
            transaction = session.beginTransaction();
            // Get the User from the database.
-           Chat chat = (Chat) session.get(Chat.class, Integer.valueOf(id));
+           Chat chat = session.get(Chat.class, id);
            // Delete the User
            session.delete(chat);
            // Commit the transaction
@@ -138,7 +138,7 @@ public class ChatDao {
            session.close();
        }
    }
-   
+
    /**
     * Close the session factory.
     */

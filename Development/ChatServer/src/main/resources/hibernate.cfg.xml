@@ -17,7 +17,7 @@
         <!-- The database password -->
         <property name="hibernate.connection.password">Team212$0</property>
         <!-- Mapping class -->
-        <mapping class="edu.northeastern.ccs.im.database.User"></mapping>
-        <mapping class="edu.northeastern.ccs.im.database.Chat"></mapping>
+        <mapping class="edu.northeastern.ccs.im.database.User"/>
+        <mapping class="edu.northeastern.ccs.im.database.Chat"/>
     </session-factory>
 </hibernate-configuration>

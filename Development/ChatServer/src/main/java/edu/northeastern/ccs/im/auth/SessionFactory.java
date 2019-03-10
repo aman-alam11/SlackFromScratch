@@ -1,5 +1,10 @@
 package edu.northeastern.ccs.im.auth;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
+import edu.northeastern.ccs.im.database.JPAService;
+
 /**
  * A class which mimics the session as we are not required to implement session. We perform Auth
  * related operations here.
@@ -8,6 +13,10 @@ public final class SessionFactory {
 
   private static SessionFactory mLoginInstance;
 
+  // Inject Database layer for easy testing and separation of concern
+  private JPAService mJpaService;
+
+
   // Use the specific version of AuthModulesImpl and not superclass as the interface can be
   // implemented by any class
   private AuthModulesImpl mAuthModules;
@@ -15,8 +24,9 @@ public final class SessionFactory {
   private String mUsername;
   private String mPassword;
 
-  private SessionFactory(String rawUsername, String rawPassword) {
+  private SessionFactory(String rawUsername, String rawPassword, JPAService jpaService) {
     // Private Constructor
+    this.mJpaService = jpaService;
     this.sanitizeInput(rawUsername, rawPassword);
     mAuthModules = new AuthModulesImpl();
   }
@@ -29,9 +39,13 @@ public final class SessionFactory {
    * required to implement session). Since we will do auth related operations through this class,
    * this is referred to as session factory.
    */
-  public static SessionFactory getInstance(String rawUsername, String rawPassword) {
+  public static SessionFactory getInstance(String rawUsername, String rawPassword, JPAService jpaService) {
+    if (rawUsername == null || rawPassword == null || jpaService == null) {
+      throw new IllegalArgumentException("Parameters cant be null");
+    }
+
     if (mLoginInstance == null) {
-      mLoginInstance = new SessionFactory(rawUsername, rawPassword);
+      mLoginInstance = new SessionFactory(rawUsername, rawPassword, jpaService);
     }
 
     return mLoginInstance;
@@ -45,38 +59,26 @@ public final class SessionFactory {
    * @param rawPassword The raw String entered by user as password.
    */
   private void sanitizeInput(String rawUsername, String rawPassword) {
-    // TODO: Sanitize username and password and then assign
-    this.mUsername = rawUsername;
-    this.mPassword = rawPassword;
-  }
-
-
-  /**
-   * Encrypt the password using salting and Hashing (Used internally by BCrypt).
-   *
-   * @param rawPassword The sanitized raw password String.
-   */
-  private void encryptPassword(String rawPassword) {
-    // TODO
+    this.mUsername = Jsoup.clean(rawUsername, Whitelist.basic());
+    this.mPassword = Jsoup.clean(rawPassword, Whitelist.basic());
   }
 
 
   public boolean login() {
-    if (mAuthModules.isLoggedIn(mUsername)) {
-      return true;
-    }
-
-    return mAuthModules.loginIn(mUsername, mPassword);
+    boolean loginSuccessful = mAuthModules.loginIn(mUsername, mPassword, mJpaService);
+    removePreviousRef();
+    return loginSuccessful;
   }
 
   public boolean createAccount() {
-    return mAuthModules.createAccount(mUsername, mPassword);
+    boolean createAccountSuccess = mAuthModules.createAccount(mUsername, mPassword, mJpaService);
+    removePreviousRef();
+    return createAccountSuccess;
   }
 
-
-  public boolean logoutUser() {
-    return mAuthModules.logout();
+  private void removePreviousRef() {
+    mUsername = null;
+    mPassword = null;
   }
-
 
 }
