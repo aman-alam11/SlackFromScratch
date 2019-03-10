@@ -1,4 +1,4 @@
-package com.msd.jpa;
+package edu.northeastern.ccs.im.database;
 
 import java.io.Serializable;
 import java.util.Date;

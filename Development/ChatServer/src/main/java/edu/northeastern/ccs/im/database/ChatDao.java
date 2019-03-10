@@ -1,4 +1,4 @@
-package com.msd.jpa;
+package edu.northeastern.ccs.im.database;
 
 import java.util.Date;
 import java.util.List;
@@ -15,33 +15,11 @@ import org.hibernate.service.ServiceRegistry;
 
 public class ChatDao {
 
-	private static final SessionFactory SESSION_FACTORY;
-	
-	 /**
-    * Initialize the SessionFactory instance.
-    */
-   static {
-       // Create a Configuration object.
-       Configuration config = new Configuration();
-       // Configure using the application resource named hibernate.cfg.xml.
-       config.configure();
-       // Extract the properties from the configuration file.
-       Properties prop = config.getProperties();
+	private static SessionFactory SESSION_FACTORY;
 
-       // Create StandardServiceRegistryBuilder using the properties.
-       StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
-       builder.applySettings(prop);
-
-       // Build a ServiceRegistry
-       ServiceRegistry registry = builder.build();
-
-       // Create the SessionFactory using the ServiceRegistry
-       SESSION_FACTORY = new Configuration().
-               configure().
-               addAnnotatedClass(Chat.class).
-               buildSessionFactory();
-   }
-   
+    public ChatDao(SessionFactory sf){
+        SESSION_FACTORY = sf;
+    }
    /**
     * Create a new chat message.
     * @param from_id

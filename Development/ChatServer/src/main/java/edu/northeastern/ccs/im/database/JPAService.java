@@ -1,7 +1,9 @@
-package com.msd.jpa;
+package edu.northeastern.ccs.im.database;
 
 import java.util.Date;
 import java.util.List;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import org.hibernate.Session;
 
@@ -16,18 +18,37 @@ public class JPAService {
 	 * Creating an object of ChatDao to call the methods to perform operations on chat.
 	 */
 	private ChatDao cd;
-	
+
+	/**
+	 * Initialize the SessionFactory instance.
+	 */
+
+	private static SessionFactory SESSION_FACTORY;
+
+	static {
+		// Create the SessionFactory using the ServiceRegistry
+		SESSION_FACTORY = new Configuration().
+				configure().
+				addAnnotatedClass(User.class).
+				addAnnotatedClass(Chat.class).
+				buildSessionFactory();
+	}
+
 	/**
 	 * Constructor to initialize userdao object.
 	 */
 	public JPAService(){
-		ud = new UserDao();
-		cd = new ChatDao();
+		ud = new UserDao(SESSION_FACTORY);
+		cd = new ChatDao(SESSION_FACTORY);
 	}
-	
+
+	public JPAService(SessionFactory sf){
+		SESSION_FACTORY = sf;
+		ud = new UserDao(SESSION_FACTORY);
+		cd = new ChatDao(SESSION_FACTORY);
+	}
 	/**
 	 * Create a new user.
-	 * @param id
 	 * @param name
 	 * @param email
 	 * @param password
@@ -77,7 +98,7 @@ public class JPAService {
 	 * Close a session factory once the operations are done.
 	 */
 	public void closeSessionFactory() {
-		ud.closeSessionFactory();
+		SESSION_FACTORY.close();
 	}
 	
 	/**
@@ -118,12 +139,5 @@ public class JPAService {
 	 */
 	public void deleteMessage(int id) {
 		cd.delete(id);
-	}
-	
-	/**
-	 * Close a session factory once the operations are done.
-	 */
-	public void closeChatSessionFactory() {
-		cd.closeSessionFactory();
 	}
 }

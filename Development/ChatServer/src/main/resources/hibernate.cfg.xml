@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
-"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
         <!-- Create table if not exists -->
@@ -11,12 +11,13 @@
         <!-- Indicate the database to generate suitable SQL -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
         <!-- The JDBC URL to the database instance -->
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test_hibernate</property>
+        <property name="hibernate.connection.url">jdbc:mysql://ec2-13-59-164-30.us-east-2.compute.amazonaws.com:3306/test_hibernate</property>
         <!-- The database username -->
-        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.username">team212</property>
         <!-- The database password -->
-        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.password">Team212$0</property>
         <!-- Mapping class -->
-        <mapping class="com.msd.jpa.User"></mapping>
+        <mapping class="edu.northeastern.ccs.im.database.User"></mapping>
+        <mapping class="edu.northeastern.ccs.im.database.Chat"></mapping>
     </session-factory>
 </hibernate-configuration>

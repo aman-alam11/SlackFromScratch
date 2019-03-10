@@ -13,37 +13,14 @@ import org.hibernate.query.Query;
 import org.hibernate.service.ServiceRegistry;
 
 public class UserDao {
-	private static final SessionFactory SESSION_FACTORY;
-	
-	 /**
-     * Initialize the SessionFactory instance.
-     */
-    static {
-        // Create a Configuration object.
-        Configuration config = new Configuration();
-        // Configure using the application resource named hibernate.cfg.xml.
-        config.configure();
-        // Extract the properties from the configuration file.
-        Properties prop = config.getProperties();
+	private static SessionFactory SESSION_FACTORY;
 
-        // Create StandardServiceRegistryBuilder using the properties.
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
-        builder.applySettings(prop);
-
-        // Build a ServiceRegistry
-        ServiceRegistry registry = builder.build();
-
-        // Create the SessionFactory using the ServiceRegistry
-        SESSION_FACTORY = new Configuration().
-                configure().
-                addAnnotatedClass(User.class).
-                buildSessionFactory();
+    public UserDao(SessionFactory sf){
+        SESSION_FACTORY = sf;
     }
-    
     /**
      * Create a new user.
-     * 
-     * @param id
+     *
      * @param name
      * @param email
      * @param password
@@ -191,12 +168,5 @@ public class UserDao {
     	User user = (User) query.getSingleResult();
     	
     	return user;
-    }
-    
-    /**
-     * Close the session factory.
-     */
-    public void closeSessionFactory() {
-    	SESSION_FACTORY.close();
     }
 }
