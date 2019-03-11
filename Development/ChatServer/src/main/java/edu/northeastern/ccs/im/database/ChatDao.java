@@ -2,23 +2,20 @@ package edu.northeastern.ccs.im.database;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
-import org.hibernate.service.ServiceRegistry;
 
 public class ChatDao {
 
-	private static SessionFactory SESSION_FACTORY;
+	private static SessionFactory mSessionFactory;
 
     public ChatDao(SessionFactory sf){
-        SESSION_FACTORY = sf;
+        mSessionFactory = sf;
     }
    /**
     * Create a new chat message.
@@ -30,9 +27,10 @@ public class ChatDao {
     * @param grpMsg
     * @param isDelivered
     */
-   public void create(int from_id, int to_id, String msg, int reply_to, Date created, Date expiery, Boolean grpMsg, Boolean isDelivered) {
+   public void create(int from_id, int to_id, String msg, int reply_to, Date created, Date expiery,
+                      Boolean grpMsg, Boolean isDelivered) {
        // Create a session
-       Session session = SESSION_FACTORY.openSession();
+       Session session = mSessionFactory.openSession();
        Transaction transaction = null;
        try {
            // Begin a transaction
@@ -69,28 +67,28 @@ public class ChatDao {
     * @return
     */
    public List<Chat> findByReceiver(int receiver_id) {
-	Session session = SESSION_FACTORY.openSession();
+	Session session = mSessionFactory.openSession();
    	String sql = "select *from chat where chat.To_id = ?";
 
    	Query query = session.createNativeQuery(sql, Chat.class);
    	query.setParameter(1, receiver_id);
    	List<Chat> chat = query.getResultList();
-   	
+
    	return chat;
    }
-   
+
    /**
     * Delete the chat for a particular user or a group.
     * @param receiver_id
     */
    public void deleteChatByReceiver(int receiver_id) {
-	   Session session = SESSION_FACTORY.openSession();
+	   Session session = mSessionFactory.openSession();
        Transaction transaction = null;
        try {
            // Begin a transaction
            transaction = session.beginTransaction();
            String sql = "delete from chat where chat.To_id = ?";
-       	
+
 	   	   	Query query = session.createNativeQuery(sql, Chat.class);
 	   	   	query.setParameter(1, receiver_id);
 	   	   	query.executeUpdate();
@@ -108,20 +106,20 @@ public class ChatDao {
            session.close();
        }
    }
-   
+
    /**
     * Delete a particular message.
     * @param id
     */
    public void delete(int id) {
        // Create a session
-       Session session = SESSION_FACTORY.openSession();
+       Session session = mSessionFactory.openSession();
        Transaction transaction = null;
        try {
            // Begin a transaction
            transaction = session.beginTransaction();
            // Get the User from the database.
-           Chat chat = (Chat) session.get(Chat.class, Integer.valueOf(id));
+           Chat chat = session.get(Chat.class, id);
            // Delete the User
            session.delete(chat);
            // Commit the transaction
@@ -132,17 +130,17 @@ public class ChatDao {
                transaction.rollback();
            }
            // Print the Exception
-           ex.printStackTrace();
+         Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
        } finally {
            // Close the session
            session.close();
        }
    }
-   
+
    /**
     * Close the session factory.
     */
    public void closeSessionFactory() {
-   	SESSION_FACTORY.close();
+   	mSessionFactory.close();
    }
 }
