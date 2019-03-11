@@ -8,14 +8,14 @@ public class MessageJson {
 	private String sendToUser;
 	private Date creationTime;
 	private String message;
-	
+
 	public MessageJson(String senderName, MessageType type, String message) {
 		this.fromUser = senderName;
 		this.messageType = type;
 		this.message = message;
 		this.creationTime = new Date();
 	}
-	
+
 	public MessageJson(MessageType type) {
 		this.messageType = type;
 	}

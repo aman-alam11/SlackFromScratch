@@ -1,5 +1,7 @@
 package edu.northeastern.ccs.im.auth;
 
+import edu.northeastern.ccs.im.database.JPAService;
+
 public interface AuthModules {
 
   /**
@@ -7,9 +9,10 @@ public interface AuthModules {
    *
    * @param username The username chosen by user.
    * @param password The password chosen by user (At least 6 characters long).
+   * @param mJpaService
    * @return A boolean representing if the create account operation was successful or not.
    */
-  boolean createAccount(String username, String password);
+  boolean createAccount(String username, String password, JPAService mJpaService);
 
 
   /**
@@ -17,42 +20,9 @@ public interface AuthModules {
    *
    * @param username The client's username.
    * @param password The client's password.
+   * @param mJpaService
    * @return A boolean representing if the login was successful or not.
    */
-  boolean loginIn(String username, String password);
-
-
-  /**
-   * Logs the user out.
-   *
-   * @return A boolean representing if the operation is successful or not.
-   */
-  boolean logout();
-
-
-  /**
-   * This can be through: (1) Query the server to check if the user is logged in or not and here we
-   * need the client id. (2) Through a session manager where we wont need the client id (3) A way in
-   * which we just query a variable (Not Recommended) and does not requires the client id as well.
-   *
-   * @param username The client's username.
-   * @return A boolean representing if user is logged in or not.
-   */
-  boolean isLoggedIn(String username);
-
-
-  /**
-   * A security tap in for admins for logging out all users. This is equivalent to expiring the
-   * session for all users.
-   */
-  void logoutAllUsers();
-
-
-  /**
-   * Users with Administrative rights.
-   *
-   * @return If user is super user or not.
-   */
-  boolean isSuperUser();
+  boolean loginIn(String username, String password, JPAService mJpaService);
 
 }

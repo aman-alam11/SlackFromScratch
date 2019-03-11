@@ -1,6 +1,6 @@
 package edu.northeastern.ccs.im.business.logic;
 
-import edu.northeastern.ccs.im.model.User;
+import edu.northeastern.ccs.im.database.JPAService;
 
 public interface MessageHandler {
 	

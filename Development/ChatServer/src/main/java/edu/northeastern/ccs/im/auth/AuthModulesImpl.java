@@ -1,47 +1,38 @@
 package edu.northeastern.ccs.im.auth;
 
+import org.jsoup.helper.StringUtil;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import edu.northeastern.ccs.im.database.JPAService;
 
 public class AuthModulesImpl implements AuthModules {
 
   @Override
-  public boolean createAccount(String username, String password) {
+  public boolean createAccount(String username, String password, JPAService mJpaService) {
     // Save the username and hash
+
     try {
-      BCrypt.hashpw(password, BCrypt.gensalt());
-      // TODO: Save in DATABASE with username
-      return true;
+      String hashedPwd = BCrypt.hashpw(password, BCrypt.gensalt());
+
+      return mJpaService.createUser(username, hashedPwd);
     } catch (Exception e) {
       return false;
     }
   }
 
   @Override
-  public boolean loginIn(String username, String password) {
+  public boolean loginIn(String username, String password, JPAService mJpaService) {
+    // Check if the username exists
+    if (mJpaService.findUserByName(username) == null) {
+      return false;
+    }
 
-    // Get the hash for the username from user and verify using
-//    String hash = DatabaseLayer.getHashForUsername(username);
-//    return BCrypt.checkpw(password, hash);
-    return true;
+    // Get the hash for the username from user and verify using BCrypt
+    String hash = mJpaService.getHashFromUsername(username);
+    if (StringUtil.isBlank(hash)) {
+      return false;
+    }
+    return BCrypt.checkpw(password, hash);
   }
 
-  @Override
-  public boolean logout() {
-    return false;
-  }
-
-  @Override
-  public boolean isLoggedIn(String username) {
-    return true;
-  }
-
-  @Override
-  public void logoutAllUsers() {
-
-  }
-
-  @Override
-  public boolean isSuperUser() {
-    return false;
-  }
 }

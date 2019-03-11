@@ -3,6 +3,8 @@ package edu.northeastern.ccs.im.auth;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import edu.northeastern.ccs.im.database.JPAService;
+
 /**
  * A class which mimics the session as we are not required to implement session. We perform Auth
  * related operations here.
@@ -11,6 +13,10 @@ public final class SessionFactory {
 
   private static SessionFactory mLoginInstance;
 
+  // Inject Database layer for easy testing and separation of concern
+  private JPAService mJpaService;
+
+
   // Use the specific version of AuthModulesImpl and not superclass as the interface can be
   // implemented by any class
   private AuthModulesImpl mAuthModules;
@@ -18,8 +24,9 @@ public final class SessionFactory {
   private String mUsername;
   private String mPassword;
 
-  private SessionFactory(String rawUsername, String rawPassword) {
+  private SessionFactory(String rawUsername, String rawPassword, JPAService jpaService) {
     // Private Constructor
+    this.mJpaService = jpaService;
     this.sanitizeInput(rawUsername, rawPassword);
     mAuthModules = new AuthModulesImpl();
   }
@@ -32,9 +39,13 @@ public final class SessionFactory {
    * required to implement session). Since we will do auth related operations through this class,
    * this is referred to as session factory.
    */
-  public static SessionFactory getInstance(String rawUsername, String rawPassword) {
+  public static SessionFactory getInstance(String rawUsername, String rawPassword, JPAService jpaService) {
+    if (rawUsername == null || rawPassword == null || jpaService == null) {
+      throw new IllegalArgumentException("Parameters cant be null");
+    }
+
     if (mLoginInstance == null) {
-      mLoginInstance = new SessionFactory(rawUsername, rawPassword);
+      mLoginInstance = new SessionFactory(rawUsername, rawPassword, jpaService);
     }
     return mLoginInstance;
   }
@@ -53,36 +64,19 @@ public final class SessionFactory {
 
 
   public boolean login() {
-    if (mAuthModules.isLoggedIn(mUsername)) {
-      return true;
-    }
-
-    boolean loginSuccessful = mAuthModules.loginIn(mUsername, mPassword);
-    this.mPassword = null;
+    boolean loginSuccessful = mAuthModules.loginIn(mUsername, mPassword, mJpaService);
+    removePreviousRef();
     return loginSuccessful;
   }
 
   public boolean createAccount() {
-    boolean createAccountSuccess = mAuthModules.createAccount(mUsername, mPassword);
-    this.mPassword = null;
+    boolean createAccountSuccess = mAuthModules.createAccount(mUsername, mPassword, mJpaService);
+    removePreviousRef();
     return createAccountSuccess;
   }
 
-
-  public boolean logoutUser() {
-    return mAuthModules.logout();
+  private void removePreviousRef() {
+    mUsername = null;
+    mPassword = null;
   }
-
-
-  public static void logoutAllUsers(String mUsername) {
-    // If current user has admin privileges, logout all users
-    AuthModules authModule = new AuthModulesImpl();
-    if (authModule.isLoggedIn(mUsername) && authModule.isSuperUser()) {
-      authModule.logoutAllUsers();
-    } else {
-      throw new UnsupportedOperationException("You do not have admin rights to perform this operation");
-    }
-  }
-
-
 }
