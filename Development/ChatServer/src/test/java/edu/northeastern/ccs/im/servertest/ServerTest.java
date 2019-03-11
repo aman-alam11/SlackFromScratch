@@ -1,10 +1,7 @@
 package edu.northeastern.ccs.im.servertest;
 
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static edu.northeastern.ccs.im.server.Prattle.broadcastMessage;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -19,13 +16,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Logger;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
 import edu.northeastern.ccs.im.server.ClientRunnable;
 import edu.northeastern.ccs.im.server.ClientTimer;
 import edu.northeastern.ccs.im.server.Prattle;
-
-import static edu.northeastern.ccs.im.server.Prattle.broadcastMessage;
 
 public class ServerTest {
   private static SocketChannel clientSocket;
