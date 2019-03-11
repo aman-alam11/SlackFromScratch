@@ -1,0 +1,183 @@
+package edu.northeastern.ccs.im.database;
+
+import com.sun.istack.Nullable;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+public class UserDao {
+  private static SessionFactory mSessionFactory;
+
+  public UserDao(SessionFactory sf) {
+    mSessionFactory = sf;
+  }
+
+  /**
+   * Create a new user.
+   */
+  public boolean create(String name, @Nullable String email, String password) {
+    boolean isTransactionSuccessful = false;
+    // Create a session
+    Session session = mSessionFactory.openSession();
+    Transaction transaction = null;
+    try {
+      // Begin a transaction
+      transaction = session.beginTransaction();
+      User user = new User(name, password, email);
+
+      // Save the User
+      session.save(user);
+
+      // Commit the transaction
+      transaction.commit();
+      isTransactionSuccessful = true;
+    } catch (HibernateException ex) {
+      // If there are any exceptions, roll back the changes
+      if (transaction != null) {
+        transaction.rollback();
+      }
+      // Print the Exception
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
+    }
+
+    return isTransactionSuccessful;
+  }
+
+  /**
+   * Read all the Users.
+   *
+   * @return a List of Users
+   */
+  public List<User> readAll() {
+    List<User> users = null;
+    // Create a session
+    Session session = mSessionFactory.openSession();
+    Transaction transaction = null;
+    try {
+      // Begin a transaction
+      transaction = session.beginTransaction();
+      users = session.createQuery("FROM User").list();
+
+      // Commit the transaction
+      transaction.commit();
+    } catch (HibernateException ex) {
+      // If there are any exceptions, roll back the changes
+      if (transaction != null) {
+        transaction.rollback();
+      }
+      // Print the Exception
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return users;
+  }
+
+  /**
+   * Delete the existing User.
+   */
+  public void delete(int id) {
+    // Create a session
+    Session session = mSessionFactory.openSession();
+    Transaction transaction = null;
+    try {
+      // Begin a transaction
+      transaction = session.beginTransaction();
+      // Get the User from the database.
+      User user = (User) session.get(User.class, Integer.valueOf(id));
+      // Delete the User
+      session.delete(user);
+      // Commit the transaction
+      transaction.commit();
+    } catch (HibernateException ex) {
+      // If there are any exceptions, roll back the changes
+      if (transaction != null) {
+        transaction.rollback();
+      }
+      // Print the Exception
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
+    }
+  }
+
+  /**
+   * Update the existing user.
+   */
+  public void update(int id, String name, String email, String password) {
+    // Create a session
+    Session session = mSessionFactory.openSession();
+    Transaction transaction = null;
+    try {
+      // Begin a transaction
+      transaction = session.beginTransaction();
+
+      // Get the User from the database.
+      User user = session.get(User.class, id);
+
+      // Change the values
+      user.setId(id);
+      user.setName(name);
+      user.setEmail(email);
+      user.setPassword(password);
+
+      // Update the User
+      session.update(user);
+
+      // Commit the transaction
+      transaction.commit();
+    } catch (HibernateException ex) {
+      // If there are any exceptions, roll back the changes
+      if (transaction != null) {
+        transaction.rollback();
+      }
+      // Print the Exception
+      ex.printStackTrace();
+    } finally {
+      // Close the session
+      session.close();
+    }
+  }
+
+  /**
+   * Find a user by unique key user name.
+   */
+  public User findUserByName(String name) {
+    Session session = mSessionFactory.openSession();
+    String sql = "select * from users where users.user_name = ?";
+
+    Query query = session.createNativeQuery(sql, User.class);
+    query.setParameter(1, name);
+    try {
+      return (User) query.getSingleResult();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+
+  public String findHashForUsername(String username) {
+    Session session = mSessionFactory.openSession();
+    String sql = "SELECT users.user_password FROM users WHERE users.user_name = ?";
+
+    Query query = session.createNativeQuery(sql);
+    query.setParameter(1, username);
+    try {
+      String str = (String) query.getSingleResult();
+      return (str == null) ? "" : str;
+    } catch (Exception e) {
+      return "";
+    }
+  }
+}
