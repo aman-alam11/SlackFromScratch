@@ -22,8 +22,14 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 /**
  * This is the Login class which is being used for the Login level
  */
-public class Login extends CommonOperations {
+public class Login extends CommonOperations implements AsyncListener {
   private Gson mGson;
+  
+  
+  @Override
+  void listen(String message) {
+	  
+  }
 
   @Override
   public void passControl(Scanner scanner, Connection model) {
@@ -31,8 +37,7 @@ public class Login extends CommonOperations {
     //flag to check stop while loop when login has successful
     boolean loginFlag = true;
     mGson = new Gson();
-    JPAService jpaService = new JPAService();
-
+  
     //limit number of logins to 3
     int limit = 0;
 
@@ -43,9 +48,7 @@ public class Login extends CommonOperations {
       FrontEnd.getView().sendToView("Enter password");
       String password = scanner.nextLine().trim();
 
-      //TODO are we supposed to login like this?
-      SessionFactory sessionFactory = SessionFactory.getInstance(username, password, jpaService);
-
+      
       if (sessionFactory.login()) {
         loginFlag = false;
         LoginCredentials loginCredentials = new LoginCredentials(username, password);

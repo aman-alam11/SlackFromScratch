@@ -1,0 +1,5 @@
+
+public interface AsyncListener {
+	
+	void listen(String message);
+} 
