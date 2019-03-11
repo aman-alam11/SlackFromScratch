@@ -2,7 +2,7 @@ package edu.northeastern.ccs.im.message;
 
 import java.util.Date;
 
-public class MessageJson implements Message {
+public class MessageJson {
 	private MessageType messageType;
 	private String fromUser;
 	private String sendToUser;

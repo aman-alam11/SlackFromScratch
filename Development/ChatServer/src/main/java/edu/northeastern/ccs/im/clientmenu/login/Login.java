@@ -4,10 +4,10 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 import edu.northeastern.ccs.im.auth.SessionFactory;
+import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.DefaultOperation;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.clientinterfaces.ParentModel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -18,7 +18,7 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 public class Login extends CommonOperations {
 
   @Override
-  public void passControl(Scanner scanner, ParentModel model) {
+  public void passControl(Scanner scanner, Connection model) {
 
     //flag to check stop while loop when login has successful
     boolean loginFlag = true;

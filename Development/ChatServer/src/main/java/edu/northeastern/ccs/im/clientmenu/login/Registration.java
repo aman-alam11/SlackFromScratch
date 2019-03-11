@@ -4,8 +4,8 @@ import java.net.InetSocketAddress;
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.auth.SessionFactory;
+import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
-import edu.northeastern.ccs.im.clientmenu.clientinterfaces.ParentModel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -13,7 +13,7 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 public class Registration extends CommonOperations {
 
   @Override
-  public void passControl(Scanner scanner, ParentModel model) {
+  public void passControl(Scanner scanner, Connection model) {
 
     FrontEnd.getView().sendToView("Hi, Please Enter the following details to register");
     FrontEnd.getView().sendToView("Enter User Name");

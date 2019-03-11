@@ -6,15 +6,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
 import edu.northeastern.ccs.im.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.LoginCredentials;
 
@@ -73,7 +71,7 @@ public class ClientRunnable implements Runnable {
 	/** This enum holds the state, whether user is logged in or not */
 	private ClientState state;
 	
-	private Iterator<edu.northeastern.ccs.im.message.Message> messageIter;
+	private Iterator<MessageJson> messageIter;
 	
 	/**
 	 * Create a new thread with which we will communicate with this single client.
@@ -220,7 +218,7 @@ public class ClientRunnable implements Runnable {
 	
 	private void handleUnauthIncomingMessages() {
 		if (messageIter.hasNext()) {
-			edu.northeastern.ccs.im.message.Message msg = messageIter.next();
+			MessageJson msg = messageIter.next();
 			MessageHandler msgHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
 			boolean response = msgHandler.handleMessage("", msg.getMessage());
 			if(msg.getMessageType().equals(MessageType.LOGIN) && response) {
@@ -244,7 +242,7 @@ public class ClientRunnable implements Runnable {
 	protected void handleIncomingMessages() {
 		// Client has already been logged in
 		if (messageIter.hasNext()) {
-			edu.northeastern.ccs.im.message.Message msg = messageIter.next();
+			MessageJson msg = messageIter.next();
 			if (msg.getMessageType().equals(MessageType.LOG_OUT)) {
 				terminate = true;
 				//enqueueMessage(Message.makeQuitMessage(name));

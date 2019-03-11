@@ -1,13 +1,13 @@
 package edu.northeastern.ccs.im.clientmenu;
 
 import edu.northeastern.ccs.im.clientmenu.firstlevel.FirstLevelModel;
-import edu.northeastern.ccs.im.clientmenu.clientinterfaces.ParentModel;
+import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 
 public class ModuleFactory {
 
 
-  public ParentModel getModelFromFactory(CurrentLevel currentLevel) {
+  public Connection getModelFromFactory(CurrentLevel currentLevel) {
     switch (currentLevel) {
 
       case LEVEL1:

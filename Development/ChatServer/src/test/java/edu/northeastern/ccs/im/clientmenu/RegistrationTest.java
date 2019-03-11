@@ -6,13 +6,13 @@ import org.mockito.Mock;
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.clientmenu.clientinterfaces.ParentModel;
+import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.login.Registration;
 
 public class RegistrationTest {
 
   @Mock
-  ParentModel parentModel;
+  Connection parentModel;
 
   @Test
   public void successfulAcountCreationTest() {

@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.clientmenu.clientinterfaces.ParentModel;
+import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.login.Login;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 public class LoginClassTest {
 
   @Mock
-  ParentModel parentModel;
+  Connection parentModel;
 
 
 

@@ -34,7 +34,7 @@ import edu.northeastern.ccs.im.message.MessageType;
  * 
  * @version 1.4
  */
-public class NetworkConnection implements Iterable<edu.northeastern.ccs.im.message.Message> {
+public class NetworkConnection implements Iterable<MessageJson> {
 
 	/** The size of the incoming buffer. */
 	private static final int BUFFER_SIZE = 64 * 1024;
@@ -73,7 +73,7 @@ public class NetworkConnection implements Iterable<edu.northeastern.ccs.im.messa
 	private ByteBuffer buff;
 
 	/** Queue of messages for this client. */
-	private Queue<edu.northeastern.ccs.im.message.Message> messages;
+	private Queue<MessageJson> messages;
 	
 	/** String Buffer to hold the messages, till we get the whole message */
 	private StringBuilder messageBuffer;
@@ -165,7 +165,7 @@ public class NetworkConnection implements Iterable<edu.northeastern.ccs.im.messa
 	}
 	
 	  @Override
-	  public Iterator<edu.northeastern.ccs.im.message.Message> iterator() {
+	  public Iterator<MessageJson> iterator() {
 	    return new MessageIterator();
 	  }
 
@@ -175,7 +175,7 @@ public class NetworkConnection implements Iterable<edu.northeastern.ccs.im.messa
 	   * @author Riya Nadkarni
 	   * @version 12-27-2018
 	   */
-	  private class MessageIterator implements Iterator<edu.northeastern.ccs.im.message.Message> {
+	  private class MessageIterator implements Iterator<MessageJson> {
 		  
 		  Gson gson;
 
@@ -223,41 +223,39 @@ public class NetworkConnection implements Iterable<edu.northeastern.ccs.im.messa
 		}
 	    
 	    @Override
-	    public edu.northeastern.ccs.im.message.Message next() {
+	    public MessageJson next() {
 	      if (messages.isEmpty()) {
 	        throw new NoSuchElementException("No next line has been typed in at the keyboard");
 	      }
-	      edu.northeastern.ccs.im.message.Message msg = messages.remove();
+	      MessageJson msg = messages.remove();
 	      ChatLogger.info(msg.toString());
 	      return msg;
 	    }
 	    
-	    private boolean decodeMessage() {
-	    	boolean isMessageDecoded = false;
-	    	if (messageBuffer.length() > 0) {
-	    		String msgBufferString = messageBuffer.toString();
-	    		if (msgBufferString.contains(MESSAGE_START_KEY) && msgBufferString.contains(MESSAGE_END_KEY)) {
-	    			int start = msgBufferString.indexOf(MESSAGE_START_KEY) + 1;
-		    		int end = msgBufferString.indexOf(MESSAGE_END_KEY) + 1;
-		    		String msg = msgBufferString.substring(start, end);
-		    		try {
-		    			//Extract message
-		    			MessageJson extractedMessage = gson.fromJson(msg, MessageJson.class);
-		    			isMessageDecoded  = true;
-		    			messages.add(extractedMessage);
-		    		} catch (JsonSyntaxException e) {
-		    			ChatLogger.error(e.getMessage());
+		private boolean decodeMessage() {
+			boolean isMessageDecoded = false;
+			if (messageBuffer.length() > 0) {
+				String msgBufferString = messageBuffer.toString();
+				if (msgBufferString.contains(MESSAGE_START_KEY) && msgBufferString.contains(MESSAGE_END_KEY)) {
+					int start = msgBufferString.indexOf(MESSAGE_START_KEY) + 1;
+					int end = msgBufferString.indexOf(MESSAGE_END_KEY) + 1;
+					String msg = msgBufferString.substring(start, end);
+					try {
+						// Extract message
+						MessageJson extractedMessage = gson.fromJson(msg, MessageJson.class);
+						isMessageDecoded = true;
+						messages.add(extractedMessage);
+					} catch (JsonSyntaxException e) {
+						ChatLogger.error(e.getMessage());
 					} finally {
-						//remove the particular message extracted
-						messageBuffer.delete(start -1, end + 1);
+						// remove the particular message extracted
+						messageBuffer.delete(start - 1, end + 1);
 					}
-		    		
-		    		
-	    		}
-	    		
-	    	}
-	    	return isMessageDecoded;
-	    }
+				}
+
+			}
+			return isMessageDecoded;
+		}
 	    
 	    /**
 	     * Read in a new argument from the IM server.

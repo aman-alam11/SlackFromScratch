@@ -3,18 +3,18 @@ package edu.northeastern.ccs.im.clientmenu;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.clientinterfaces.ParentModel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class ClientHandler {
 
-  private ParentModel modelLayer;
+  private Connection modelLayer;
 
 
-  public ClientHandler(ParentModel model) {
+  public ClientHandler(Connection model) {
     modelLayer = model;
     if (modelLayer == null) {
       throw new IllegalArgumentException("Model can't be null");
