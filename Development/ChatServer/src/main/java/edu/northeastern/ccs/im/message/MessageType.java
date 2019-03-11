@@ -35,7 +35,9 @@ public enum MessageType {
 	CREATE_GROUP("CGR"),
 	
 	/** Message to prompt quit */
-	LOG_OUT("LGO");
+	LOG_OUT("LGO"),
+	
+	AUTH_ACK("ACK");
 
 	/** Store the short name of this message type. */
 	private String abbreviation;
