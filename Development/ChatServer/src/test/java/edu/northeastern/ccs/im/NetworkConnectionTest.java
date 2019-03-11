@@ -22,13 +22,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.message.MessageJson;
+
 public class NetworkConnectionTest {
 
 	private NetworkConnection netConn;
 	
 	private static SocketChannel serverSocketChannel;
 	private SocketChannel clientSocket;
-	
+
+
+	@Mock
+	JsonMessageHandlerFactory messageHandlerFactory;
+
 	@Mock
 	private SelectableChannel selectableChannelMock;
 	
@@ -80,7 +87,7 @@ public class NetworkConnectionTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		clientSocket = SocketChannel.open(hostAddress);
-		netConn = new NetworkConnection(clientSocket);
+		netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
 		boolean b = netConn.sendMessage(Message.makeHelloMessage("Hello"));
 		assertEquals(true, b);
 	}
@@ -94,7 +101,7 @@ public class NetworkConnectionTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		clientSocket = SocketChannel.open(hostAddress);
-		netConn = new NetworkConnection(clientSocket);
+		netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
 		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
 		assertEquals(true, b);
 	}
@@ -107,7 +114,7 @@ public class NetworkConnectionTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		clientSocket = SocketChannel.open(hostAddress);
-		netConn = new NetworkConnection(clientSocket);
+		netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
 		String str= Message.makeHelloMessage("hellow world").toString();
 		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
 		serverSocketChannel.write(wrapper);
@@ -115,12 +122,12 @@ public class NetworkConnectionTest {
 			
 			wait(1000);
 		}
-		Iterator<Message> messageItr = netConn.iterator();
+		Iterator<MessageJson> messageItr = netConn.iterator();
 		
 		//serverSocketChannel.write(src)
 		while (messageItr.hasNext()) {
 			//System.out.println(messageItr.next().getText());
-			messageItr.next().getText();
+			messageItr.next();
 		}
 		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
 		netConn.close();
@@ -136,7 +143,7 @@ public class NetworkConnectionTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		clientSocket = SocketChannel.open(hostAddress);
-		netConn = new NetworkConnection(clientSocket);
+		netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
 		String str= Message.makeHelloMessage("hellow world").toString();
 		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
 		serverSocketChannel.write(wrapper);
@@ -144,12 +151,12 @@ public class NetworkConnectionTest {
 			
 			wait(1000);
 		}
-		Iterator<Message> messageItr = netConn.iterator();
+		Iterator<MessageJson> messageItr = netConn.iterator();
 		clientSocket.close();
 		//serverSocketChannel.write(src)
 		while (messageItr.hasNext()) {
 			//System.out.println(messageItr.next().getText());
-			messageItr.next().getText();
+			messageItr.next();
 		}
 		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
 		netConn.close();
@@ -164,7 +171,7 @@ public class NetworkConnectionTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		clientSocket = SocketChannel.open(hostAddress);
-		netConn = new NetworkConnection(clientSocket);
+		netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
 		String str= Message.makeHelloMessage("hellow world").toString();
 		ByteBuffer wrapper = ByteBuffer.wrap(longString.getBytes());
 		serverSocketChannel.write(wrapper);
@@ -172,12 +179,12 @@ public class NetworkConnectionTest {
 			
 			wait(1000);
 		}
-		Iterator<Message> messageItr = netConn.iterator();
+		Iterator<MessageJson> messageItr = netConn.iterator();
 		//clientSocket.close();
 		//serverSocketChannel.write(src)
 		while (messageItr.hasNext()) {
 			//System.out.println(messageItr.next().getText());
-			messageItr.next().getText();
+			messageItr.next();
 		}
 		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
 		netConn.close();
@@ -192,19 +199,19 @@ public class NetworkConnectionTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		clientSocket = SocketChannel.open(hostAddress);
-		netConn = new NetworkConnection(clientSocket);
+		netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
 		//String str= Message.makeHelloMessage("hellow world").toString();
 		//ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
 		//serverSocketChannel.write(wrapper);
-		Iterator<Message> messageItr = netConn.iterator();
+		Iterator<MessageJson> messageItr = netConn.iterator();
 		
 		//serverSocketChannel.write(src)
 		while (messageItr.hasNext()) {
 			//System.out.println(messageItr.next().getText());
-			messageItr.next().getText();
+			messageItr.next();
 		}
 		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
-		messageItr.next().getText();
+		messageItr.next();
 		netConn.close();
 		assertEquals(true, b);
 	}
@@ -217,7 +224,7 @@ public class NetworkConnectionTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		clientSocket = SocketChannel.open(hostAddress);
-		netConn = new NetworkConnection(clientSocket);
+		netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
 		
 		Field maxTries;
 		try {
@@ -244,7 +251,7 @@ public class NetworkConnectionTest {
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		final SocketChannel clientSocket2 = SocketChannel.open(hostAddress);
 		clientSocket2.close();
-		netConn = new NetworkConnection(clientSocket2);
+		netConn = new NetworkConnection(clientSocket2, messageHandlerFactory);
 	}
 	
 	
@@ -257,7 +264,7 @@ public class NetworkConnectionTest {
 		SocketChannel clientSocket2 = SocketChannel.open(hostAddress);
 		String str= Message.makeHelloMessage("hellow world").toString();
 		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
-		netConn = new NetworkConnection(clientSocket2);
+		netConn = new NetworkConnection(clientSocket2, messageHandlerFactory);
 		netConn.close();
 	}
 	
@@ -267,7 +274,7 @@ public class NetworkConnectionTest {
 	   try {
 		   InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		   clientSocket = SocketChannel.open(hostAddress);
-	       NetworkConnection connection = new NetworkConnection(clientSocket);
+	       NetworkConnection connection = new NetworkConnection(clientSocket, messageHandlerFactory);
 	       Field selectorField = NetworkConnection.class.getDeclaredField("selector");
 	       selectorField.setAccessible(true);
 	       Selector selector = (Selector) selectorField.get(connection);
@@ -282,7 +289,7 @@ public class NetworkConnectionTest {
     public void testEmptyIterator() throws NoSuchFieldException, IllegalAccessException, IOException {
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
 		 clientSocket = SocketChannel.open(hostAddress);
-        NetworkConnection connection = new NetworkConnection(clientSocket);
+        NetworkConnection connection = new NetworkConnection(clientSocket, messageHandlerFactory);
         Field messageQueueField = NetworkConnection.class.getDeclaredField("messages");
         messageQueueField.setAccessible(true);
         Queue<Message> queue = (Queue<Message>) messageQueueField.get(connection);

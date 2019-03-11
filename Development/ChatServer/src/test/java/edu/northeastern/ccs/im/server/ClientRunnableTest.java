@@ -17,15 +17,16 @@ import org.mockito.MockitoAnnotations;
 
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.message.MessageJson;
 
 public class ClientRunnableTest {
 	
 	@Mock
 	private NetworkConnection networkConnectionMock;
 	@Mock
-	private Iterator<Message> messageIterMock;
+	private Iterator<MessageJson> messageIterMock;
 	@Mock
-	private Message messageMock;
+	private MessageJson messageMock;
 	@Mock
 	private ScheduledFuture<?> futureMock;
 	
@@ -46,7 +47,7 @@ public class ClientRunnableTest {
 		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
 		when(messageIterMock.hasNext()).thenReturn(true);
 		when(messageIterMock.next()).thenReturn(messageMock);
-		when(messageMock.getName()).thenReturn("testName");
+		//when(messageMock.getName()).thenReturn("testName");
 		clientRunnable.run();
 		assertEquals("testName", clientRunnable.getName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
@@ -57,7 +58,7 @@ public class ClientRunnableTest {
 		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
 		when(messageIterMock.hasNext()).thenReturn(true);
 		when(messageIterMock.next()).thenReturn(messageMock);
-		when(messageMock.getName()).thenReturn(null);
+		//when(messageMock.getName()).thenReturn(null);
 		clientRunnable.run();
 		assertEquals(null, clientRunnable.getName());
 		assertEquals(-1, clientRunnable.getUserId());
@@ -79,7 +80,7 @@ public class ClientRunnableTest {
 		assertEquals("testName", clientRunnable.getName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 		
-		when(messageMock.terminate()).thenReturn(true);
+		//when(messageMock.terminate()).thenReturn(true);
 		clientRunnable.run();
 		//clientRunnable.run();
 		verify(networkConnectionMock, Mockito.times(1)).close();
@@ -95,8 +96,8 @@ public class ClientRunnableTest {
 		initClient();
 		assertEquals("testName", clientRunnable.getName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(true);
+		//when(messageMock.terminate()).thenReturn(false);
+		//when(messageMock.isBroadcastMessage()).thenReturn(true);
 		clientRunnable.run();
 		clientRunnable.run();
 	}
@@ -107,8 +108,8 @@ public class ClientRunnableTest {
 		initClient();
 		assertEquals("testName", clientRunnable.getName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(false);
+		//when(messageMock.terminate()).thenReturn(false);
+		//when(messageMock.isBroadcastMessage()).thenReturn(false);
 		clientRunnable.run();
 		verify(networkConnectionMock, Mockito.times(0)).sendMessage(Mockito.any(Message.class));
 	}
@@ -118,9 +119,9 @@ public class ClientRunnableTest {
 		initClient();
 		assertEquals("testName", clientRunnable.getName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(true);
-		when(messageMock.getName()).thenReturn("testName2");
+		//when(messageMock.terminate()).thenReturn(false);
+		//when(messageMock.isBroadcastMessage()).thenReturn(true);
+		//when(messageMock.getName()).thenReturn("testName2");
 		clientRunnable.run();
 		ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
 		verify(networkConnectionMock, Mockito.times(1)).sendMessage(messageArgumentCaptor.capture());
@@ -134,9 +135,9 @@ public class ClientRunnableTest {
 		initClient();
 		assertEquals("testName", clientRunnable.getName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(true);
-		when(messageMock.getName()).thenReturn(null);
+		//when(messageMock.terminate()).thenReturn(false);
+		//when(messageMock.isBroadcastMessage()).thenReturn(true);
+		//when(messageMock.getName()).thenReturn(null);
 		clientRunnable.run();
 		ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
 		verify(networkConnectionMock, Mockito.times(1)).sendMessage(messageArgumentCaptor.capture());
@@ -159,7 +160,7 @@ public class ClientRunnableTest {
 		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
 		when(messageIterMock.hasNext()).thenReturn(true);
 		when(messageIterMock.next()).thenReturn(messageMock);
-		when(messageMock.getName()).thenReturn("testName");
+		//when(messageMock.getName()).thenReturn("testName");
 		clientRunnable.run();
 	}
 	

@@ -8,12 +8,18 @@ import java.nio.channels.SocketChannel;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
+
 import junit.framework.Assert;
 
 public class PrattleTest {
+
+	@Mock
+	JsonMessageHandlerFactory messageHandlerFactory;
 
 	@BeforeClass
 	public static void startServer() {
@@ -73,7 +79,7 @@ public class PrattleTest {
 		}
 		InetSocketAddress hostAddress = new InetSocketAddress("localhost", ServerConstants.PORT);
 		SocketChannel client = SocketChannel.open(hostAddress);
-		ClientRunnable runnable = new ClientRunnable(new NetworkConnection(client));
+		ClientRunnable runnable = new ClientRunnable(new NetworkConnection(client, messageHandlerFactory));
 		Field activeField = Prattle.class.getDeclaredField("active");
 		activeField.setAccessible(true);
 		java.util.concurrent.ConcurrentLinkedQueue<ClientRunnable> queue = 

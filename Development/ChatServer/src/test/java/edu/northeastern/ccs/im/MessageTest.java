@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import edu.northeastern.ccs.im.message.MessageType;
+
 public class MessageTest {
 
   private static final Logger LOGGER = Logger.getLogger(

@@ -6,8 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import edu.northeastern.ccs.im.MessageType;
 import edu.northeastern.ccs.im.client.Message;
+import edu.northeastern.ccs.im.message.MessageType;
 
 import static edu.northeastern.ccs.im.client.Message.makeAcknowledgeMessage;
 import static edu.northeastern.ccs.im.client.Message.makeBroadcastMessage;

@@ -19,15 +19,20 @@ import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
 import edu.northeastern.ccs.im.server.ClientRunnable;
 import edu.northeastern.ccs.im.server.ClientTimer;
 import edu.northeastern.ccs.im.server.Prattle;
 
 public class ServerTest {
   private static SocketChannel clientSocket;
+
+  @Mock
+  JsonMessageHandlerFactory messageHandlerFactory;
 
   @Test
   public void test() throws Exception {
@@ -46,7 +51,7 @@ public class ServerTest {
     calendarField.setAccessible(true);
     calendarField.set(timer, null);
 
-    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket));
+    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket, messageHandlerFactory));
     runnable.run();
   }
 
@@ -87,7 +92,7 @@ public class ServerTest {
             (ConcurrentLinkedQueue<ClientRunnable>) activeField.get(new Prattle() {
             });
 
-    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket));
+    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket, messageHandlerFactory));
     Field initField = ClientRunnable.class.getDeclaredField("initialized");
     initField.setAccessible(true);
     initField.set(runnable, true);

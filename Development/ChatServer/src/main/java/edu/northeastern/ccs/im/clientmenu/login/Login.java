@@ -10,6 +10,7 @@ import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
+import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 /**
@@ -31,8 +32,9 @@ public class Login extends CommonOperations {
       String username = scanner.nextLine().trim();
       FrontEnd.getView().sendToView("Enter password");
       String password = scanner.nextLine().trim();
+      JPAService jpaService = new JPAService();
 
-      SessionFactory sessionFactory = SessionFactory.getInstance(username, password);
+      SessionFactory sessionFactory = SessionFactory.getInstance(username, password, jpaService);
 
       if (sessionFactory.login()) {
         loginFlag = false;

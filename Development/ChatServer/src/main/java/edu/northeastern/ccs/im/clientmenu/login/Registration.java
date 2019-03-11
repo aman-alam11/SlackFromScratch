@@ -8,6 +8,7 @@ import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
+import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class Registration extends CommonOperations {
@@ -24,7 +25,8 @@ public class Registration extends CommonOperations {
     String passwordCheck = scanner.nextLine().trim();
 
     if (password.equals(passwordCheck)) {
-      SessionFactory sessionFactory = SessionFactory.getInstance(username, password);
+      JPAService jpaService = new JPAService();
+      SessionFactory sessionFactory = SessionFactory.getInstance(username, password, jpaService);
       if (sessionFactory.createAccount()) {
         FrontEnd.getView().sendToView("Account Created Successfully!");
       }
