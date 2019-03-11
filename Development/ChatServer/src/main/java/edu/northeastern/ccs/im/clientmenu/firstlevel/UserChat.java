@@ -29,12 +29,12 @@ public class UserChat extends CommonOperations {
     FrontEnd.getView().sendToView("Enter Message");
     String message = scanner.nextLine().trim();
 
-    //TODO this is not working and we need current singed user name.
+    //TODO we need current singed user name.
 
     User userSender = new User("atti","123", "email");
-    User userReceiver = new User("cheetah","123", "email");
+    User userReceiver = new User(chatUserOtherEnd,"123", "email");
 
-    ChatModel chatModel = new ChatModel(userSender, userReceiver,message , new Date(), true);
+    ChatModel chatModel = new ChatModel(userSender, userReceiver,message , new Date(), false);
     String jsonChatModel =  mGson.toJson(chatModel);
 
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_CHAT, jsonChatModel);

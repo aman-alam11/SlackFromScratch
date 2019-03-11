@@ -70,6 +70,8 @@ public class Login extends CommonOperations {
               //TODO logout not working
               sessionFactory.logoutUser();
               InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
+              MessageJson messageLogout = new MessageJson(username, MessageType.LOG_OUT, "");
+              model.sendMessage(messageLogout);
               return;
             }
             else {

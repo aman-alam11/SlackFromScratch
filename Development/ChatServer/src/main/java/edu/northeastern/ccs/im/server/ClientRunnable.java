@@ -232,6 +232,7 @@ public class ClientRunnable implements Runnable {
 	private void signInUser(String userName) {
 		setName(userName);
 		Prattle.changeToAuthenciatedUser(this, userName);
+		ChatLogger.info("User Logged in! " + userName + "\n");
 	}
 
 	/**
@@ -292,6 +293,7 @@ public class ClientRunnable implements Runnable {
 	public void terminateClient() {
 		// Once the communication is done, close this connection.
 		connection.close();
+		ChatLogger.info("Logged out! " + this + "\n");
 		// Remove the client from our client listing.
 		Prattle.removeClient(this);
 		// And remove the client from our client pool.
