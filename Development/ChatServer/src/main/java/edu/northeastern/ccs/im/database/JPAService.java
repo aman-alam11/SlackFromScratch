@@ -22,16 +22,12 @@ public class JPAService {
 	 * Initialize the SessionFactory instance.
 	 */
 
-	private static SessionFactory mSessionFactory;
-
-	static {
-		// Create the SessionFactory using the ServiceRegistry
-		mSessionFactory = new Configuration().
-				configure().
-				addAnnotatedClass(User.class).
-				addAnnotatedClass(Chat.class).
-				buildSessionFactory();
-	}
+	// Create the SessionFactory using the ServiceRegistry
+	SessionFactory mSessionFactory = new Configuration().
+			configure().
+			addAnnotatedClass(User.class).
+			addAnnotatedClass(Chat.class).
+			buildSessionFactory();
 
 	/**
 	 * Constructor to initialize userdao object.
@@ -110,35 +106,34 @@ public class JPAService {
 
 	/**
 	 * Create a new message in chat.
-	 * @param from_id
-	 * @param to_id
+	 * @param fromId
+	 * @param toId
 	 * @param msg
-	 * @param reply_to
-	 * @param created
-	 * @param expiery
+	 * @param replyTo
+	 * @param expiry
 	 * @param grpMsg
 	 * @param isDelivered
 	 */
-	public void createChatMessage(int from_id, int to_id, String msg, int reply_to, Date created,
-																Date expiery, Boolean grpMsg, Boolean isDelivered) {
-		cd.create(from_id, to_id, msg, reply_to, created, expiery, grpMsg, isDelivered);
+	public void createChatMessage(int fromId, int toId, String msg, int replyTo,
+																Date expiry, Boolean grpMsg, Boolean isDelivered) {
+		cd.create(fromId, toId, msg, replyTo, expiry, grpMsg, isDelivered);
 	}
 
 	/**
 	 * List all messages for a user or a group.
-	 * @param receiver_id
+	 * @param receiverId
 	 * @return
 	 */
-	public List<Chat> findByReceiver(int receiver_id) {
-		return cd.findByReceiver(receiver_id);
+	public List<Chat> findByReceiver(int receiverId) {
+		return cd.findByReceiver(receiverId);
 	}
 
 	/**
 	 * Delete the chat for a user or a group.
-	 * @param receiver_id
+	 * @param receiverId
 	 */
-	public void deleteChatByReceiver(int receiver_id) {
-		cd.deleteChatByReceiver(receiver_id);
+	public void deleteChatByReceiver(int receiverId) {
+		cd.deleteChatByReceiver(receiverId);
 	}
 
 	/**

@@ -15,22 +15,22 @@ public class Chat implements Serializable{
     private int id;
 	
 	@Column(name="From_user_id", nullable=false)
-	private int from_id;
+	private int fromId;
 	
 	@Column(name="To_id",nullable=false)
-	private int to_id;
+	private int toId;
 	
 	@Column(name="Message", nullable=false)
 	private String msg;
 	
 	@Column(name="ReplyTo", nullable=true)
-	private int reply_to;
+	private int replyTo;
 	
 	@Column(name="Creation_date", nullable=false)
 	private Date created;
 	
-	@Column(name="Expiery_time", nullable=true)
-	private Date expiery;
+	@Column(name="Expiry_time", nullable=true)
+	private Date expiry;
 	
 	@Column(name="isGrpMsg", nullable=false)
 	private Boolean grpMsg;
@@ -46,20 +46,20 @@ public class Chat implements Serializable{
 		this.id = id;
 	}
 
-	public int getFrom_id() {
-		return from_id;
+	public int getFromId() {
+		return fromId;
 	}
 
-	public void setFrom_id(int from_id) {
-		this.from_id = from_id;
+	public void setFromId(int fromId) {
+		this.fromId = fromId;
 	}
 
-	public int getTo_id() {
-		return to_id;
+	public int getToId() {
+		return toId;
 	}
 
-	public void setTo_id(int to_id) {
-		this.to_id = to_id;
+	public void setToId(int toId) {
+		this.toId = toId;
 	}
 
 	public String getMsg() {
@@ -70,12 +70,12 @@ public class Chat implements Serializable{
 		this.msg = msg;
 	}
 
-	public int getReply_to() {
-		return reply_to;
+	public int getReplyTo() {
+		return replyTo;
 	}
 
-	public void setReply_to(int reply_to) {
-		this.reply_to = reply_to;
+	public void setReplyTo(int replyTo) {
+		this.replyTo = replyTo;
 	}
 
 	public Date getCreated() {
@@ -86,12 +86,12 @@ public class Chat implements Serializable{
 		this.created = created;
 	}
 
-	public Date getExpiery() {
-		return expiery;
+	public Date getExpiry() {
+		return expiry;
 	}
 
-	public void setExpiery(Date expiery) {
-		this.expiery = expiery;
+	public void setExpiry(Date expiry) {
+		this.expiry = expiry;
 	}
 
 	public Boolean getGrpMsg() {
