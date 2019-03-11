@@ -2,7 +2,7 @@ package edu.northeastern.ccs.im.business.logic;
 
 import edu.northeastern.ccs.im.message.MessageType;
 
-public class JsonMessageHandlerFactory implements MessageHandlerFactory{
+public class JsonMessageHandlerFactory implements MessageHandlerFactory {
 
 	@Override
 	public MessageHandler getMessageHandler(MessageType msgType) {
@@ -14,6 +14,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory{
 		case LOGIN:
 			handler = new LoginHandler();
 			break;
+
+			case USER_CHAT:
+				handler = new ChatHandler();
+				break;
 
 		default:
 			break;
