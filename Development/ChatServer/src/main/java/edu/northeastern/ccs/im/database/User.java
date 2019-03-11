@@ -111,7 +111,6 @@ public class User implements Serializable {
    * @return The string password of a user.
    */
   protected String getPassword() {
-    // TODO: DONT RETURN THE REFERENCE TO SAME OBJECT
     return password;
   }
 

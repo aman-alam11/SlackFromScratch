@@ -21,7 +21,6 @@ public class LoginHandler implements MessageHandler {
     try {
       LoginCredentials lgn = gson.fromJson(message, LoginCredentials.class);
 
-      // TODO: Use the overloaded method in interface and use the injected jpaservice here
       SessionFactory sessionFactory = SessionFactory.getInstance(lgn.getUserName(), lgn.getPassword(),
               new JPAService());
 

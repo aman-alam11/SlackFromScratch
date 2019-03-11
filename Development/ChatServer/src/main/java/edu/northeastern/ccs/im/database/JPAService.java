@@ -118,10 +118,12 @@ public class JPAService {
 	 * @param expiery
 	 * @param grpMsg
 	 * @param isDelivered
+	 *
+	 * @return A boolean representing if the transaction was successful or not.
 	 */
-	public void createChatMessage(int from_id, int to_id, String msg, int reply_to, Date created,
-																Date expiery, Boolean grpMsg, Boolean isDelivered) {
-		cd.create(from_id, to_id, msg, reply_to, created, expiery, grpMsg, isDelivered);
+	public boolean createChatMessage(int from_id, int to_id, String msg, int reply_to, Date created,
+																	 Date expiery, Boolean grpMsg, Boolean isDelivered) {
+		return cd.create(from_id, to_id, msg, reply_to, created, expiery, grpMsg, isDelivered);
 	}
 
 	/**

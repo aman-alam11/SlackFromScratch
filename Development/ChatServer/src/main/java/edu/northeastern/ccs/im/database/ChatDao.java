@@ -1,14 +1,14 @@
 package edu.northeastern.ccs.im.database;
 
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class ChatDao {
 
@@ -27,40 +27,45 @@ public class ChatDao {
     * @param grpMsg
     * @param isDelivered
     */
-   public void create(int from_id, int to_id, String msg, int reply_to, Date created, Date expiery,
-                      Boolean grpMsg, Boolean isDelivered) {
-       // Create a session
-       Session session = mSessionFactory.openSession();
-       Transaction transaction = null;
-       try {
-           // Begin a transaction
-           transaction = session.beginTransaction();
-           Chat chat = new Chat();
-           chat.setFrom_id(from_id);
-           chat.setTo_id(to_id);
-           chat.setMsg(msg);
-           chat.setReply_to(reply_to);
-           chat.setCreated(created);
-           chat.setExpiery(expiery);
-           chat.setGrpMsg(grpMsg);
-           chat.setIsDelivered(isDelivered);
-           // Save the User
-           session.save(chat);
-           // Commit the transaction
-           transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
-           // Print the Exception
-           ex.printStackTrace();
-       } finally {
-           // Close the session
-           session.close();
+   public boolean create(int from_id, int to_id, String msg, int reply_to, Date created, Date expiery,
+                         Boolean grpMsg, Boolean isDelivered) {
+
+     // Create a session
+     Session session = mSessionFactory.openSession();
+     Transaction transaction = null;
+     boolean isTransactionSuccessful = false;
+     try {
+       // Begin a transaction
+       transaction = session.beginTransaction();
+       Chat chat = new Chat();
+       chat.setFrom_id(from_id);
+       chat.setTo_id(to_id);
+       chat.setMsg(msg);
+       chat.setReply_to(reply_to);
+       chat.setCreated(created);
+       chat.setExpiery(expiery);
+       chat.setGrpMsg(grpMsg);
+       chat.setIsDelivered(isDelivered);
+       // Save the User
+       session.save(chat);
+       // Commit the transaction
+       transaction.commit();
+       isTransactionSuccessful = true;
+     } catch (HibernateException ex) {
+       // If there are any exceptions, roll back the changes
+       if (transaction != null) {
+         transaction.rollback();
        }
+       // Print the Exception
+       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+     } finally {
+       // Close the session
+       session.close();
+     }
+
+     return isTransactionSuccessful;
    }
-   
+
    /**
     * Find chat for a particular user or a group.
     * @param receiver_id

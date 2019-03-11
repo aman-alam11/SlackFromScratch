@@ -6,6 +6,4 @@ public interface MessageHandler {
 	
 	boolean handleMessage(String user, String message);
 
-	// TODO: ??
-	// boolean handleMessage(String user, String message, JPAService jpaService);
 }

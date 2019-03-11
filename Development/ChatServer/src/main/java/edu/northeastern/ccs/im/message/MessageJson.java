@@ -2,20 +2,23 @@ package edu.northeastern.ccs.im.message;
 
 import java.util.Date;
 
+import edu.northeastern.ccs.im.database.Chat;
+import edu.northeastern.ccs.im.model.ChatModel;
+
 public class MessageJson implements Message {
 	private MessageType messageType;
 	private String fromUser;
 	private String sendToUser;
 	private Date creationTime;
 	private String message;
-	
+
 	public MessageJson(String senderName, MessageType type, String message) {
 		this.fromUser = senderName;
 		this.messageType = type;
 		this.message = message;
 		this.creationTime = new Date();
 	}
-	
+
 	public MessageJson(MessageType type) {
 		this.messageType = type;
 	}

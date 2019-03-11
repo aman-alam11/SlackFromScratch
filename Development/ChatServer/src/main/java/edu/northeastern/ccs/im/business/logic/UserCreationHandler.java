@@ -20,7 +20,6 @@ public class UserCreationHandler implements MessageHandler {
 
     LoginCredentials loginCredentials = gson.fromJson(message, LoginCredentials.class);
 
-    // TODO: Use the overloaded method in interface and use the injected jpaservice here
     SessionFactory sessionFactory = SessionFactory.getInstance(loginCredentials.getUserName(),
             loginCredentials.getPassword(), new JPAService());
 
