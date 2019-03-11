@@ -22,11 +22,11 @@ public class JPAService {
 	 * Initialize the SessionFactory instance.
 	 */
 
-	private static SessionFactory SESSION_FACTORY;
+	private static SessionFactory mSessionFactory;
 
 	static {
 		// Create the SessionFactory using the ServiceRegistry
-		SESSION_FACTORY = new Configuration().
+		mSessionFactory = new Configuration().
 				configure().
 				addAnnotatedClass(User.class).
 				addAnnotatedClass(Chat.class).
@@ -37,14 +37,14 @@ public class JPAService {
 	 * Constructor to initialize userdao object.
 	 */
 	public JPAService(){
-		ud = new UserDao(SESSION_FACTORY);
-		cd = new ChatDao(SESSION_FACTORY);
+		ud = new UserDao(mSessionFactory);
+		cd = new ChatDao(mSessionFactory);
 	}
 
 	public JPAService(SessionFactory sf){
-		SESSION_FACTORY = sf;
-		ud = new UserDao(SESSION_FACTORY);
-		cd = new ChatDao(SESSION_FACTORY);
+		mSessionFactory = sf;
+		ud = new UserDao(mSessionFactory);
+		cd = new ChatDao(mSessionFactory);
 	}
 	/**
 	 * Create a new user.
@@ -105,7 +105,7 @@ public class JPAService {
 	 * Close a session factory once the operations are done.
 	 */
 	public void closeSessionFactory() {
-		SESSION_FACTORY.close();
+		mSessionFactory.close();
 	}
 
 	/**
@@ -119,7 +119,8 @@ public class JPAService {
 	 * @param grpMsg
 	 * @param isDelivered
 	 */
-	public void createChatMessage(int from_id, int to_id, String msg, int reply_to, Date created, Date expiery, Boolean grpMsg, Boolean isDelivered) {
+	public void createChatMessage(int from_id, int to_id, String msg, int reply_to, Date created,
+																Date expiery, Boolean grpMsg, Boolean isDelivered) {
 		cd.create(from_id, to_id, msg, reply_to, created, expiery, grpMsg, isDelivered);
 	}
 

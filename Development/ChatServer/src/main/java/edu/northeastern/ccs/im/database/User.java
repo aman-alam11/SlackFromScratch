@@ -121,7 +121,6 @@ public class User implements Serializable {
    * @param password takes a string password to set it as the password for the user.
    */
   protected void setPassword(String password) {
-    // TODO: DONT
     this.password = password;
   }
 

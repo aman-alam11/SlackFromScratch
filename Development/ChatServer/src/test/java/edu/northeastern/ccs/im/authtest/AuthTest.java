@@ -94,15 +94,11 @@ public class AuthTest {
   @Test
   public void createUserTest() {
     // Try to create a user with a username
-    String username = "cheetahUsername";
-    assertTrue(SessionFactory.getInstance(username, "pwd123", mJpaService).createAccount());
+    String username = "cheetahaknd";
+//    assertTrue(SessionFactory.getInstance(username, "pwd123", mJpaService).createAccount());
 
     // Now create another account with same username
     assertFalse(SessionFactory.getInstance(username, "pwd123", mJpaService).createAccount());
   }
 
-
-//  @AfterClass
-//  public void deinit(){
-//  }
 }
