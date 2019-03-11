@@ -23,7 +23,7 @@ public class ChatHandler implements MessageHandler {
 
     return jpaService.createChatMessage(chatModel.getSender().getId(),
             chatModel.getReciever().getId(), chatModel.getConversation(),
-            0, chatModel.getTimeStamp(), new Date(),
+            0, new Date(),
             false, false);
   }
 }
