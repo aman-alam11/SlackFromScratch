@@ -1,5 +1,7 @@
 package edu.northeastern.ccs.im.clientmenu.login;
 
+import com.google.gson.Gson;
+
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -14,18 +16,21 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 /**
  * This is the Login class which is being used for the Login level
  */
 public class Login extends CommonOperations {
+  private Gson mGson;
 
   @Override
   public void passControl(Scanner scanner, Connection model) {
 
     //flag to check stop while loop when login has successful
     boolean loginFlag = true;
+    mGson = new Gson();
     JPAService jpaService = new JPAService();
 
     //limit number of logins to 3
@@ -43,7 +48,9 @@ public class Login extends CommonOperations {
 
       if (sessionFactory.login()) {
         loginFlag = false;
-        MessageJson messageJson = new MessageJson(username, MessageType.LOGIN, "Login");
+        LoginCredentials loginCredentials = new LoginCredentials(username, password);
+        String jsonLoginCredentials = mGson.toJson(loginCredentials);
+        MessageJson messageJson = new MessageJson(username, MessageType.LOGIN, jsonLoginCredentials);
         model.sendMessage(messageJson);
         FrontEnd.getView().sendToView("Welcome " + username);
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);

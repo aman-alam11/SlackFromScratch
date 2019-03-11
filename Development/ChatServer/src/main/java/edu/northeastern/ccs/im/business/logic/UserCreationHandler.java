@@ -25,5 +25,4 @@ public class UserCreationHandler implements MessageHandler {
 
     return sessionFactory.createAccount();
   }
-
 }
