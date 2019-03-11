@@ -3,6 +3,7 @@ package edu.northeastern.ccs.im.clientmenu.login;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.auth.SessionFactory;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.DefaultOperation;
@@ -11,6 +12,8 @@ import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.database.JPAService;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 /**
@@ -23,21 +26,25 @@ public class Login extends CommonOperations {
 
     //flag to check stop while loop when login has successful
     boolean loginFlag = true;
+    JPAService jpaService = new JPAService();
 
     //limit number of logins to 3
     int limit = 0;
 
+    //TODO login after wrong attempt not working
     while (loginFlag && (limit < 3)) {
       FrontEnd.getView().sendToView("Enter User Name");
       String username = scanner.nextLine().trim();
       FrontEnd.getView().sendToView("Enter password");
       String password = scanner.nextLine().trim();
-      JPAService jpaService = new JPAService();
 
+      //TODO are we supposed to login like this?
       SessionFactory sessionFactory = SessionFactory.getInstance(username, password, jpaService);
 
       if (sessionFactory.login()) {
         loginFlag = false;
+        MessageJson messageJson = new MessageJson(username, MessageType.LOGIN, "Login");
+        model.sendMessage(messageJson);
         FrontEnd.getView().sendToView("Welcome " + username);
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
 
@@ -52,6 +59,8 @@ public class Login extends CommonOperations {
             // Handle with default implementation
 
             if (choiceString.equals("logout")) {
+
+              //TODO logout not working
               sessionFactory.logoutUser();
               InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
               return;
@@ -73,6 +82,7 @@ public class Login extends CommonOperations {
           } else {
             // Apply Transformation
             initialCoreOperation = mTransformationFunction.apply(scanner);
+
             initialCoreOperation.passControl(scanner, model);
           }
         }
@@ -80,6 +90,7 @@ public class Login extends CommonOperations {
 
       else {
         if (limit == 2) {
+
           FrontEnd.getView().sendToView("Login Failed, Redirect to Main Menu");
         }
         else {

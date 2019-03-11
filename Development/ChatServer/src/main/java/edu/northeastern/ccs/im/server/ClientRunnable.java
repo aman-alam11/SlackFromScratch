@@ -225,7 +225,6 @@ public class ClientRunnable implements Runnable {
 				//change to authenticated user
 				LoginCredentials lc = new Gson().fromJson(msg.getMessage(), LoginCredentials.class);
 				signInUser(lc.getUserName());
-				
 			}
 		}
 	}

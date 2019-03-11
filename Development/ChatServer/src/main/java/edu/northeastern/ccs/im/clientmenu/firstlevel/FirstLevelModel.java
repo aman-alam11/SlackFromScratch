@@ -1,30 +1,35 @@
 package edu.northeastern.ccs.im.clientmenu.firstlevel;
 
-import java.util.List;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
+import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.message.MessageJson;
 
 public class FirstLevelModel implements Connection {
 
+  private Connection connection;
+
+  public FirstLevelModel(String url, int port) {
+    connection = SocketConnection.getInstance(url, port);
+  }
 
   @Override
   public boolean isConnected() {
-    return false;
+    return connection.isConnected();
   }
 
   @Override
   public boolean hasNext() {
-    return false;
+    return connection.hasNext();
   }
 
   @Override
   public MessageJson next() {
-    return null;
+    return connection.next();
   }
 
   @Override
   public boolean sendMessage(MessageJson message) {
-    return false;
+    return connection.sendMessage(message);
   }
 }

@@ -7,7 +7,8 @@ public class
 MainClass {
 
   public static void main(String[] args) {
-    Connection topModelLayer =  new FirstLevelModel();
+
+    Connection topModelLayer =  new FirstLevelModel(ClientConstants.URL, ClientConstants.PORT);
     ClientHandler clientHandler = new ClientHandler(topModelLayer);
     clientHandler.initClientOperations();
   }
