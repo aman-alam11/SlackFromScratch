@@ -177,7 +177,7 @@ public class UserDao {
       Query query = session.createNativeQuery(sql);
       query.setParameter(1, username);
       String str = (String) query.getSingleResult();
-      return (str == null) ? "" : str;
+      return str;
     } catch (HibernateException ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
