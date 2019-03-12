@@ -154,11 +154,4 @@ public class ChatDao {
            session.close();
        }
    }
-
-   /**
-    * Close the session factory.
-    */
-   public void closeSessionFactory() {
-   	mSessionFactory.close();
-   }
 }
