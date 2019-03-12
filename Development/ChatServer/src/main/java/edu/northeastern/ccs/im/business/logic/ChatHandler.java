@@ -25,7 +25,6 @@ public class ChatHandler implements MessageHandler {
     ChatModel chatModel = mGson.fromJson(message, ChatModel.class);
 
     JPAService jpaService = new JPAService();
-    
     	//TODO:  save to db
 		/*
 		 * isSuccessfull = jpaService.createChatMessage(chatModel.getSender(),
@@ -39,7 +38,8 @@ public class ChatHandler implements MessageHandler {
     	msg.setSendToUser(chatModel.getReciever());
     	isSuccessfull = Prattle.sendMessageTo(chatModel.getReciever(), msg);
     	if (isSuccessfull) {
-    		//TODO : update isDelivered status to true for that msg
+    		//TODO : set the chat id below
+    		jpaService.updateChatStatus(0, true);
     	}
     }
     return isSuccessfull;

@@ -1,7 +1,5 @@
 package edu.northeastern.ccs.im.database;
 
-import com.sun.istack.Nullable;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,7 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class UserDao {
-  private static SessionFactory mSessionFactory;
+  SessionFactory mSessionFactory;
 
   public UserDao(SessionFactory sf) {
     mSessionFactory = sf;
@@ -21,7 +19,7 @@ public class UserDao {
   /**
    * Create a new user.
    */
-  public boolean create(String name, @Nullable String email, String password) {
+  public boolean create(String name, String email, String password) {
     boolean isTransactionSuccessful = false;
     // Create a session
     Session session = mSessionFactory.openSession();
@@ -94,7 +92,7 @@ public class UserDao {
       // Begin a transaction
       transaction = session.beginTransaction();
       // Get the User from the database.
-      User user = (User) session.get(User.class, Integer.valueOf(id));
+      User user = session.get(User.class, Integer.valueOf(id));
       // Delete the User
       session.delete(user);
       // Commit the transaction
@@ -143,7 +141,7 @@ public class UserDao {
         transaction.rollback();
       }
       // Print the Exception
-      ex.printStackTrace();
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
     } finally {
       // Close the session
       session.close();
@@ -155,29 +153,38 @@ public class UserDao {
    */
   public User findUserByName(String name) {
     Session session = mSessionFactory.openSession();
-    String sql = "select * from users where users.user_name = ?";
+    try{
+      String sql = "select *from users where users.user_name = ?";
 
-    Query query = session.createNativeQuery(sql, User.class);
-    query.setParameter(1, name);
-    try {
+      Query query = session.createNativeQuery(sql, User.class);
+      query.setParameter(1, name);
       return (User) query.getSingleResult();
-    } catch (Exception e) {
-      return null;
+    }catch (HibernateException ex){
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    }finally {
+      session.close();
     }
+    return null;
   }
 
 
   public String findHashForUsername(String username) {
     Session session = mSessionFactory.openSession();
-    String sql = "SELECT users.user_password FROM users WHERE users.user_name = ?";
 
-    Query query = session.createNativeQuery(sql);
-    query.setParameter(1, username);
     try {
+      String sql = "SELECT users.user_password FROM users WHERE users.user_name = ?";
+
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, username);
       String str = (String) query.getSingleResult();
-      return (str == null) ? "" : str;
-    } catch (Exception e) {
-      return "";
+      return str;
+    } catch (HibernateException ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
     }
+    return "";
   }
 }
