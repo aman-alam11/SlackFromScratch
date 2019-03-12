@@ -49,7 +49,7 @@ public class ClientRunnableTest {
 		when(messageIterMock.next()).thenReturn(messageMock);
 		//when(messageMock.getName()).thenReturn("testName");
 		clientRunnable.run();
-		assertEquals("testName", clientRunnable.getName());
+		assertEquals("testName", clientRunnable.getUserName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 	}
 	
@@ -60,9 +60,9 @@ public class ClientRunnableTest {
 		when(messageIterMock.next()).thenReturn(messageMock);
 		//when(messageMock.getName()).thenReturn(null);
 		clientRunnable.run();
-		assertEquals(null, clientRunnable.getName());
+		assertEquals(null, clientRunnable.getUserName());
 		assertEquals(-1, clientRunnable.getUserId());
-		assertEquals(false, clientRunnable.isInitialized());
+		assertEquals(false, clientRunnable.isAuthenticated());
 	}
 	
 	@Test
@@ -70,14 +70,14 @@ public class ClientRunnableTest {
 		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
 		when(messageIterMock.hasNext()).thenReturn(false);
 		clientRunnable.run();
-		assertEquals(null, clientRunnable.getName());
+		assertEquals(null, clientRunnable.getUserName());
 		assertEquals(0, clientRunnable.getUserId());
 	}
 	
 	@Test
 	public void testRun_whenMessageIsTerminate() {
 		initClient();
-		assertEquals("testName", clientRunnable.getName());
+		assertEquals("testName", clientRunnable.getUserName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 		
 		//when(messageMock.terminate()).thenReturn(true);
@@ -94,7 +94,7 @@ public class ClientRunnableTest {
 	@Test
 	public void testRun_whenMessageIsBroadcast() {
 		initClient();
-		assertEquals("testName", clientRunnable.getName());
+		assertEquals("testName", clientRunnable.getUserName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 		//when(messageMock.terminate()).thenReturn(false);
 		//when(messageMock.isBroadcastMessage()).thenReturn(true);
@@ -106,7 +106,7 @@ public class ClientRunnableTest {
 	@Test
 	public void testRun_whenMessageIsNotBroadcast() {
 		initClient();
-		assertEquals("testName", clientRunnable.getName());
+		assertEquals("testName", clientRunnable.getUserName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 		//when(messageMock.terminate()).thenReturn(false);
 		//when(messageMock.isBroadcastMessage()).thenReturn(false);
@@ -117,7 +117,7 @@ public class ClientRunnableTest {
 	@Test
 	public void testRun_whenMessageIsIllegal_NameNotMatch() {
 		initClient();
-		assertEquals("testName", clientRunnable.getName());
+		assertEquals("testName", clientRunnable.getUserName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 		//when(messageMock.terminate()).thenReturn(false);
 		//when(messageMock.isBroadcastMessage()).thenReturn(true);
@@ -133,7 +133,7 @@ public class ClientRunnableTest {
 	@Test
 	public void testRun_whenMessageIsIllegal_NameIsNull() {
 		initClient();
-		assertEquals("testName", clientRunnable.getName());
+		assertEquals("testName", clientRunnable.getUserName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 		//when(messageMock.terminate()).thenReturn(false);
 		//when(messageMock.isBroadcastMessage()).thenReturn(true);
@@ -149,7 +149,7 @@ public class ClientRunnableTest {
 	@Test
 	public void testRun_whenIncomingMessageIsEmpty() {
 		initClient();
-		assertEquals("testName", clientRunnable.getName());
+		assertEquals("testName", clientRunnable.getUserName());
 		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
 		when(messageIterMock.hasNext()).thenReturn(false);
 		clientRunnable.run();
