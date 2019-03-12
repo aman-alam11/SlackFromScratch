@@ -87,7 +87,7 @@ public abstract class Prattle {
 		  authenticatedActiveUsers.get(userName).enqueueMessage(msg);
 		  isSuccessfull = true;
 	  }
-	  return false;
+	  return isSuccessfull;
   }
   
   public static boolean isUserOnline(String userName) {

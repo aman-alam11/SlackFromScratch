@@ -34,7 +34,7 @@ public class UserChat extends CommonOperations {
     User userSender = new User("atti","123", "email");
     User userReceiver = new User(chatUserOtherEnd,"123", "email");
 
-    ChatModel chatModel = new ChatModel(userSender, userReceiver,message , new Date(), false);
+    ChatModel chatModel = new ChatModel("atti", "atti2", message , new Date(), false);
     String jsonChatModel =  mGson.toJson(chatModel);
 
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_CHAT, jsonChatModel);

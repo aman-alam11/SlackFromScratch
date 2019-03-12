@@ -11,13 +11,13 @@ import edu.northeastern.ccs.im.database.User;
  */
 public class ChatModel {
 
-  private User from;
-  private User to;
+  private String from;
+  private String to;
   private String conversation;
   private Date time;
   private boolean isDelivered;
 
-  public ChatModel(User from, User to, String conversation, Date time, boolean isDelivered) {
+  public ChatModel(String from, String to, String conversation, Date time, boolean isDelivered) {
 
     this.from = from;
     this.to = to;
@@ -27,11 +27,11 @@ public class ChatModel {
   }
 
 
-  public User getSender() {
+  public String getSender() {
     return from;
   }
 
-  public User getReciever() {
+  public String getReciever() {
     return to;
   }
 

@@ -71,16 +71,17 @@ public class ChatDao {
     * @param receiver_id
     * @return
     */
-   public List<Chat> findByReceiver(int receiver_id) {
-	Session session = mSessionFactory.openSession();
-   	String sql = "select *from chat where chat.To_id = ?";
+	public List<Chat> findByReceiver(int receiver_id) {
+		try (Session session = mSessionFactory.openSession()) {
+			String sql = "select *from chat where chat.To_id = ?";
 
-   	Query query = session.createNativeQuery(sql, Chat.class);
-   	query.setParameter(1, receiver_id);
-   	List<Chat> chat = query.getResultList();
+			Query query = session.createNativeQuery(sql, Chat.class);
+			query.setParameter(1, receiver_id);
+			List<Chat> chat = query.getResultList();
 
-   	return chat;
-   }
+			return chat;
+		}
+	}
 
    /**
     * Delete the chat for a particular user or a group.
@@ -141,6 +142,22 @@ public class ChatDao {
            session.close();
        }
    }
+   
+	public void updateDeliveryStatus(String id, boolean status) {
+
+		Transaction tx = null;
+		try (Session session = mSessionFactory.openSession()) {
+			tx = session.beginTransaction();
+			Chat chat = (Chat) session.get(Chat.class, id);
+			chat.setIsDelivered(status);
+			session.update(chat);
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		}
+	}
 
    /**
     * Close the session factory.

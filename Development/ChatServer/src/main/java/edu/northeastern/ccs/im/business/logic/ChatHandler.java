@@ -5,8 +5,11 @@ import com.google.gson.Gson;
 import java.util.Date;
 
 import edu.northeastern.ccs.im.database.JPAService;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.Prattle;
 
 public class ChatHandler implements MessageHandler {
 
@@ -18,13 +21,27 @@ public class ChatHandler implements MessageHandler {
 
   @Override
   public boolean handleMessage(String user, String message, Connection conn) {
+	boolean isSuccessfull = false;
     ChatModel chatModel = mGson.fromJson(message, ChatModel.class);
 
     JPAService jpaService = new JPAService();
-
-    return jpaService.createChatMessage(chatModel.getSender().getId(),
-            chatModel.getReciever().getId(), chatModel.getConversation(),
-            0, chatModel.getTimeStamp(), new Date(),
-            false, false);
+    
+    	//TODO:  save to db
+		/*
+		 * isSuccessfull = jpaService.createChatMessage(chatModel.getSender(),
+		 * chatModel.getReciever(), chatModel.getConversation(), 0,
+		 * chatModel.getTimeStamp(), new Date(), false, false);
+		 */
+    
+    if (Prattle.isUserOnline(chatModel.getReciever())) {
+    	
+    	MessageJson msg = new MessageJson(chatModel.getSender(), MessageType.USER_CHAT, message);
+    	msg.setSendToUser(chatModel.getReciever());
+    	isSuccessfull = Prattle.sendMessageTo(chatModel.getReciever(), msg);
+    	if (isSuccessfull) {
+    		//TODO : update isDelivered status to true for that msg
+    	}
+    }
+    return isSuccessfull;
   }
 }
