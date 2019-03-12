@@ -127,7 +127,7 @@ public class NetworkConnection implements Iterable<MessageJson> {
 	 * @param msg Message to be sent out over the network.
 	 * @return True if we successfully send this message; false otherwise.
 	 */
-	public boolean sendMessage(Message msg) {
+	public boolean sendMessage(MessageJson msg) {
 		boolean result = true;
 		String str = msg.toString();
 		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());

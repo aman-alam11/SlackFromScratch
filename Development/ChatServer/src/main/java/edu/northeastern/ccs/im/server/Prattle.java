@@ -21,6 +21,7 @@ import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
 import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.message.MessageJson;
 
 /**
  * A network server that communicates with IM clients that connect to it. This version of the server
@@ -53,7 +54,7 @@ public abstract class Prattle {
   /**
    * Collection of users connected as threads that are currently authenticated  with key as userName.
    */
-  private static ConcurrentHashMap<String, ClientRunnable> authenticatedActiveUsers;
+  private static ConcurrentHashMap<String, Connection> authenticatedActiveUsers;
 
   /** All of the static initialization occurs in this "method" */
   static {
@@ -70,14 +71,27 @@ public abstract class Prattle {
    *
    * @param message Message that the client sent.
    */
-  public static void broadcastMessage(Message message) {
+  public static void broadcastMessage(MessageJson message) {
     // Loop through all of our active threads
     for (ClientRunnable tt : unAuthenticatedActiveUsers) {
       // Do not send the message to any clients that are not ready to receive it.
-      if (tt.isInitialized()) {
+      if (tt.isAuthenticated()) {
         tt.enqueueMessage(message);
       }
     }
+  }
+  
+  public static boolean sendMessageTo(String userName, MessageJson msg) {
+	  boolean isSuccessfull = false;
+	  if (authenticatedActiveUsers.containsKey(userName)) {
+		  authenticatedActiveUsers.get(userName).enqueueMessage(msg);
+		  isSuccessfull = true;
+	  }
+	  return false;
+  }
+  
+  public static boolean isUserOnline(String userName) {
+	  return authenticatedActiveUsers.containsKey(userName);
   }
 
  /**
@@ -104,12 +118,19 @@ public abstract class Prattle {
    *
    * @param dead Thread which had been handling all the I/O for a client who has since quit.
    */
-  public static void removeClient(ClientRunnable dead) {
+  public static void removeClient(Connection client) {
     // Test and see if the thread was in our list of active clients so that we
     // can remove it.
-    if (!unAuthenticatedActiveUsers.remove(dead)) {
-      ChatLogger.info("Could not find a thread that I tried to remove!\n");
-    }
+	if (client.isAuthenticated() && authenticatedActiveUsers.containsKey(client.getUserName())) {
+		Connection c = authenticatedActiveUsers.remove(client);
+		ChatLogger.info("Terminated authenticated client " + c.getUserName());
+		
+	} else if (unAuthenticatedActiveUsers.contains(client)) {
+		unAuthenticatedActiveUsers.remove(client);
+		ChatLogger.info("Terminated unauthenticated client ");
+	} else {
+		ChatLogger.info("Could not find a thread that I tried to remove!\n");
+	}
   }
 
 

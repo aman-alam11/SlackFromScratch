@@ -6,6 +6,7 @@ import java.util.Date;
 
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.server.Connection;
 
 public class ChatHandler implements MessageHandler {
 
@@ -16,7 +17,7 @@ public class ChatHandler implements MessageHandler {
   }
 
   @Override
-  public boolean handleMessage(String user, String message) {
+  public boolean handleMessage(String user, String message, Connection conn) {
     ChatModel chatModel = mGson.fromJson(message, ChatModel.class);
 
     JPAService jpaService = new JPAService();
