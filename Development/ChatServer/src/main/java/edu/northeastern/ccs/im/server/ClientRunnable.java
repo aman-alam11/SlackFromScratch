@@ -31,18 +31,15 @@ import edu.northeastern.ccs.im.model.LoginCredentials;
  * 
  * @version 1.3
  */
-public class ClientRunnable implements Runnable {
+public class ClientRunnable implements Connection {
 	/**
 	 * Utility class which we will use to send and receive communication to this
 	 * client.
 	 */
 	private NetworkConnection connection;
 
-	/** Id for the user for whom we use this ClientRunnable to communicate. */
-	private int userId;
-
 	/** Name that the client used when connecting to the server. */
-	private String name;
+	private String userName;
 
 	/**
 	 * Whether this client has been initialized, set its user name, and is ready to
@@ -66,7 +63,7 @@ public class ClientRunnable implements Runnable {
 	private ScheduledFuture<?> runnableMe;
 
 	/** Collection of messages queued up to be sent to this client. */
-	private Queue<Message> waitingList;
+	private Queue<MessageJson> waitingList;
 	
 	/** This enum holds the state, whether user is logged in or not */
 	private ClientState state;
@@ -105,7 +102,7 @@ public class ClientRunnable implements Runnable {
 	 */
 	private boolean messageChecks(Message msg) {
 		// Check that the message name matches.
-		return (msg.getName() != null) && (msg.getName().compareToIgnoreCase(getName()) == 0);
+		return (msg.getName() != null) && (msg.getName().compareToIgnoreCase(getUserName()) == 0);
 	}
 
 	/**
@@ -115,7 +112,7 @@ public class ClientRunnable implements Runnable {
 	 * @param message Message to be sent immediately.
 	 * @return True if we sent the message successfully; false otherwise.
 	 */
-	private boolean sendMessage(Message message) {
+	private boolean sendMessage(MessageJson message) {
 		ChatLogger.info("\t" + message);
 		return connection.sendMessage(message);
 	}
@@ -132,11 +129,10 @@ public class ClientRunnable implements Runnable {
 		if (userName != null) {
 			// Optimistically set this users ID number.
 			setName(userName);
-			userId = hashCode();
 			result = true;
 		} else {
 			// Clear this name; we cannot use it. *sigh*
-			userId = -1;
+			result = false;
 		}
 		return result;
 	}
@@ -147,7 +143,7 @@ public class ClientRunnable implements Runnable {
 	 * 
 	 * @param message Complete message to be sent.
 	 */
-	public void enqueueMessage(Message message) {
+	public void enqueueMessage(MessageJson message) {
 		waitingList.add(message);
 	}
 
@@ -156,8 +152,8 @@ public class ClientRunnable implements Runnable {
 	 * 
 	 * @return Returns the name of this client.
 	 */
-	public String getName() {
-		return name;
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
@@ -165,27 +161,17 @@ public class ClientRunnable implements Runnable {
 	 * 
 	 * @param name The name for which this ClientRunnable.
 	 */
-	public void setName(String name) {
-		this.name = name;
+	private void setName(String name) {
+		this.userName = name;
 	}
 
 	/**
-	 * Gets the name of the user for which this ClientRunnable was created.
+	 * Return if this thread has been authenticated, ie user has logged in
 	 * 
-	 * @return Returns the current value of userName.
+	 * @return True if this corresponding client has logged in; false otherwise.
 	 */
-	public int getUserId() {
-		return userId;
-	}
-
-	/**
-	 * Return if this thread has completed the initialization process with its
-	 * client and is read to receive messages.
-	 * 
-	 * @return True if this thread's client should be considered; false otherwise.
-	 */
-	public boolean isInitialized() {
-		return initialized;
+	public boolean isAuthenticated() {
+		return state.equals(ClientState.LOGGED_IN);
 	}
 
 	/**
@@ -207,7 +193,7 @@ public class ClientRunnable implements Runnable {
 		// Finally, check if this client have been inactive for too long and,
 		// when they have, terminate the client.
 		if (timer.isBehind()) {
-			ChatLogger.error("Timing out or forcing off a user " + name);
+			ChatLogger.error("Timing out or forcing off a user " + userName);
 			terminate = true;
 		}
 
@@ -220,7 +206,7 @@ public class ClientRunnable implements Runnable {
 		if (messageIter.hasNext()) {
 			MessageJson msg = messageIter.next();
 			MessageHandler msgHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
-			boolean response = msgHandler.handleMessage("", msg.getMessage());
+			boolean response = msgHandler.handleMessage("", msg.getMessage(), this);
 			if(msg.getMessageType().equals(MessageType.LOGIN) && response) {
 				//change to authenticated user
 				LoginCredentials lc = new Gson().fromJson(msg.getMessage(), LoginCredentials.class);
@@ -230,7 +216,7 @@ public class ClientRunnable implements Runnable {
 	}
 	
 	private void signInUser(String userName) {
-		setName(userName);
+		setUserName(userName);
 		Prattle.changeToAuthenciatedUser(this, userName);
 		ChatLogger.info("User Logged in! " + userName + "\n");
 	}
@@ -239,24 +225,24 @@ public class ClientRunnable implements Runnable {
 	 * Checks incoming messages and performs appropriate actions based on the type
 	 * of message.
 	 */
-	protected void handleIncomingMessages() {
+	private void handleIncomingMessages() {
 		// Client has already been logged in
 		if (messageIter.hasNext()) {
 			MessageJson msg = messageIter.next();
 			if (msg.getMessageType().equals(MessageType.LOG_OUT)) {
 				terminate = true;
-				//enqueueMessage(Message.makeQuitMessage(name));
-			} else {
-				MessageHandler messageHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
-				messageHandler.handleMessage(name, msg.getMessage());
 			}
+
+			MessageHandler messageHandler = connection.getMessageHandlerFactory()
+					.getMessageHandler(msg.getMessageType());
+			messageHandler.handleMessage(userName, msg.getMessage(), this);
 		}
 	}
 
 	/**
 	 * Sends the enqueued messages to the printer and makes sure they were sent out.
 	 */
-	protected void handleOutgoingMessages() {
+	private void handleOutgoingMessages() {
 		// Check to make sure we have a client to send to.
 		boolean keepAlive = true;
 		if (!waitingList.isEmpty()) {
@@ -264,7 +250,7 @@ public class ClientRunnable implements Runnable {
 			// Send out all of the message that have been added to the
 			// queue.
 			do {
-				Message msg = waitingList.remove();
+				MessageJson msg = waitingList.remove();
 				boolean sentGood = sendMessage(msg);
 				keepAlive |= sentGood;
 				// Update the time until we terminate the client for inactivity.
@@ -293,7 +279,7 @@ public class ClientRunnable implements Runnable {
 	public void terminateClient() {
 		// Once the communication is done, close this connection.
 		connection.close();
-		ChatLogger.info("Logged out! " + this + "\n");
+		ChatLogger.info("Logged out! " + userName + "\n");
 		// Remove the client from our client listing.
 		Prattle.removeClient(this);
 		// And remove the client from our client pool.

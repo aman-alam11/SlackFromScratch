@@ -128,6 +128,15 @@ public class JPAService {
 	 */
 	public List<Chat> findByReceiver(int receiverId) {
 		return cd.findByReceiver(receiverId);
+		
+	}
+	/**
+	 * update the delivery status of chat for a chat id
+	 * @param chatId
+	 * @param status
+	 */
+	public void updateChatStatus(int chatId, boolean status) {
+		cd.updateDeliveryStatus(chatId, status);
 	}
 
 	/**

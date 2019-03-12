@@ -70,6 +70,7 @@ public class ChatDao {
     * @param receiverId
     * @return
     */
+
    public List<Chat> findByReceiver(int receiverId) {
 	Session session = mSessionFactory.openSession();
 	Transaction transaction = null;
@@ -157,6 +158,22 @@ public class ChatDao {
            session.close();
        }
    }
+   
+	public void updateDeliveryStatus(int id, boolean status) {
+
+		Transaction tx = null;
+		try (Session session = mSessionFactory.openSession()) {
+			tx = session.beginTransaction();
+			Chat chat = (Chat) session.get(Chat.class, id);
+			chat.setIsDelivered(status);
+			session.update(chat);
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		}
+	}
 
    /**
     * Close the session factory.
