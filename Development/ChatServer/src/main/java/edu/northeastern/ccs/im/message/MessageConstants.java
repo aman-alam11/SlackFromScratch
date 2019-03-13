@@ -6,4 +6,5 @@ public class MessageConstants {
 	public static final String REGISTRATION_SUCCESS = "Registered successfully with user name :";
 	public static final String REGISTRATION_FAILURE = "Registration failed";
 	public static final String SYSTEM_MESSAGE = "System";
+	public static final String MESSAGE_SEPARATOR = "#";
 }

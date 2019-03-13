@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import edu.northeastern.ccs.im.business.logic.MessageHandlerFactory;
+import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 
@@ -42,7 +43,7 @@ public class NetworkConnection implements Iterable<MessageJson> {
 	private static final String MESSAGE_START_KEY = "#{";
 	
 	private static final String MESSAGE_END_KEY = "}#";
-
+	
 	/** The base for number conversions. */
 	private static final int DECIMAL_RADIX = 10;
 
@@ -79,6 +80,8 @@ public class NetworkConnection implements Iterable<MessageJson> {
 	private StringBuilder messageBuffer;
 	
 	private MessageHandlerFactory messageHandlerFactory;
+	
+	private Gson gson;
 
 	public MessageHandlerFactory getMessageHandlerFactory() {
 		return messageHandlerFactory;
@@ -102,6 +105,8 @@ public class NetworkConnection implements Iterable<MessageJson> {
 		// Remember the channel that we will be using.
 	   // Set up the SocketChannel over which we will communicate.
 		channel = sockChan;
+		
+		gson = new Gson();
 		
 		this.messageHandlerFactory = messageHandlerFactory;
 		
@@ -129,8 +134,11 @@ public class NetworkConnection implements Iterable<MessageJson> {
 	 */
 	public boolean sendMessage(MessageJson msg) {
 		boolean result = true;
-		String str = msg.toString();
-		ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
+		StringBuilder sb = new StringBuilder();
+		sb.append(MessageConstants.MESSAGE_SEPARATOR)
+			.append(gson.toJson(msg))
+			.append(MessageConstants.MESSAGE_SEPARATOR);
+		ByteBuffer wrapper = ByteBuffer.wrap(sb.toString().getBytes());
 		int bytesWritten = 0;
 		int attemptsRemaining = MAXIMUM_TRIES_SENDING;
 		while (result && wrapper.hasRemaining() && (attemptsRemaining > 0)) {
@@ -177,11 +185,10 @@ public class NetworkConnection implements Iterable<MessageJson> {
 	   */
 	  private class MessageIterator implements Iterator<MessageJson> {
 		  
-		  Gson gson;
 
 	    /** Default constructor. */
 	    public MessageIterator() {
-	    	gson = new Gson();
+
 	    }
 
 	    @Override

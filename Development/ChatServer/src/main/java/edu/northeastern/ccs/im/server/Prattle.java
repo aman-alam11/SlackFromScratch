@@ -162,7 +162,7 @@ public abstract class Prattle {
       // Register to receive any incoming connection messages.
       serverSocket.register(selector, SelectionKey.OP_ACCEPT);
       // Create our pool of threads on which we will execute.
-      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(ServerConstants.THREAD_POOL_SIZE);
+      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(1);
       // If we get this far than the server is initialized correctly
       isReady = true;
       // Now listen on this port as long as the server is ready

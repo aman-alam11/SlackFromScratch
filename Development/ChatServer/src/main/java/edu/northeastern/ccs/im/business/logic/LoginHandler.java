@@ -34,6 +34,7 @@ public class LoginHandler implements MessageHandler {
       return isAuthenticated;
     } catch (Exception e) {
       Logger.getLogger(this.getClass().getSimpleName()).info(e.getMessage());
+      respond(false, conn);
       return false;
     }
   }
