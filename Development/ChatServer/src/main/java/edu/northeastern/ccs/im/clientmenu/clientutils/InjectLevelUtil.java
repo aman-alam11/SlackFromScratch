@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
-import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.clientmenu.ModuleFactory;
+import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.login.Registration;
+import edu.northeastern.ccs.im.clientmenu.firstlevel.ChatNewUser;
+import edu.northeastern.ccs.im.clientmenu.firstlevel.UnreadMessages;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class InjectLevelUtil {
@@ -72,8 +72,8 @@ public final class InjectLevelUtil {
 
   private void injectFirstLevel() {
     FrontEnd.getView().showFirstLevelOptions();
-//    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
-//    mClientOptionsMap.put(3, scanner -> new UserChat());
+    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
+    mClientOptionsMap.put(2, scanner -> new ChatNewUser());
   }
 
 }

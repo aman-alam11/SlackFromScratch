@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.clientmenu.login;
+package edu.northeastern.ccs.im.clientmenu.loginlevel;
 
 import com.google.gson.Gson;
 
@@ -33,7 +33,7 @@ public class Registration extends CommonOperations implements AsyncListener {
 
     if (password.equals(passwordCheck)) {
       MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username, password, MessageType.CREATE_USER);
-      FrontEnd.getView().showLoadingView();
+      FrontEnd.getView().showLoadingView(false);
       ((SocketConnection) model).registerListener(this, MessageType.AUTH_ACK);
       model.sendMessage(messageJson);
     } else {
@@ -44,6 +44,7 @@ public class Registration extends CommonOperations implements AsyncListener {
 
   @Override
   public void listen(String message) {
+    FrontEnd.getView().showLoadingView(true);
     AckModel ackModel = new Gson().fromJson(message, AckModel.class);
     if (ackModel.isLogin()) {
       return;
@@ -55,6 +56,7 @@ public class Registration extends CommonOperations implements AsyncListener {
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
     } else {
       FrontEnd.getView().sendToView("Account Created Successfully!");
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
     }
   }
 }

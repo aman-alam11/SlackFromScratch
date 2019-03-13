@@ -11,14 +11,13 @@ public class UnreadMessages implements CoreOperation {
   private Scanner mScanner;
 
   @Override
-  public void passControl(Scanner scanner, Connection model) {
+  public void passControl(Scanner scanner, Connection connectionModelLayer) {
     this.mScanner = scanner;
-    FrontEnd.getView().sendToView(String.valueOf(model.hasNext()));
+    FrontEnd.getView().sendToView(String.valueOf(connectionModelLayer.hasNext()));
 
-    //TODO model is returning hasnext false
-    while(model.hasNext()) {
-      FrontEnd.getView().sendToView("User: " + model.next().getFromUser());
-      FrontEnd.getView().sendToView("Message: " + model.next().getMessage());
-    }
+//    while(model.hasNext()) {
+//      FrontEnd.getView().sendToView("User: " + model.next().getFromUser());
+//      FrontEnd.getView().sendToView("Message: " + model.next().getMessage());
+//    }
   }
 }

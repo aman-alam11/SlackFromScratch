@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.clientmenu;
+package edu.northeastern.ccs.im.clientmenu.models;
 
 public class AckModel {
 

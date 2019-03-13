@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.clientmenu.login;
+package edu.northeastern.ccs.im.clientmenu.loginlevel;
 
 import com.google.gson.Gson;
 
@@ -19,7 +19,6 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 /**
  * This is the Login class which is being used for the Login level
  */
-@SuppressWarnings("ALL")
 public class Login extends CommonOperations implements AsyncListener {
 
   private Gson mGson;
@@ -42,11 +41,12 @@ public class Login extends CommonOperations implements AsyncListener {
             password,
             MessageType.LOGIN);
     modelLayer.sendMessage(messageJson);
-    FrontEnd.getView().showLoadingView();
+    FrontEnd.getView().showLoadingView(false);
   }
 
   @Override
   public void listen(String message) {
+    FrontEnd.getView().showLoadingView(true);
     AckModel ackModel = mGson.fromJson(message, AckModel.class);
 
     if (!ackModel.isLogin()) {
@@ -55,6 +55,7 @@ public class Login extends CommonOperations implements AsyncListener {
 
     if (!ackModel.isUserAuthenticated()) {
       FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
     } else {
 
       FrontEnd.getView().sendToView("Welcome ");
@@ -62,31 +63,6 @@ public class Login extends CommonOperations implements AsyncListener {
       // User is authenticated by server
       // Send user forward
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
-
-//                int userChoice = 0;
-//                String choiceString = "";
-//                try {
-//                    choiceString = scanner.nextLine().trim();
-//                    userChoice = Integer.parseInt(choiceString);
-//
-//                } catch (Exception e) {
-//                    // Handle with default implementation
-//                    InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
-//                }
-//
-//                CoreOperation initialCoreOperation;
-//                Function<Scanner, CoreOperation> mTransformationFunction = InjectLevelUtil.getOptionsMap()
-//                        .getOrDefault(userChoice, null);
-//
-//                if (mTransformationFunction == null) {
-//                    // Handle with some default operation
-//                    new DefaultOperation().passControl(scanner, model);
-//                } else {
-//                    // Apply Transformation
-//                    initialCoreOperation = mTransformationFunction.apply(scanner);
-//
-//                    initialCoreOperation.passControl(scanner, model);
-//                }
     }
   }
 

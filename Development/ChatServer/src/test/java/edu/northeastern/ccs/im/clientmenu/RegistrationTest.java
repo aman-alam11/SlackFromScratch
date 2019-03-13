@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.clientmenu.login.Registration;
+import edu.northeastern.ccs.im.clientmenu.loginlevel.Registration;
 
 public class RegistrationTest {
 

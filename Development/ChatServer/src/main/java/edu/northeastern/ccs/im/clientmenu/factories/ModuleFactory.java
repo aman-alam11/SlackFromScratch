@@ -1,10 +1,11 @@
-package edu.northeastern.ccs.im.clientmenu;
+package edu.northeastern.ccs.im.clientmenu.factories;
 
+import edu.northeastern.ccs.im.clientmenu.DefaultOperation;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.firstlevel.FirstLevelModel;
-import edu.northeastern.ccs.im.clientmenu.login.Login;
-import edu.northeastern.ccs.im.clientmenu.login.Registration;
+import edu.northeastern.ccs.im.clientmenu.loginlevel.Login;
+import edu.northeastern.ccs.im.clientmenu.loginlevel.Registration;
 
 public class ModuleFactory {
 
@@ -20,7 +21,6 @@ public class ModuleFactory {
 
       case LEVEL1:
         return new FirstLevelModel();
-//        return new FirstLevelModel(ClientConstants.URL, ClientConstants.PORT);
 
 
       default:

@@ -10,7 +10,7 @@ public class ChatNewUser extends CommonOperations {
   private Scanner mScanner;
 
   @Override
-  public void passControl(Scanner scanner, Connection model) {
+  public void passControl(Scanner scanner, Connection connectionModelLayer) {
     this.mScanner = scanner;
     System.out.println("Passed Control to Chat New User Level 1");
   }

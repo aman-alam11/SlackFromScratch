@@ -7,8 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.clientmenu.login.Login;
-import edu.northeastern.ccs.im.view.FrontEnd;
+import edu.northeastern.ccs.im.clientmenu.loginlevel.Login;
 
 import static org.junit.Assert.assertEquals;
 

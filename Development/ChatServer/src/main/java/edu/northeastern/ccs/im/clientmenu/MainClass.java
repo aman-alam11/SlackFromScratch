@@ -2,6 +2,7 @@ package edu.northeastern.ccs.im.clientmenu;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.client.communication.SocketConnection;
+import edu.northeastern.ccs.im.clientmenu.clientutils.ClientConstants;
 
 public class
 MainClass {
