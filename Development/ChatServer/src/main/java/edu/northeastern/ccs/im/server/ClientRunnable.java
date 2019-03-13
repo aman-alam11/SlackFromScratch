@@ -205,19 +205,18 @@ public class ClientRunnable implements Connection {
 		if (messageIter.hasNext()) {
 			MessageJson msg = messageIter.next();
 			MessageHandler msgHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
-			boolean response = msgHandler.handleMessage("", msg.getMessage(), this);
-			if(msg.getMessageType().equals(MessageType.LOGIN) && response) {
-				//change to authenticated user
-				LoginCredentials lc = new Gson().fromJson(msg.getMessage(), LoginCredentials.class);
-				signInUser(lc.getUserName());
-			}
+			msgHandler.handleMessage("", msg.getMessage(), this);
 		}
 	}
 	
-	private void signInUser(String userName) {
+
+	public boolean signInUser(String userName) {
 		setUserName(userName);
-		Prattle.changeToAuthenciatedUser(this, userName);
-		ChatLogger.info("User Logged in! " + userName + "\n");
+		boolean isSuccessful = Prattle.changeToAuthenciatedUser(this, userName);
+		if (isSuccessful) {
+			ChatLogger.info("User Logged in! " + userName + "\n");
+		}
+		return isSuccessful;
 	}
 
 	/**
