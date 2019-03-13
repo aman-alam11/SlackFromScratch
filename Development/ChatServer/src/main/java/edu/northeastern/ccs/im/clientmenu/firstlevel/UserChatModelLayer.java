@@ -33,7 +33,7 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener {
     // Send Object
     MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
             MessageType.USER_CHAT, new Gson().toJson(userChat));
-    ((SocketConnection) connectionLayerModel).registerListener(this, MessageType.AUTH_ACK);
+    connectionLayerModel.registerListener(this, MessageType.AUTH_ACK);
     connectionLayerModel.sendMessage(messageJson);
     FrontEnd.getView().showLoadingView(false);
   }
@@ -47,6 +47,6 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener {
   @Override
   public void listen(String message) {
     FrontEnd.getView().showLoadingView(true);
-    
+
   }
 }

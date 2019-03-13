@@ -35,7 +35,7 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
 
     String userSearchJsonString = new Gson().toJson(userSearch);
     MessageJson messageJson = new MessageJson(myUsername, MessageType.USER_SEARCH, userSearchJsonString);
-    ((SocketConnection) model).registerListener(this, MessageType.USER_SEARCH);
+    model.registerListener(this, MessageType.USER_SEARCH);
     model.sendMessage(messageJson);
     FrontEnd.getView().showLoadingView(false);
   }
