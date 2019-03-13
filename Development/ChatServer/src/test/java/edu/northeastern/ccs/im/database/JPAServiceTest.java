@@ -73,10 +73,10 @@ public class JPAServiceTest {
         assertEquals("alice@new.com",newAlice.getEmail());
     }
 
-    @Test(expected = NoResultException.class)
+    @Test
     public void testHashForUser(){
         JPAService jpaS = new JPAService(sessionFactory);
-        jpaS.getHashFromUsername(null);
+        assertEquals("",jpaS.getHashFromUsername(null));
     }
 
     @Test
@@ -107,6 +107,7 @@ public class JPAServiceTest {
         jpaS.createUser("Bob","b@b.com","bob");
         jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
     }
+    
     @After
     public void after() {
         sessionFactory.close();

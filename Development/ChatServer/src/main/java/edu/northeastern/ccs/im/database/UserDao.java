@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -159,7 +160,7 @@ public class UserDao {
       Query query = session.createNativeQuery(sql, User.class);
       query.setParameter(1, name);
       return (User) query.getSingleResult();
-    }catch (HibernateException ex){
+    }catch (HibernateException | NoResultException ex){
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
     }finally {
       session.close();
@@ -178,7 +179,7 @@ public class UserDao {
       query.setParameter(1, username);
       String str = (String) query.getSingleResult();
       return str;
-    } catch (HibernateException ex) {
+    } catch (HibernateException | NoResultException ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
     } finally {
