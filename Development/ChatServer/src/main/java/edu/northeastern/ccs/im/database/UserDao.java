@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class UserDao {
+
   SessionFactory mSessionFactory;
 
   public UserDao(SessionFactory sf) {

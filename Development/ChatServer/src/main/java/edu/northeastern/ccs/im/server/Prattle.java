@@ -116,7 +116,7 @@ public abstract class Prattle {
   /**
    * Remove the given IM client from the list of active threads.
    *
-   * @param dead Thread which had been handling all the I/O for a client who has since quit.
+   * @param client Thread which had been handling all the I/O for a client who has since quit.
    */
   public static void removeClient(Connection client) {
     // Test and see if the thread was in our list of active clients so that we

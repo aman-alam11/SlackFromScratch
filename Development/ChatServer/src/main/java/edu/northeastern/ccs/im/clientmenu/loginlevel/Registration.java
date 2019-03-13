@@ -34,7 +34,7 @@ public class Registration extends CommonOperations implements AsyncListener {
     if (password.equals(passwordCheck)) {
       MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username, password, MessageType.CREATE_USER);
       FrontEnd.getView().showLoadingView(false);
-      ((SocketConnection) model).registerListener(this, MessageType.AUTH_ACK);
+      model.registerListener(this, MessageType.AUTH_ACK);
       model.sendMessage(messageJson);
     } else {
       FrontEnd.getView().sendToView("Passwords do not match! Please try again");
