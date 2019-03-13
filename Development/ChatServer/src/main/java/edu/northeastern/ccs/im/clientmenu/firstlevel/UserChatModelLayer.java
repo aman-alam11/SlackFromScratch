@@ -1,14 +1,20 @@
 package edu.northeastern.ccs.im.clientmenu.firstlevel;
 
+import com.google.gson.Gson;
+
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
+import edu.northeastern.ccs.im.clientmenu.models.UserChat;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class UserChatModelLayer implements CoreOperation {
 
-  private String userToChat;
+  private String userToChatWith;
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
@@ -17,23 +23,18 @@ public class UserChatModelLayer implements CoreOperation {
     String message = scanner.nextLine().trim();
 
     // Create Object
-
+    UserChat userChat = new UserChat();
+    userChat.setFromUserName(GenerateLoginCredentials.getUsername());
+    userChat.setToUserName(userToChatWith);
+    userChat.setMsg(message);
 
     // Send Object
-
-//    User userSender = new User("atti", "123", "email");
-//    User userReceiver = new User(chatUserOtherEnd, "123", "email");
-//
-//    ChatModel chatModel = new ChatModel("atti", "atti2", message, new Date(), false);
-//    String jsonChatModel = mGson.toJson(chatModel);
-//
-//    MessageJson messageJson = new MessageJson("atti", MessageType.USER_CHAT, jsonChatModel);
-//    messageJson.setSendToUser(chatUserOtherEnd);
-//    connectionLayerModel.sendMessage(messageJson);
+    MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT, new Gson().toJson(userChat));
+    connectionLayerModel.sendMessage(messageJson);
   }
 
 
   public UserChatModelLayer(String userToChat) {
-    this.userToChat = userToChat;
+    this.userToChatWith = userToChat;
   }
 }
