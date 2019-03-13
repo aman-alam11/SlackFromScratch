@@ -3,7 +3,6 @@ package edu.northeastern.ccs.im.clientmenu.factories;
 import edu.northeastern.ccs.im.clientmenu.DefaultOperation;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
-import edu.northeastern.ccs.im.clientmenu.firstlevel.FirstLevelModel;
 import edu.northeastern.ccs.im.clientmenu.loginlevel.Login;
 import edu.northeastern.ccs.im.clientmenu.loginlevel.Registration;
 
@@ -19,8 +18,8 @@ public class ModuleFactory {
       case REGISTRATION:
         return new Registration();
 
-      case LEVEL1:
-        return new FirstLevelModel();
+//      case LEVEL1:
+//        return new FirstLevelModel();
 
 
       default:
