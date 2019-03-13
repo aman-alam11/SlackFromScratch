@@ -104,10 +104,8 @@ public class JPAServiceTest {
     public void testCreateChatMessage(){
         JPAService jpaS = new JPAService(sessionFactory);
         jpaS.createUser("Alice","a@a.com","alice");
-        User alice = jpaS.findUserByName("Alice");
         jpaS.createUser("Bob","b@b.com","bob");
-        User bob = jpaS.findUserByName("Bob");
-        jpaS.createChatMessage(alice.getId(), bob.getId(), "hey there",0, new Date(), false, true);
+        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
     }
     @After
     public void after() {

@@ -28,12 +28,13 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public void create(int fromId, int toId, String msg, int replyTo, Date expiry,
-                      Boolean grpMsg, Boolean isDelivered) {
-       // Create a session
-       Session session = mSessionFactory.openSession();
-       Transaction transaction = null;
-       try {
+    public boolean create(User fromId, User toId, String msg, int replyTo, Date expiry,
+                   Boolean grpMsg, Boolean isDelivered) {
+        // Create a session
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = null;
+        boolean isTransactionSuccessful = false;
+        try {
            // Begin a transaction
            transaction = session.beginTransaction();
            Chat chat = new Chat();
@@ -60,6 +61,7 @@ public class ChatDao {
            // Close the session
            session.close();
        }
+        return isTransactionSuccessful;
    }
    
    /**

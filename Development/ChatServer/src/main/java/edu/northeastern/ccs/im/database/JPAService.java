@@ -106,17 +106,19 @@ public class JPAService {
 
 	/**
 	 * Create a new message in chat.
-	 * @param fromId
-	 * @param toId
+	 * @param fromUserName
+	 * @param toUserName
 	 * @param msg
 	 * @param replyTo
 	 * @param expiry
 	 * @param grpMsg
 	 * @param isDelivered
 	 */
-	public void createChatMessage(int fromId, int toId, String msg, int replyTo,
-																Date expiry, Boolean grpMsg, Boolean isDelivered) {
-		cd.create(fromId, toId, msg, replyTo, expiry, grpMsg, isDelivered);
+	public boolean createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
+									 Date expiry, Boolean grpMsg, Boolean isDelivered) {
+		User fromUser = findUserByName(fromUserName);
+		User toUser = findUserByName(toUserName);
+		return cd.create(fromUser, toUser, msg, replyTo, expiry, grpMsg, isDelivered);
 	}
 
 	/**
