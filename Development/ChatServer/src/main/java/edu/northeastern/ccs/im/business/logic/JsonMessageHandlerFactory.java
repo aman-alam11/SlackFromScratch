@@ -20,6 +20,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
       case USER_CHAT:
         handler = new ChatHandler();
         break;
+       
+      case USER_SEARCH:
+    	handler = new UserSearch();
+    	break;
 
       default:
         // Send to Login Page as default for safety

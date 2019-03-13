@@ -4,9 +4,12 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -167,6 +170,26 @@ public class UserDao {
     }
     return null;
   }
+  
+  /**
+   * Search user with keyword given
+   * @param name
+   * @return
+   */
+  public List<User> searchUserByName(String name) {
+	    Session session = mSessionFactory.openSession();
+	    try{
+	      String sql = "select * from users where users.user_name like %?%";
+	      Query<User> query = session.createNativeQuery(sql, User.class);
+	      query.setParameter(1, name);
+	      return query.getResultList();
+	    }catch (HibernateException | NoResultException ex){
+	      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+	    }finally {
+	      session.close();
+	    }
+	    return Arrays.asList();
+	  }
 
 
   public String findHashForUsername(String username) {
