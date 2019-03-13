@@ -8,9 +8,17 @@ import edu.northeastern.ccs.im.model.LoginCredentials;
 
 public class GenerateLoginCredentials {
 
+  private static String username;
+
   public MessageJson generateLoginCredentials(String username, String password, MessageType messageType) {
     LoginCredentials loginCredentials = new LoginCredentials(username, password);
+    username = username;
     String jsonLoginCredentials = new Gson().toJson(loginCredentials);
     return new MessageJson(username, messageType, jsonLoginCredentials);
+  }
+
+
+  public static String getUsername() {
+    return (username == null) ? "" : username;
   }
 }
