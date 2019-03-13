@@ -27,19 +27,19 @@ public class UserCreationHandler implements MessageHandler {
 
     SessionFactory sessionFactory = SessionFactory.getInstance(loginCredentials.getUserName(),
             loginCredentials.getPassword(), new JPAService());
-    
-    boolean isSuccessfull = sessionFactory.createAccount();
-    
-    String responseMsg = isSuccessfull ? 
-    						MessageConstants.REGISTRATION_SUCCESS : 
-    						MessageConstants.REGISTRATION_FAILURE;
-    
-    AckModel ackMessage = new AckModel(isSuccessfull, responseMsg);
-    MessageJson reponsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE, 
-    											MessageType.AUTH_ACK, 
-    											gson.toJson(ackMessage));
-    sendRespose(reponsePacket, connection);
 
-    return isSuccessfull;
+    boolean isSuccessful = sessionFactory.createAccount();
+
+    String responseMsg = isSuccessful ?
+            MessageConstants.REGISTRATION_SUCCESS :
+            MessageConstants.REGISTRATION_FAILURE;
+
+    AckModel ackMessage = new AckModel(isSuccessful, responseMsg);
+    MessageJson reponsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.AUTH_ACK,
+            gson.toJson(ackMessage));
+    sendResponse(reponsePacket, connection);
+
+    return isSuccessful;
   }
 }

@@ -2,8 +2,7 @@ package edu.northeastern.ccs.im.business.logic;
 
 import com.google.gson.Gson;
 
-import java.util.logging.Logger;
-
+import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.auth.SessionFactory;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;
@@ -16,6 +15,7 @@ import edu.northeastern.ccs.im.server.Connection;
 public class LoginHandler implements MessageHandler {
 
   private Gson gson;
+  private static final String TAG = LoginHandler.class.getSimpleName();
 
   public LoginHandler() {
     gson = new Gson();
@@ -33,21 +33,21 @@ public class LoginHandler implements MessageHandler {
       respond(isAuthenticated, conn);
       return isAuthenticated;
     } catch (Exception e) {
-      Logger.getLogger(this.getClass().getSimpleName()).info(e.getMessage());
+      ChatLogger.error(TAG + " : " + e.getMessage());
       respond(false, conn);
       return false;
     }
   }
-  
+
   private void respond(boolean isAuthenticated, Connection conn) {
-	  String strMsg = isAuthenticated ? MessageConstants.LOGIN_SUCCESS : 
-		  								MessageConstants.LOGIN_FAILURE;
-	  AckModel responseMessage = new AckModel(isAuthenticated, strMsg);
-	  MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE, 
-			  									   MessageType.AUTH_ACK, 
-			  									   gson.toJson(responseMessage));
-	  sendRespose(responsePacket, conn);
-  
+    String strMsg = isAuthenticated ? MessageConstants.LOGIN_SUCCESS :
+            MessageConstants.LOGIN_FAILURE;
+    AckModel responseMessage = new AckModel(isAuthenticated, strMsg);
+    MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.AUTH_ACK,
+            gson.toJson(responseMessage));
+    sendResponse(responsePacket, conn);
+
   }
 
 }

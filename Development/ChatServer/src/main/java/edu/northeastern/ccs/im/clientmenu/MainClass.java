@@ -8,7 +8,7 @@ MainClass {
 
   public static void main(String[] args) {
 
-    Connection topModelLayer =  SocketConnection.getInstance(ClientConstants.URL, ClientConstants.PORT);
+    Connection topModelLayer = SocketConnection.getInstance(ClientConstants.URL, ClientConstants.PORT);
     ClientHandler clientHandler = new ClientHandler(topModelLayer);
     clientHandler.initClientOperations();
   }

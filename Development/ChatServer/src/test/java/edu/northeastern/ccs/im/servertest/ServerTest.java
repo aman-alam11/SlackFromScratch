@@ -97,7 +97,8 @@ public class ServerTest {
     initField.setAccessible(true);
     initField.set(runnable, true);
     queue.add(runnable);
-    broadcastMessage(Message.makeBroadcastMessage("NAME", "HEY WASSUP"));
+    // TODO: Check
+//    broadcastMessage(Message.makeBroadcastMessage("NAME", "HEY WASSUP"));
   }
 
 

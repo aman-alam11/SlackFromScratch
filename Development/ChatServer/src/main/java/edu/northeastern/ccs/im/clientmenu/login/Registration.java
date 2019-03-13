@@ -1,6 +1,5 @@
 package edu.northeastern.ccs.im.clientmenu.login;
 
-import java.net.InetSocketAddress;
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.auth.SessionFactory;
@@ -27,15 +26,13 @@ public class Registration extends CommonOperations {
     if (password.equals(passwordCheck)) {
       JPAService jpaService = new JPAService();
       SessionFactory sessionFactory = SessionFactory.getInstance(username, password, jpaService);
+
       if (sessionFactory.createAccount()) {
         FrontEnd.getView().sendToView("Account Created Successfully!");
-      }
-      else {
+      } else {
         FrontEnd.getView().sendToView("Sorry! Something went wrong!");
       }
-    }
-
-    else {
+    } else {
       FrontEnd.getView().sendToView("Passwords do not match!");
     }
     InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);

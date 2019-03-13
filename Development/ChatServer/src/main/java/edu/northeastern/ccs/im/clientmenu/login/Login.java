@@ -1,11 +1,12 @@
 package edu.northeastern.ccs.im.clientmenu.login;
 
-import java.util.Scanner;
-
 import com.google.gson.Gson;
+
+import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
+import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
@@ -20,44 +21,43 @@ import edu.northeastern.ccs.im.view.FrontEnd;
  */
 @SuppressWarnings("ALL")
 public class Login extends CommonOperations implements AsyncListener {
-    private Gson mGson;
+
+  private Gson mGson;
 
 
-    @Override
-    public void passControl(Scanner scanner, Connection model) {
+  @Override
+  public void passControl(Scanner scanner, Connection modelLayer) {
 
-        //flag to check stop while loop when login has successful
-        boolean loginFlag = true;
-        mGson = new Gson();
+    mGson = new Gson();
 
-        //limit number of logins to 3
-        int limit = 0;
+    FrontEnd.getView().sendToView("Enter User Name");
+    String username = scanner.nextLine().toLowerCase().trim();
 
-        //TODO login after wrong attempt not working
-        FrontEnd.getView().sendToView("Enter User Name");
-        String username = scanner.nextLine().trim();
-        FrontEnd.getView().sendToView("Enter password");
-        String password = scanner.nextLine().trim();
+    FrontEnd.getView().sendToView("Enter password");
+    String password = scanner.nextLine().toLowerCase().trim();
 
-        LoginCredentials loginCredentials = new LoginCredentials(username, password);
-        String jsonLoginCredentials = mGson.toJson(loginCredentials);
-        MessageJson messageJson = new MessageJson(username, MessageType.LOGIN, jsonLoginCredentials);
-        model.sendMessage(messageJson);
-    }
+    ((SocketConnection) modelLayer).registerListener(this, MessageType.AUTH_ACK);
 
-    @Override
-    public void listen(String message) {
-        AckModel ackModel = mGson.fromJson(message, AckModel.class);
-        if (!ackModel.isUserAuthenticated()) {
-            FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
-            // TODO: Inject Level here
-            return;
-        } else {
+    LoginCredentials loginCredentials = new LoginCredentials(username, password);
+    String jsonLoginCredentials = mGson.toJson(loginCredentials);
+    MessageJson messageJson = new MessageJson(username, MessageType.LOGIN, jsonLoginCredentials);
+    modelLayer.sendMessage(messageJson);
+    FrontEnd.getView().showLoadingView();
+  }
 
-            FrontEnd.getView().sendToView("Welcome ");
-            InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+  @Override
+  public void listen(String message) {
+    AckModel ackModel = mGson.fromJson(message, AckModel.class);
+    if (!ackModel.isUserAuthenticated()) {
+      FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
+    } else {
 
-//            while (scanner.hasNext()) {
+      FrontEnd.getView().sendToView("Welcome ");
+
+      // User is authenticated by server
+      // Send user forward
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+
 //                int userChoice = 0;
 //                String choiceString = "";
 //                try {
@@ -82,7 +82,7 @@ public class Login extends CommonOperations implements AsyncListener {
 //
 //                    initialCoreOperation.passControl(scanner, model);
 //                }
-//            }
-        }
     }
+  }
+
 }
