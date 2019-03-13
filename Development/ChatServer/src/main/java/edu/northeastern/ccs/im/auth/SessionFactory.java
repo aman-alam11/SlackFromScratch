@@ -21,13 +21,12 @@ public final class SessionFactory {
   // implemented by any class
   private AuthModulesImpl mAuthModules;
 
-  private String mUsername;
-  private String mPassword;
+  private static String mUsername;
+  private static String mPassword;
 
-  private SessionFactory(String rawUsername, String rawPassword, JPAService jpaService) {
+  private SessionFactory(JPAService jpaService) {
     // Private Constructor
     this.mJpaService = jpaService;
-    this.sanitizeInput(rawUsername, rawPassword);
     mAuthModules = new AuthModulesImpl();
   }
 
@@ -45,8 +44,10 @@ public final class SessionFactory {
     }
 
     if (mLoginInstance == null) {
-      mLoginInstance = new SessionFactory(rawUsername, rawPassword, jpaService);
+      mLoginInstance = new SessionFactory(jpaService);
     }
+    sanitizeInput(rawUsername, rawPassword);
+
     return mLoginInstance;
   }
 
@@ -57,9 +58,9 @@ public final class SessionFactory {
    * @param rawUsername The raw String entered by user as username.
    * @param rawPassword The raw String entered by user as password.
    */
-  private void sanitizeInput(String rawUsername, String rawPassword) {
-    this.mUsername = Jsoup.clean(rawUsername, Whitelist.basic());
-    this.mPassword = Jsoup.clean(rawPassword, Whitelist.basic());
+  private static void sanitizeInput(String rawUsername, String rawPassword) {
+    mUsername = Jsoup.clean(rawUsername, Whitelist.basic());
+    mPassword = Jsoup.clean(rawPassword, Whitelist.basic());
   }
 
   public boolean logoutUser() {
@@ -79,7 +80,7 @@ public final class SessionFactory {
     return createAccountSuccess;
   }
 
-  private void removePreviousRef() {
+  private static void removePreviousRef() {
     mUsername = null;
     mPassword = null;
   }

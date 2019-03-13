@@ -9,11 +9,11 @@ import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
-import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 /**
@@ -34,13 +34,13 @@ public class Login extends CommonOperations implements AsyncListener {
     String username = scanner.nextLine().toLowerCase().trim();
 
     FrontEnd.getView().sendToView("Enter password");
-    String password = scanner.nextLine().toLowerCase().trim();
+    String password = scanner.nextLine().trim();
 
+    // Tell the server we are trying to authenticate user
     ((SocketConnection) modelLayer).registerListener(this, MessageType.AUTH_ACK);
-
-    LoginCredentials loginCredentials = new LoginCredentials(username, password);
-    String jsonLoginCredentials = mGson.toJson(loginCredentials);
-    MessageJson messageJson = new MessageJson(username, MessageType.LOGIN, jsonLoginCredentials);
+    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username,
+            password,
+            MessageType.LOGIN);
     modelLayer.sendMessage(messageJson);
     FrontEnd.getView().showLoadingView();
   }
@@ -48,6 +48,11 @@ public class Login extends CommonOperations implements AsyncListener {
   @Override
   public void listen(String message) {
     AckModel ackModel = mGson.fromJson(message, AckModel.class);
+
+    if (!ackModel.isLogin()) {
+      return;
+    }
+
     if (!ackModel.isUserAuthenticated()) {
       FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
     } else {

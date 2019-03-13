@@ -34,11 +34,10 @@ public class UserCreationHandler implements MessageHandler {
             MessageConstants.REGISTRATION_SUCCESS :
             MessageConstants.REGISTRATION_FAILURE;
 
-    AckModel ackMessage = new AckModel(isSuccessful, responseMsg);
-    MessageJson reponsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
-            MessageType.AUTH_ACK,
-            gson.toJson(ackMessage));
-    sendResponse(reponsePacket, connection);
+    AckModel ackMessage = new AckModel(isSuccessful, responseMsg, false);
+    MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.AUTH_ACK, gson.toJson(ackMessage));
+    sendResponse(responsePacket, connection);
 
     return isSuccessful;
   }

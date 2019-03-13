@@ -1,7 +1,5 @@
 package edu.northeastern.ccs.im.client.communication;
 
-import java.util.Scanner;
-
 import edu.northeastern.ccs.im.message.MessageJson;
 
 /**

@@ -61,7 +61,7 @@ public class FrontEnd implements AsyncListener {
       public void run() {
         System.out.print(".");
       }
-    }, 1, 1000);
+    }, 0, 10000);
 
     while (!shouldStopLoading && (System.currentTimeMillis() - getStartTime < 5000)) {
       timer.cancel();

@@ -42,7 +42,7 @@ public class LoginHandler implements MessageHandler {
   private void respond(boolean isAuthenticated, Connection conn) {
     String strMsg = isAuthenticated ? MessageConstants.LOGIN_SUCCESS :
             MessageConstants.LOGIN_FAILURE;
-    AckModel responseMessage = new AckModel(isAuthenticated, strMsg);
+    AckModel responseMessage = new AckModel(isAuthenticated, strMsg, true);
     MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
             MessageType.AUTH_ACK,
             gson.toJson(responseMessage));
