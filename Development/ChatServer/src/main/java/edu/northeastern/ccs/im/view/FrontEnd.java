@@ -1,8 +1,15 @@
 package edu.northeastern.ccs.im.view;
 
-public class FrontEnd {
+import java.util.Timer;
+import java.util.TimerTask;
+
+import edu.northeastern.ccs.im.client.communication.AsyncListener;
+
+public class FrontEnd implements AsyncListener {
 
   private static FrontEnd mFrontEnd;
+  private boolean shouldStopLoading = false;
+  public static boolean isWaitingForResponse = false;
 
 
   private FrontEnd() {
@@ -35,13 +42,38 @@ public class FrontEnd {
   }
 
 
-  public void showFirestLEvelOptions() {
+  public void showFirstLevelOptions() {
     System.out.println("1. Unread Messages");
-    System.out.println("2. Create Group");
     System.out.println("3. Chat user");
-    System.out.println("4. Chat group");
-    System.out.println("Or type logout to logout user");
+    // TODO
+//    System.out.println("Or type logout to logout user");
     System.out.println("Enter From above Options: ");
   }
 
+
+  public void showLoadingView() {
+    System.out.println("\nLoading");
+    long getStartTime = System.currentTimeMillis();
+    Timer timer = new Timer();
+    isWaitingForResponse = true;
+    timer.scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        System.out.print(".");
+      }
+    }, 0, 10000);
+
+    while (!shouldStopLoading && (System.currentTimeMillis() - getStartTime < 5000)) {
+      timer.cancel();
+      isWaitingForResponse = false;
+    }
+    System.out.println("\n");
+  }
+
+  @Override
+  public void listen(String message) {
+    // Stop if we get a response or if we have a timeout of 5 seconds (ANR)
+    isWaitingForResponse = false;
+    shouldStopLoading = true;
+  }
 }

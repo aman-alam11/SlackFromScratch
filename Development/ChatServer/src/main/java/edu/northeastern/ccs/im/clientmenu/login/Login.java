@@ -1,18 +1,19 @@
 package edu.northeastern.ccs.im.clientmenu.login;
 
-import java.util.Scanner;
-
 import com.google.gson.Gson;
+
+import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
+import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
-import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 /**
@@ -20,44 +21,48 @@ import edu.northeastern.ccs.im.view.FrontEnd;
  */
 @SuppressWarnings("ALL")
 public class Login extends CommonOperations implements AsyncListener {
-    private Gson mGson;
+
+  private Gson mGson;
 
 
-    @Override
-    public void passControl(Scanner scanner, Connection model) {
+  @Override
+  public void passControl(Scanner scanner, Connection modelLayer) {
 
-        //flag to check stop while loop when login has successful
-        boolean loginFlag = true;
-        mGson = new Gson();
+    mGson = new Gson();
 
-        //limit number of logins to 3
-        int limit = 0;
+    FrontEnd.getView().sendToView("Enter User Name");
+    String username = scanner.nextLine().toLowerCase().trim();
 
-        //TODO login after wrong attempt not working
-        FrontEnd.getView().sendToView("Enter User Name");
-        String username = scanner.nextLine().trim();
-        FrontEnd.getView().sendToView("Enter password");
-        String password = scanner.nextLine().trim();
+    FrontEnd.getView().sendToView("Enter password");
+    String password = scanner.nextLine().trim();
 
-        LoginCredentials loginCredentials = new LoginCredentials(username, password);
-        String jsonLoginCredentials = mGson.toJson(loginCredentials);
-        MessageJson messageJson = new MessageJson(username, MessageType.LOGIN, jsonLoginCredentials);
-        model.sendMessage(messageJson);
+    // Tell the server we are trying to authenticate user
+    ((SocketConnection) modelLayer).registerListener(this, MessageType.AUTH_ACK);
+    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username,
+            password,
+            MessageType.LOGIN);
+    modelLayer.sendMessage(messageJson);
+    FrontEnd.getView().showLoadingView();
+  }
+
+  @Override
+  public void listen(String message) {
+    AckModel ackModel = mGson.fromJson(message, AckModel.class);
+
+    if (!ackModel.isLogin()) {
+      return;
     }
 
-    @Override
-    public void listen(String message) {
-        AckModel ackModel = mGson.fromJson(message, AckModel.class);
-        if (!ackModel.isUserAuthenticated()) {
-            FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
-            // TODO: Inject Level here
-            return;
-        } else {
+    if (!ackModel.isUserAuthenticated()) {
+      FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
+    } else {
 
-            FrontEnd.getView().sendToView("Welcome ");
-            InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+      FrontEnd.getView().sendToView("Welcome ");
 
-//            while (scanner.hasNext()) {
+      // User is authenticated by server
+      // Send user forward
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+
 //                int userChoice = 0;
 //                String choiceString = "";
 //                try {
@@ -82,7 +87,7 @@ public class Login extends CommonOperations implements AsyncListener {
 //
 //                    initialCoreOperation.passControl(scanner, model);
 //                }
-//            }
-        }
     }
+  }
+
 }

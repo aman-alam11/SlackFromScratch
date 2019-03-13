@@ -4,11 +4,12 @@ import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.server.Connection;
 
 public interface MessageHandler {
-	
-	boolean handleMessage(String user, String message, Connection clientConnection);
-	default void sendRespose (MessageJson msg, Connection clientConnection) {
-		clientConnection.enqueueMessage(msg);
-	}
-	
+
+  boolean handleMessage(String user, String message, Connection clientConnection);
+
+  default void sendResponse(MessageJson msg, Connection clientConnection) {
+    clientConnection.enqueueMessage(msg);
+  }
+
 
 }

@@ -16,9 +16,4 @@ public class OptionsFactoryImpl implements OptionsFactory {
     return null;
   }
 
-  @Override
-  public CoreOperation getCreateGroup(Scanner scanner) {
-    return null;
-  }
-
 }

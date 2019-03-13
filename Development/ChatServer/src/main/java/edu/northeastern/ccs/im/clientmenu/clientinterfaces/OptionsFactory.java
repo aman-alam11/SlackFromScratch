@@ -21,10 +21,4 @@ public interface OptionsFactory {
    */
    CoreOperation getUserChat(Scanner scanner);
 
-  /**
-   * CreateGroup Object is returned.
-   * @param scanner - Scanner input for user input.
-   * @return - CoreOperation Object of required Class.
-   */
-   CoreOperation getCreateGroup(Scanner scanner);
 }

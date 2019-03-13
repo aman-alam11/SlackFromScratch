@@ -154,7 +154,7 @@ public class UserDao {
   public User findUserByName(String name) {
     Session session = mSessionFactory.openSession();
     try{
-      String sql = "select *from users where users.user_name = ?";
+      String sql = "select * from users where users.user_name = ?";
 
       Query query = session.createNativeQuery(sql, User.class);
       query.setParameter(1, name);
