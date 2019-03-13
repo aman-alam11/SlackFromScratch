@@ -1,13 +1,14 @@
 package edu.northeastern.ccs.im.database;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.NoResultException;
-
+import javax.persistence.PersistenceException;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -107,7 +108,79 @@ public class JPAServiceTest {
         jpaS.createUser("Bob","b@b.com","bob");
         jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
     }
-    
+
+    @Test
+    public void testFindAllMessagesOfUser(){
+        JPAService jpaS = new JPAService(sessionFactory);
+        jpaS.createUser("Alice","a@a.com","alice");
+        jpaS.createUser("Bob","b@b.com","bob");
+        jpaS.createUser("Charlie","c@c.com","charlie");
+
+        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
+        jpaS.createChatMessage("Charlie", "Bob", "How are you?",0, new Date(), false, true);
+
+        assertEquals(2,jpaS.findByReceiver("Bob").size());
+        jpaS.deleteChatByReceiver("Bob");
+        assertEquals(0,jpaS.findByReceiver("Bob").size());
+    }
+
+    @Test
+    public void testDeleteParticularMessage(){
+        JPAService jpaS = new JPAService(sessionFactory);
+        jpaS.createUser("Alice","a@a.com","alice");
+        jpaS.createUser("Bob","b@b.com","bob");
+
+        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
+        jpaS.createChatMessage("Charlie", "Bob", "How are you?",0, new Date(), false, true);
+        assertEquals(1,jpaS.findByReceiver("Bob").size());
+        jpaS.deleteMessage(1);
+        assertEquals(0,jpaS.findByReceiver("Bob").size());
+    }
+
+    @Test
+    public void testChatGetters(){
+        JPAService jpaS = new JPAService(sessionFactory);
+        jpaS.createUser("Alice","a@a.com","alice");
+        jpaS.createUser("Bob","b@b.com","bob");
+
+        User alice = jpaS.findUserByName("Alice");
+        User bob = jpaS.findUserByName("Bob");
+
+        Date toSave = new Date();
+        Chat c = new Chat();
+        c.setId(1);
+        c.setFromId(alice);
+        c.setToId(bob);
+        c.setMsg("Hi");
+        c.setReplyTo(0);
+        c.setExpiry(toSave);
+        c.setCreated(toSave);
+        c.setGrpMsg(false);
+        c.setIsDelivered(true);
+
+        assertEquals(1,c.getId());
+        assertEquals(1,c.getFromId().getId());
+        assertEquals(2,c.getToId().getId());
+        assertEquals(toSave,c.getCreated());
+        assertEquals(toSave,c.getExpiry());
+        assertEquals("Hi",c.getMsg());
+        assertEquals(0,c.getReplyTo());
+        assertEquals(false,c.getGrpMsg());
+        assertEquals(true,c.getIsDelivered());
+    }
+
+    @Test
+    public void testDeleteNonExisting(){
+        JPAService jpaS = new JPAService(sessionFactory);
+        jpaS.deleteUser(1);
+    }
+
+    @AfterClass
+    public static void close(){
+        JPAService jpaS = new JPAService();
+        jpaS.closeSessionFactory();
+    }
+
     @After
     public void after() {
         sessionFactory.close();

@@ -98,7 +98,7 @@ public class UserDao {
       session.delete(user);
       // Commit the transaction
       transaction.commit();
-    } catch (HibernateException ex) {
+    } catch (HibernateException | IllegalArgumentException ex) {
       // If there are any exceptions, roll back the changes
       if (transaction != null) {
         transaction.rollback();
@@ -126,7 +126,6 @@ public class UserDao {
       User user = session.get(User.class, id);
 
       // Change the values
-      user.setId(id);
       user.setName(name);
       user.setEmail(email);
       user.setPassword(password);
@@ -177,8 +176,7 @@ public class UserDao {
 
       Query query = session.createNativeQuery(sql);
       query.setParameter(1, username);
-      String str = (String) query.getSingleResult();
-      return str;
+      return (String) query.getSingleResult();
     } catch (HibernateException | NoResultException ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());

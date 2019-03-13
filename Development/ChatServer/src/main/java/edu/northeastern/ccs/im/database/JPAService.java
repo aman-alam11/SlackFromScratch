@@ -123,19 +123,21 @@ public class JPAService {
 
 	/**
 	 * List all messages for a user or a group.
-	 * @param receiverId
+	 * @param username
 	 * @return
 	 */
-	public List<Chat> findByReceiver(int receiverId) {
-		return cd.findByReceiver(receiverId);
+	public List<Chat> findByReceiver(String username) {
+		User user = findUserByName(username);
+		return cd.findByReceiver(user.getId());
 	}
 
 	/**
 	 * Delete the chat for a user or a group.
-	 * @param receiverId
+	 * @param username
 	 */
-	public void deleteChatByReceiver(int receiverId) {
-		cd.deleteChatByReceiver(receiverId);
+	public void deleteChatByReceiver(String username) {
+		User user = findUserByName(username);
+		cd.deleteChatByReceiver(user.getId());
 	}
 
 	/**
