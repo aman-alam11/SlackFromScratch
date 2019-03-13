@@ -74,7 +74,6 @@ public class PrattleTest {
   @Test
   public void testRemoveAlternate() throws Exception {
     synchronized (this) {
-
       wait(1000);
     }
     InetSocketAddress hostAddress = new InetSocketAddress("localhost", ServerConstants.PORT);
