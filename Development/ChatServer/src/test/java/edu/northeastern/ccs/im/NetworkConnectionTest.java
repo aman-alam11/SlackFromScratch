@@ -20,9 +20,12 @@ import java.util.Queue;
 import java.util.Set;
 
 import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class NetworkConnectionTest {
@@ -86,9 +89,11 @@ public class NetworkConnectionTest {
     InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
     clientSocket = SocketChannel.open(hostAddress);
     netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
-    // TODO: Check
-//    boolean b = netConn.sendMessage(Message.makeHelloMessage("Hello"));
-//    assertEquals(true, b);
+    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+            "pass",
+            MessageType.LOGIN);
+    boolean b = netConn.sendMessage(messageJson);
+    assertTrue(b);
   }
 
 
@@ -101,9 +106,11 @@ public class NetworkConnectionTest {
     InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
     clientSocket = SocketChannel.open(hostAddress);
     netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
-    // TODO: Check
-//		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
-//		assertEquals(true, b);
+    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+            "pass",
+            MessageType.LOGIN);
+    boolean b = netConn.sendMessage(messageJson);
+    assertTrue(b);
   }
 
   @Test
@@ -119,7 +126,6 @@ public class NetworkConnectionTest {
     ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
     serverSocketChannel.write(wrapper);
     synchronized (this) {
-
       wait(1000);
     }
     Iterator<MessageJson> messageItr = netConn.iterator();
@@ -130,9 +136,12 @@ public class NetworkConnectionTest {
       messageItr.next();
     }
     // TODO: Check
-//		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
+    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+            "pass",
+            MessageType.LOGIN);
+    boolean b = netConn.sendMessage(messageJson);
     netConn.close();
-//		assertEquals(true, b);
+    assertTrue(b);
   }
 
 
@@ -149,7 +158,6 @@ public class NetworkConnectionTest {
     ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
     serverSocketChannel.write(wrapper);
     synchronized (this) {
-
       wait(1000);
     }
     Iterator<MessageJson> messageItr = netConn.iterator();
@@ -160,9 +168,12 @@ public class NetworkConnectionTest {
       messageItr.next();
     }
     // TODO: Check
-//		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
+    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+            "pass",
+            MessageType.LOGIN);
+		boolean b = netConn.sendMessage(messageJson);
     netConn.close();
-//		assertEquals(false, b);
+		assertFalse(b);
   }
 
   @Test(expected = AssertionError.class)
@@ -182,16 +193,19 @@ public class NetworkConnectionTest {
       wait(1000);
     }
     Iterator<MessageJson> messageItr = netConn.iterator();
-    //clientSocket.close();
+    clientSocket.close();
     //serverSocketChannel.write(src)
     while (messageItr.hasNext()) {
       //System.out.println(messageItr.next().getText());
       messageItr.next();
     }
     // TODO: Check
-//		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
+    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+            "pass",
+            MessageType.LOGIN);
+		boolean b = netConn.sendMessage(messageJson);
     netConn.close();
-//		assertEquals(false, b);
+		assertFalse(b);
   }
 
   @Test(expected = NoSuchElementException.class)
