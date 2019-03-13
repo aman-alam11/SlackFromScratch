@@ -28,7 +28,7 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public boolean create(int fromId, int toId, String msg, int replyTo, Date expiry,
+    public boolean create(User fromId, User toId, String msg, int replyTo, Date expiry,
                    Boolean grpMsg, Boolean isDelivered) {
         // Create a session
         Session session = mSessionFactory.openSession();
@@ -174,11 +174,4 @@ public class ChatDao {
 			e.printStackTrace();
 		}
 	}
-
-   /**
-    * Close the session factory.
-    */
-   public void closeSessionFactory() {
-   	mSessionFactory.close();
-   }
 }

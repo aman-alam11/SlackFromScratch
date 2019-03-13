@@ -13,12 +13,14 @@ public class Chat implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "Id", unique = true)
     private int id;
-	
-	@Column(name="From_user_id", nullable=false)
-	private int fromId;
-	
-	@Column(name="To_id",nullable=false)
-	private int toId;
+
+    @ManyToOne
+	@JoinColumn(name="From_user_id", nullable=false)
+	private User fromId;
+
+    @ManyToOne
+	@JoinColumn(name="To_id",nullable=false)
+	private User toId;
 	
 	@Column(name="Message", nullable=false)
 	private String msg;
@@ -46,19 +48,19 @@ public class Chat implements Serializable{
 		this.id = id;
 	}
 
-	public int getFromId() {
+	public User getFromId() {
 		return fromId;
 	}
 
-	public void setFromId(int fromId) {
+	public void setFromId(User fromId) {
 		this.fromId = fromId;
 	}
 
-	public int getToId() {
+	public User getToId() {
 		return toId;
 	}
 
-	public void setToId(int toId) {
+	public void setToId(User toId) {
 		this.toId = toId;
 	}
 

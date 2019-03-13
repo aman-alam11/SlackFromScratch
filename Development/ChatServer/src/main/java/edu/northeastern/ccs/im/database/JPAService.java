@@ -106,8 +106,8 @@ public class JPAService {
 
 	/**
 	 * Create a new message in chat.
-	 * @param fromId
-	 * @param toId
+	 * @param fromUserName
+	 * @param toUserName
 	 * @param msg
 	 * @param replyTo
 	 * @param expiry
@@ -116,18 +116,21 @@ public class JPAService {
 	 *
 	 * @return A boolean representing if the transaction was successful or not.
 	 */
-	public boolean createChatMessage(int fromId, int toId, String msg, int replyTo,
+	public boolean createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
 									 Date expiry, Boolean grpMsg, Boolean isDelivered) {
-		return cd.create(fromId, toId, msg, replyTo, expiry, grpMsg, isDelivered);
+		User fromUser = findUserByName(fromUserName);
+		User toUser = findUserByName(toUserName);
+		return cd.create(fromUser, toUser, msg, replyTo, expiry, grpMsg, isDelivered);
 	}
 
 	/**
 	 * List all messages for a user or a group.
-	 * @param receiverId
+	 * @param username
 	 * @return
 	 */
-	public List<Chat> findByReceiver(int receiverId) {
-		return cd.findByReceiver(receiverId);
+	public List<Chat> findByReceiver(String username) {
+		User user = findUserByName(username);
+		return cd.findByReceiver(user.getId());
 		
 	}
 	/**
@@ -141,10 +144,11 @@ public class JPAService {
 
 	/**
 	 * Delete the chat for a user or a group.
-	 * @param receiverId
+	 * @param username
 	 */
-	public void deleteChatByReceiver(int receiverId) {
-		cd.deleteChatByReceiver(receiverId);
+	public void deleteChatByReceiver(String username) {
+		User user = findUserByName(username);
+		cd.deleteChatByReceiver(user.getId());
 	}
 
 	/**
