@@ -186,9 +186,8 @@ public class ClientRunnable implements Connection {
 			//handleUnauthOutgoingMessages();
 		} else {
 			handleIncomingMessages();
-			handleOutgoingMessages();
 		}
-		
+		handleOutgoingMessages();
 		//}
 		// Finally, check if this client have been inactive for too long and,
 		// when they have, terminate the client.
