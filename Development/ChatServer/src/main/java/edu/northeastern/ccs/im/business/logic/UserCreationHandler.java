@@ -29,6 +29,9 @@ public class UserCreationHandler implements MessageHandler {
             loginCredentials.getPassword(), new JPAService());
 
     boolean isSuccessful = sessionFactory.createAccount();
+    if (isSuccessful) {
+    	isSuccessful = connection.signInUser(loginCredentials.getUserName());
+    }
 
     String responseMsg = isSuccessful ?
             MessageConstants.REGISTRATION_SUCCESS :

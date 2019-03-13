@@ -31,6 +31,9 @@ public class LoginHandler implements MessageHandler {
 
       boolean isAuthenticated = sessionFactory.login();
       respond(isAuthenticated, conn);
+      if (isAuthenticated) {
+    	  isAuthenticated = conn.signInUser(lgn.getUserName());
+      }
       return isAuthenticated;
     } catch (Exception e) {
       ChatLogger.error(TAG + " : " + e.getMessage());
@@ -49,5 +52,6 @@ public class LoginHandler implements MessageHandler {
     sendResponse(responsePacket, conn);
 
   }
+  
 
 }

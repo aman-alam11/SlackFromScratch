@@ -7,5 +7,6 @@ public interface Connection extends Runnable {
 	void enqueueMessage(MessageJson message);
 	String getUserName();
 	boolean isAuthenticated();
+	boolean signInUser(String userName);
 	
 }
