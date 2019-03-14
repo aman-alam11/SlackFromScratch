@@ -91,6 +91,10 @@ public class JPAService {
 	public User findUserByName(String name) {
     	return ud.findUserByName(name);
     }
+	
+	public List<String> searchUserbyUserName(String userName) {
+		return ud.searchUserByName(userName);
+	}
 
 
 	public String getHashFromUsername(String username) {
