@@ -36,7 +36,7 @@ public class Login extends CommonOperations implements AsyncListener {
     String password = scanner.nextLine().trim();
 
     // Tell the server we are trying to authenticate user
-    ((SocketConnection) modelLayer).registerListener(this, MessageType.AUTH_ACK);
+    modelLayer.registerListener(this, MessageType.AUTH_ACK);
     MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username,
             password,
             MessageType.LOGIN);
