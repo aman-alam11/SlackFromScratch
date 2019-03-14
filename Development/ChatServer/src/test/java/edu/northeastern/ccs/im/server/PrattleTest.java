@@ -56,7 +56,6 @@ public class PrattleTest {
     } catch (IOException | InterruptedException e) {
       Logger.getLogger(this.getClass().getSimpleName() + ":" + e.getMessage() + " testMain");
       Prattle.stopServer();
-
     }
   }
 

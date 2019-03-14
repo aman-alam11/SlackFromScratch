@@ -46,7 +46,6 @@ public class LoginClassTest {
     AckModel ackModel = new AckModel(false, "error msg", true);
     String jsonAck = mGson.toJson(ackModel);
     String str = "atti\n" + "pass\n";
-
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     login.passControl(scanner, parentModel);
