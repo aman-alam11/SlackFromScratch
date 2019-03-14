@@ -176,7 +176,7 @@ public class NetworkConnectionTest {
 		assertFalse(b);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void test_sendMalformedMessage() throws IOException, InterruptedException {
     synchronized (this) {
 

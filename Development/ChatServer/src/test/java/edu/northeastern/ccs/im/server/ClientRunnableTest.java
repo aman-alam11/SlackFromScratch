@@ -1,6 +1,10 @@
 package edu.northeastern.ccs.im.server;
 
+import com.google.gson.Gson;
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,18 +21,32 @@ import org.mockito.MockitoAnnotations;
 
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.business.logic.MessageHandlerFactory;
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.LoginCredentials;
 
 public class ClientRunnableTest {
+
+	private Gson mGson;
 	
 	@Mock
 	private NetworkConnection networkConnectionMock;
+	@Mock
+	private Connection connection;
 	@Mock
 	private Iterator<MessageJson> messageIterMock;
 	@Mock
 	private MessageJson messageMock;
 	@Mock
 	private ScheduledFuture<?> futureMock;
+	@Mock
+	private MessageHandler messageHandler;
+
+	@Mock
+	private MessageHandlerFactory messageHandlerFactory;
 	
 	private ClientRunnable clientRunnable;
 	
@@ -36,21 +54,30 @@ public class ClientRunnableTest {
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
+		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
 		clientRunnable = new ClientRunnable(networkConnectionMock);
 		clientRunnable.setFuture(futureMock);
+		mGson = new Gson();
+
 	}
 
 	@Test
 	public void testRun_whenMessageHasUserName() {
-		
-		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
+
+		LoginCredentials loginCredentials = new LoginCredentials("user","pass");
+		String loginCredential = mGson.toJson(loginCredentials);
+		MessageJson msgJson = new MessageJson("", MessageType.LOGIN, loginCredential);
+
+
 		when(messageIterMock.hasNext()).thenReturn(true);
-		when(messageIterMock.next()).thenReturn(messageMock);
-		//when(messageMock.getName()).thenReturn("testName");
+		when(messageIterMock.next()).thenReturn(msgJson);
+		when(networkConnectionMock.getMessageHandlerFactory()).thenReturn(messageHandlerFactory);
+		when(messageHandlerFactory.getMessageHandler(MessageType.LOGIN)).thenReturn(messageHandler);
+		when(messageHandler.handleMessage(any(),any(), any())).thenReturn(true);
+
+		when(messageMock.getMessageType()).thenReturn(MessageType.LOGIN);
 		clientRunnable.run();
-		assertEquals("testName", clientRunnable.getUserName());
-		// TODO: Check
-		// assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
+		assertEquals("user", clientRunnable.getUserName());
 	}
 	
 	@Test
