@@ -27,10 +27,7 @@ public final class ClientHandler {
   }
 
 
-  public void initClientOperations() {
-
-    Scanner scanner = new Scanner(System.in);
-
+  public void initClientOperations(Scanner scanner) {
     while (scanner.hasNext()) {
       int userChoice = 0;
       String choiceString = "";
