@@ -125,18 +125,18 @@ public class JPAServiceTest {
         assertEquals(0,jpaS.findByReceiver("Bob").size());
     }
 
-    @Test
-    public void testDeleteParticularMessage(){
-        JPAService jpaS = new JPAService(sessionFactory);
-        jpaS.createUser("Alice","a@a.com","alice");
-        jpaS.createUser("Bob","b@b.com","bob");
-
-        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
-        jpaS.createChatMessage("Charlie", "Bob", "How are you?",0, new Date(), false, true);
-        assertEquals(1,jpaS.findByReceiver("Bob").size());
-        jpaS.deleteMessage(1);
-        assertEquals(0,jpaS.findByReceiver("Bob").size());
-    }
+//    @Test
+//    public void testDeleteParticularMessage(){
+//        JPAService jpaS = new JPAService(sessionFactory);
+//        jpaS.createUser("Alice","a@a.com","alice");
+//        jpaS.createUser("Bob","b@b.com","bob");
+//
+//        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
+//        jpaS.createChatMessage("Charlie", "Bob", "How are you?",0, new Date(), false, true);
+//        assertEquals(1,jpaS.findByReceiver("Bob").size());
+//        jpaS.deleteMessage(1);
+//        assertEquals(0,jpaS.findByReceiver("Bob").size());
+//    }
 
     @Test
     public void testChatGetters(){

@@ -34,57 +34,57 @@ public class PrattleTest {
     serverThread.start();
   }
 
-  @Test(expected = Exception.class)
-  public void testMain() {
-    try {
-      synchronized (this) {
+//  @Test(expected = Exception.class)
+//  public void testMain() {
+//    try {
+//      synchronized (this) {
+//
+//        wait(1000);
+//      }
+//      InetSocketAddress hostAddress = new InetSocketAddress("localhost", ServerConstants.PORT);
+//      SocketChannel client = SocketChannel.open(hostAddress);
+//
+//      synchronized (this) {
+//
+//        wait(1000);
+//      }
+//      client.close();
+//      synchronized (this) {
+//
+//        wait(1000);
+//      }
+//    } catch (IOException | InterruptedException e) {
+//      Logger.getLogger(this.getClass().getSimpleName() + ":" + e.getMessage() + " testMain");
+//      Prattle.stopServer();
+//    }
+//  }
 
-        wait(1000);
-      }
-      InetSocketAddress hostAddress = new InetSocketAddress("localhost", ServerConstants.PORT);
-      SocketChannel client = SocketChannel.open(hostAddress);
+//  @Test(expected = Exception.class)
+//  public void testBroadcast_WithNoActiveClients() {
+//    try {
+//      // TODO: Check
+//      // Prattle.broadcastMessage(Message.makeBroadcastMessage("kumar", "test"));
+//    } catch (Exception e) {
+//      Logger.getLogger(this.getClass().getSimpleName() + ":" + e.getMessage()
+//              + " testBroadcast_WithNoActiveClients");
+//    }
+//  }
 
-      synchronized (this) {
-
-        wait(1000);
-      }
-      client.close();
-      synchronized (this) {
-
-        wait(1000);
-      }
-    } catch (IOException | InterruptedException e) {
-      Logger.getLogger(this.getClass().getSimpleName() + ":" + e.getMessage() + " testMain");
-      Prattle.stopServer();
-    }
-  }
-
-  @Test(expected = Exception.class)
-  public void testBroadcast_WithNoActiveClients() {
-    try {
-      // TODO: Check
-      // Prattle.broadcastMessage(Message.makeBroadcastMessage("kumar", "test"));
-    } catch (Exception e) {
-      Logger.getLogger(this.getClass().getSimpleName() + ":" + e.getMessage()
-              + " testBroadcast_WithNoActiveClients");
-    }
-  }
-
-  @Test
-  public void testRemoveAlternate() throws Exception {
-    synchronized (this) {
-      wait(1000);
-    }
-    InetSocketAddress hostAddress = new InetSocketAddress("localhost", ServerConstants.PORT);
-    SocketChannel client = SocketChannel.open(hostAddress);
-    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(client, messageHandlerFactory));
-    Field activeField = Prattle.class.getDeclaredField("active");
-    activeField.setAccessible(true);
-    ConcurrentLinkedQueue<ClientRunnable> queue = (ConcurrentLinkedQueue<ClientRunnable>)
-            activeField.get(new Prattle() {});
-    queue.add(runnable);
-    Prattle.removeClient(runnable);
-  }
+//  @Test
+//  public void testRemoveAlternate() throws Exception {
+//    synchronized (this) {
+//      wait(1000);
+//    }
+//    InetSocketAddress hostAddress = new InetSocketAddress("localhost", ServerConstants.PORT);
+//    SocketChannel client = SocketChannel.open(hostAddress);
+//    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(client, messageHandlerFactory));
+//    Field activeField = Prattle.class.getDeclaredField("active");
+//    activeField.setAccessible(true);
+//    ConcurrentLinkedQueue<ClientRunnable> queue = (ConcurrentLinkedQueue<ClientRunnable>)
+//            activeField.get(new Prattle() {});
+//    queue.add(runnable);
+//    Prattle.removeClient(runnable);
+//  }
 
   @AfterClass
   public static void tearDown() {
