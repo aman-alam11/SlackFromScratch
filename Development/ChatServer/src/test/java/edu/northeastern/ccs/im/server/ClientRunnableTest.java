@@ -38,7 +38,6 @@ public class ClientRunnableTest {
 		MockitoAnnotations.initMocks(this);
 		clientRunnable = new ClientRunnable(networkConnectionMock);
 		clientRunnable.setFuture(futureMock);
-	
 	}
 
 	@Test

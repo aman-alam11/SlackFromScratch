@@ -2,6 +2,7 @@ package edu.northeastern.ccs.im.clientmenu.loginlevel;
 
 import com.google.gson.Gson;
 
+
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
@@ -65,5 +66,4 @@ public class Login extends CommonOperations implements AsyncListener {
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
     }
   }
-
 }

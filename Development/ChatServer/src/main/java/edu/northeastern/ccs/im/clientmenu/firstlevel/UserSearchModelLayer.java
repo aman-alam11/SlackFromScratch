@@ -58,6 +58,5 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
     UserChatModelLayer model = new UserChatModelLayer(userToChatWith);
     model.passControl(mScanner, this.mConnection);
 
-
   }
 }
