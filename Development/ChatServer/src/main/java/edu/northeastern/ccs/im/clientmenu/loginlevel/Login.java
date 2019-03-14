@@ -2,6 +2,7 @@ package edu.northeastern.ccs.im.clientmenu.loginlevel;
 
 import com.google.gson.Gson;
 
+
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
@@ -36,7 +37,7 @@ public class Login extends CommonOperations implements AsyncListener {
     String password = scanner.nextLine().trim();
 
     // Tell the server we are trying to authenticate user
-    ((SocketConnection) modelLayer).registerListener(this, MessageType.AUTH_ACK);
+    modelLayer.registerListener(this, MessageType.AUTH_ACK);
     MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username,
             password,
             MessageType.LOGIN);
@@ -65,5 +66,4 @@ public class Login extends CommonOperations implements AsyncListener {
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
     }
   }
-
 }

@@ -57,7 +57,7 @@ public class SocketConnection implements Connection {
     return instance;
   }
 
-
+  @Override
   public void registerListener(AsyncListener asyncListener, MessageType messageType) {
     mAsyncListener = asyncListener;
     listenerMessageType = messageType;
