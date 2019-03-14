@@ -107,6 +107,7 @@ public class JPAServiceTest {
         jpaS.createUser("Alice","a@a.com","alice");
         jpaS.createUser("Bob","b@b.com","bob");
         jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
+        assertEquals("hey there",jpaS.findByReceiver("Bob").get(0).getMsg());
     }
 
     @Test
@@ -173,6 +174,68 @@ public class JPAServiceTest {
     public void testDeleteNonExisting(){
         JPAService jpaS = new JPAService(sessionFactory);
         jpaS.deleteUser(1);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testException(){
+        JPAService jpaS = new JPAService(null);
+        jpaS.updateUser(1,"a","a","a");
+        jpaS.readAllUsers();
+        jpaS.searchUserbyUserName("s");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void checkTest(){
+        ChatDao cd = new ChatDao(null);
+        cd.findByReceiver(1);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void checkTest2(){
+        ChatDao cd = new ChatDao(null);
+        cd.deleteChatByReceiver(1);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void checkTest3(){
+        ChatDao cd = new ChatDao(null);
+        cd.updateDeliveryStatus(1,false);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void checkTest4(){
+        ChatDao cd = new ChatDao(null);
+        cd.delete(1);
+    }
+
+    @Test
+    public void testSearchUser(){
+        JPAService jpaS = new JPAService(sessionFactory);
+        jpaS.createUser("Alice","a@a.com","alice");
+        jpaS.createUser("Ali","b@b.com","bob");
+        jpaS.createUser("Alike","c@c.com","charlie");
+        jpaS.createUser("Allison","d@c.com","charliec");
+
+        assertEquals(3,jpaS.searchUserbyUserName("Ali").size());
+    }
+
+    @Test
+    public void testEmptyUserSearch(){
+        JPAService jpaS = new JPAService(sessionFactory);
+        jpaS.createUser("Alice","a@a.com","alice");
+        assertEquals(0,jpaS.searchUserbyUserName("f").size());
+    }
+
+    @Test
+    public void testUpdateChatStatus(){
+        JPAService jpaS = new JPAService(sessionFactory);
+        jpaS.createUser("Alice","a@a.com","alice");
+        jpaS.createUser("Bob","b@b.com","bob");
+        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, false);
+
+        jpaS.updateChatStatus(1,true);
+
+        assertEquals(true,jpaS.findByReceiver("Bob").get(0).getIsDelivered());
     }
 
     @AfterClass

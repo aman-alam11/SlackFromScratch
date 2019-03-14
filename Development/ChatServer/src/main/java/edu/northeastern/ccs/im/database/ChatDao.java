@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+@SuppressWarnings("all")
 public class ChatDao {
 
 	SessionFactory mSessionFactory;
@@ -31,10 +32,11 @@ public class ChatDao {
     public boolean create(User fromId, User toId, String msg, int replyTo, Date expiry,
                    Boolean grpMsg, Boolean isDelivered) {
         // Create a session
-        Session session = mSessionFactory.openSession();
+        Session session = null;
         Transaction transaction = null;
         boolean isTransactionSuccessful = false;
         try {
+            session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            Chat chat = new Chat();
@@ -50,14 +52,12 @@ public class ChatDao {
            session.save(chat);
            // Commit the transaction
            transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
-           // Print the Exception
-           Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
-       } finally {
+        } catch (HibernateException ex) {
+            // Print the Exception
+            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            transaction.rollback();
+        } finally {
            // Close the session
            session.close();
        }
@@ -70,10 +70,11 @@ public class ChatDao {
     * @return
     */
    public List<Chat> findByReceiver(int receiverId) {
-	Session session = mSessionFactory.openSession();
+	Session session = null;
 	Transaction transaction = null;
 	List<Chat> chat = null;
        try {
+           session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            String sql = "select *from chat where chat.To_id = ?";
@@ -83,13 +84,11 @@ public class ChatDao {
            chat = query.getResultList();
            // Commit the transaction
            transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
+       } catch (Exception ex) {
            // Print the Exception
            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           // If there are any exceptions, roll back the changes
+           transaction.rollback();
        } finally {
            // Close the session
            session.close();
@@ -102,9 +101,10 @@ public class ChatDao {
     * @param receiverId
     */
    public void deleteChatByReceiver(int receiverId) {
-	   Session session = mSessionFactory.openSession();
+	   Session session = null;
        Transaction transaction = null;
        try {
+           session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            String sql = "delete from chat where chat.To_id = ?";
@@ -114,13 +114,11 @@ public class ChatDao {
 	   	   	query.executeUpdate();
            // Commit the transaction
            transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
+       } catch (Exception ex) {
            // Print the Exception
            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           // If there are any exceptions, roll back the changes
+           transaction.rollback();
        } finally {
            // Close the session
            session.close();
@@ -133,9 +131,10 @@ public class ChatDao {
     */
    public void delete(int id) {
        // Create a session
-       Session session = mSessionFactory.openSession();
+       Session session = null;
        Transaction transaction = null;
        try {
+           session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            // Get the User from the database.
@@ -144,16 +143,29 @@ public class ChatDao {
            session.delete(chat);
            // Commit the transaction
            transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
+       } catch (Exception ex) {
            // Print the Exception
-         Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           // If there are any exceptions, roll back the changes
+           transaction.rollback();
        } finally {
            // Close the session
            session.close();
        }
    }
+
+	public void updateDeliveryStatus(int id, boolean status) {
+
+		Transaction tx = null;
+		try (Session session = mSessionFactory.openSession()) {
+			tx = session.beginTransaction();
+			Chat chat = (Chat) session.get(Chat.class, id);
+			chat.setIsDelivered(status);
+			session.update(chat);
+			tx.commit();
+		} catch (Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).info(e.getMessage());
+            tx.rollback();
+		}
+	}
 }
