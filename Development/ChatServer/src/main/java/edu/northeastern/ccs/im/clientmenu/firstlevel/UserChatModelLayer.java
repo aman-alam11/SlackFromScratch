@@ -61,7 +61,6 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
   @Override
   public void listen(String message) {
     FrontEnd.getView().showLoadingView(true);
-
   }
 
   /**
@@ -77,7 +76,6 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
 					UserChat chat = gson.fromJson(msg.getMessage(), UserChat.class);
 					String messageToDisplay = frameChatMessageToDisplay(chat, msg.getMessageType());
 					FrontEnd.getView().sendToView(messageToDisplay);
-					
 				}
 
 			}

@@ -1,0 +1,94 @@
+package edu.northeastern.ccs.im.clientmenu;
+
+import com.google.gson.Gson;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.util.Scanner;
+
+import edu.northeastern.ccs.im.client.communication.Connection;
+import edu.northeastern.ccs.im.clientmenu.firstlevel.UserChatModelLayer;
+import edu.northeastern.ccs.im.clientmenu.models.UserChat;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
+import static org.mockito.Mockito.when;
+
+public class UserChatModelLayerTest {
+
+  @Mock
+  private Connection connection;
+
+  private Gson mGson;
+
+
+  @Mock
+  private UserChat userChat;
+
+  private UserChatModelLayer userChatModelLayer;
+
+
+
+  @Before
+  public void init() {
+    MockitoAnnotations.initMocks(this);
+    userChatModelLayer = new UserChatModelLayer("atti");
+    mGson = new Gson();
+  }
+
+  @Test
+  public void passControlTest() {
+    String str = "1\n" + "atti\n";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+    userChatModelLayer.listen("message");
+    userChatModelLayer.passControl(scanner, connection);
+  }
+
+  @Test
+  public void passControlQuitTest() {
+    String str = "\\q\n";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+    userChatModelLayer.passControl(scanner, connection);
+  }
+
+  @Test
+  public void frameChatMessageToDisplayTest() {
+    when(userChat.getMsg()).thenReturn("message from user");
+    String str = userChatModelLayer.frameChatMessageToDisplay(userChat, MessageType.USER_CHAT);
+
+    assertEquals("USER_CHAT-userChat",str);
+  }
+
+  @Test
+  public void runTest() {
+    String str = "1\n" + "atti\n" + "\\q\n";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+    userChatModelLayer.passControl(scanner, connection);
+    userChatModelLayer.run();
+  }
+
+  @Test
+  public void run2Test() {
+    String str = "1\n" + "atti\n" + "\\q\n";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+    UserChat userChat = new UserChat();
+    userChat.setMsg("hello");
+    userChat.setFromUserName("atti");
+
+    String message = mGson.toJson(userChat);
+    MessageJson messageJson = new MessageJson("atti",MessageType.USER_CHAT,message);
+    when(connection.hasNext()).thenReturn(true);
+    when(connection.next()).thenReturn(messageJson);
+    userChatModelLayer.passControl(scanner, connection);
+    userChatModelLayer.run();
+  }
+}

@@ -77,6 +77,7 @@ public class ClientRunnableTest {
 		assertNull(null, clientRunnable.getUserName());
 	}
 
+
 	@Test
 	public void testRun_whenUserSendingChat() {
 
