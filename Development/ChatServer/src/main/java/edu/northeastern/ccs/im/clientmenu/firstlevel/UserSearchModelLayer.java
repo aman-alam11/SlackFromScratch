@@ -1,13 +1,12 @@
 package edu.northeastern.ccs.im.clientmenu.firstlevel;
 
-import com.google.gson.Gson;
-
 import java.util.List;
 import java.util.Scanner;
 
+import com.google.gson.Gson;
+
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.models.UserSearch;
@@ -73,6 +72,20 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
   @Override
   public void listen(String message) {
 //    FrontEnd.getView().showLoadingView(true);
+    FrontEnd.getView().showLoadingView(true);
+    UserSearch userSearch = mGson.fromJson(message, UserSearch.class);
+    List<String> usernames = userSearch.getListUserString();
+    if (usernames.isEmpty()) {
+      FrontEnd.getView().sendToView("No users with that name found");
+    } else {
+      for (String username : usernames) {
+        FrontEnd.getView().sendToView(username);
+      }
+    }
+
+    String userToChatWith = this.mScanner.next().toLowerCase().trim();
+    UserChatModelLayer model = new UserChatModelLayer(userToChatWith);
+    model.passControl(mScanner, this.mConnection);
 
   }
 }

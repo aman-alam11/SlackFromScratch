@@ -17,6 +17,8 @@ public class ChatModel {
   private Date time;
   private boolean isDelivered;
 
+  public ChatModel(){}
+
   public ChatModel(String from, String to, String conversation, Date time, boolean isDelivered) {
 
     this.from = from;
