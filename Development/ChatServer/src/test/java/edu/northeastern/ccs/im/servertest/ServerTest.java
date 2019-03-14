@@ -34,26 +34,26 @@ public class ServerTest {
   @Mock
   JsonMessageHandlerFactory messageHandlerFactory;
 
-  @Test
-  public void test() throws Exception {
-    ClientTimer timer = new ClientTimer();
-
-    Field constantField = ClientTimer.class.getDeclaredField("TERMINATE_AFTER_INACTIVE_INITIAL_IN_MS");
-    constantField.setAccessible(true);
-
-    Field modifiersField = Field.class.getDeclaredField("modifiers");
-    modifiersField.setAccessible(true);
-    modifiersField.setInt(constantField, constantField.getModifiers() & ~Modifier.FINAL);
-    constantField.set(null, -2000000000);
-    timer.updateAfterInitialization();
-
-    Field calendarField = ClientTimer.class.getDeclaredField("calendar");
-    calendarField.setAccessible(true);
-    calendarField.set(timer, null);
-
-    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket, messageHandlerFactory));
-    runnable.run();
-  }
+//  @Test
+//  public void test() throws Exception {
+//    ClientTimer timer = new ClientTimer();
+//
+//    Field constantField = ClientTimer.class.getDeclaredField("TERMINATE_AFTER_INACTIVE_INITIAL_IN_MS");
+//    constantField.setAccessible(true);
+//
+//    Field modifiersField = Field.class.getDeclaredField("modifiers");
+//    modifiersField.setAccessible(true);
+//    modifiersField.setInt(constantField, constantField.getModifiers() & ~Modifier.FINAL);
+//    constantField.set(null, -2000000000);
+//    timer.updateAfterInitialization();
+//
+//    Field calendarField = ClientTimer.class.getDeclaredField("calendar");
+//    calendarField.setAccessible(true);
+//    calendarField.set(timer, null);
+//
+//    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket, messageHandlerFactory));
+//    runnable.run();
+//  }
 
 
   @BeforeClass
@@ -84,28 +84,28 @@ public class ServerTest {
   }
 
 
-  @Test
-  public void testBroadcastMessageBranch() throws NoSuchFieldException, IllegalAccessException {
-    Field activeField = Prattle.class.getDeclaredField("active");
-    activeField.setAccessible(true);
-    ConcurrentLinkedQueue<ClientRunnable> queue =
-            (ConcurrentLinkedQueue<ClientRunnable>) activeField.get(new Prattle() {
-            });
+//  @Test
+//  public void testBroadcastMessageBranch() throws NoSuchFieldException, IllegalAccessException {
+//    Field activeField = Prattle.class.getDeclaredField("active");
+//    activeField.setAccessible(true);
+//    ConcurrentLinkedQueue<ClientRunnable> queue =
+//            (ConcurrentLinkedQueue<ClientRunnable>) activeField.get(new Prattle() {
+//            });
+//
+//    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket, messageHandlerFactory));
+//    Field initField = ClientRunnable.class.getDeclaredField("initialized");
+//    initField.setAccessible(true);
+//    initField.set(runnable, true);
+//    queue.add(runnable);
+//    // TODO: Check
+////    broadcastMessage(Message.makeBroadcastMessage("NAME", "HEY WASSUP"));
+//  }
 
-    ClientRunnable runnable = new ClientRunnable(new NetworkConnection(clientSocket, messageHandlerFactory));
-    Field initField = ClientRunnable.class.getDeclaredField("initialized");
-    initField.setAccessible(true);
-    initField.set(runnable, true);
-    queue.add(runnable);
-    // TODO: Check
-//    broadcastMessage(Message.makeBroadcastMessage("NAME", "HEY WASSUP"));
-  }
 
-
-  @Test
-  public void testRemove() {
-    Prattle.removeClient(null);
-  }
+//  @Test
+//  public void testRemove() {
+//    Prattle.removeClient(null);
+//  }
 
   @Test
   public void testClientThreadCreation() throws NoSuchMethodException, InvocationTargetException,

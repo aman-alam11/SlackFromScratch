@@ -132,6 +132,7 @@ public class JPAServiceTest {
 //        jpaS.createUser("Bob","b@b.com","bob");
 //
 //        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
+//        jpaS.createChatMessage("Charlie", "Bob", "How are you?",0, new Date(), false, true);
 //        assertEquals(1,jpaS.findByReceiver("Bob").size());
 //        jpaS.deleteMessage(1);
 //        assertEquals(0,jpaS.findByReceiver("Bob").size());
