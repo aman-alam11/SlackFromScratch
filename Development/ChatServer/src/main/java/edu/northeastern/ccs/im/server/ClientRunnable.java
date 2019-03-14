@@ -5,8 +5,6 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 
-import com.google.gson.Gson;
-
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.Message;
@@ -14,7 +12,6 @@ import edu.northeastern.ccs.im.NetworkConnection;
 import edu.northeastern.ccs.im.business.logic.MessageHandler;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
-import edu.northeastern.ccs.im.model.LoginCredentials;
 
 /**
  * Instances of this class handle all of the incoming communication from a
@@ -231,12 +228,12 @@ public class ClientRunnable implements Connection {
 			MessageJson msg = messageIter.next();
 			if (msg.getMessageType().equals(MessageType.LOG_OUT)) {
 				terminate = true;
+			} else {
+				MessageHandler messageHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
+				messageHandler.handleMessage(userName, msg.getMessage(), this);
 			}
 
-			// TODO can this be in else block?
-			MessageHandler messageHandler = connection.getMessageHandlerFactory()
-					.getMessageHandler(msg.getMessageType());
-			messageHandler.handleMessage(userName, msg.getMessage(), this);
+			
 		}
 	}
 

@@ -12,7 +12,7 @@ public class GenerateLoginCredentials {
 
   public MessageJson generateLoginCredentials(String username, String password, MessageType messageType) {
     LoginCredentials loginCredentials = new LoginCredentials(username, password);
-    username = username;
+    this.username = username;
     String jsonLoginCredentials = new Gson().toJson(loginCredentials);
     return new MessageJson(username, messageType, jsonLoginCredentials);
   }

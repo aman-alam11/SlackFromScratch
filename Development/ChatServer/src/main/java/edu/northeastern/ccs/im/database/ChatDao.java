@@ -28,12 +28,12 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public boolean create(User fromId, User toId, String msg, int replyTo, Date expiry,
+    public int create(User fromId, User toId, String msg, int replyTo, Date expiry,
                    Boolean grpMsg, Boolean isDelivered) {
         // Create a session
         Session session = mSessionFactory.openSession();
         Transaction transaction = null;
-        boolean isTransactionSuccessful = false;
+        int id  = 0;
         try {
            // Begin a transaction
            transaction = session.beginTransaction();
@@ -47,7 +47,7 @@ public class ChatDao {
            chat.setGrpMsg(grpMsg);
            chat.setIsDelivered(isDelivered);
            // Save the User
-           session.save(chat);
+           id = (int) session.save(chat);
            // Commit the transaction
            transaction.commit();
         } catch (HibernateException ex) {
@@ -62,7 +62,7 @@ public class ChatDao {
            session.close();
         }
 
-     return isTransactionSuccessful;
+     return id;
    }
 
    /**

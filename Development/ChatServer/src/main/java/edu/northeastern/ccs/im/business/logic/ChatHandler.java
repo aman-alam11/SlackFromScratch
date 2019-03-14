@@ -6,6 +6,7 @@ import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.model.UserChat;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.Prattle;
 
@@ -19,27 +20,27 @@ public class ChatHandler implements MessageHandler {
 
   @Override
   public boolean handleMessage(String user, String message, Connection conn) {
-    boolean isSuccessful = false;
-    ChatModel chatModel = mGson.fromJson(message, ChatModel.class);
-
+    boolean isSuccessfull = false;
+    UserChat chatModel = mGson.fromJson(message, UserChat.class);
     JPAService jpaService = new JPAService();
-    //TODO:  save to db
-    /*
-     * isSuccessfull = jpaService.createChatMessage(chatModel.getSender(),
-     * chatModel.getReciever(), chatModel.getConversation(), 0,
-     * chatModel.getTimeStamp(), new Date(), false, false);
-     */
+    
+    int id = jpaService.createChatMessage(chatModel.getFromUserName(),
+      																							chatModel.getToUserName(),
+      																							chatModel.getMsg(),
+      																							0,
+      																							chatModel.getExpiry(),
+      																							false,
+      																							false);
 
-    if (Prattle.isUserOnline(chatModel.getReciever())) {
+    if (id !=0 && Prattle.isUserOnline(chatModel.getToUserName())) {
 
-      MessageJson msg = new MessageJson(chatModel.getSender(), MessageType.USER_CHAT, message);
-      msg.setSendToUser(chatModel.getReciever());
-      isSuccessful = Prattle.sendMessageTo(chatModel.getReciever(), msg);
-      if (isSuccessful) {
-        //TODO : set the chat id below
-        jpaService.updateChatStatus(0, true);
+      MessageJson msg = new MessageJson(chatModel.getFromUserName(), MessageType.USER_CHAT, message);
+      msg.setSendToUser(chatModel.getToUserName());
+      isSuccessfull = Prattle.sendMessageTo(chatModel.getToUserName(), msg);
+      if (isSuccessfull) {
+       jpaService.updateChatStatus(id, true);
       }
     }
-    return isSuccessful;
+    return isSuccessfull;
   }
 }
