@@ -129,10 +129,7 @@ public class ClientRunnable implements Connection {
 			// Optimistically set this users ID number.
 			setName(userName);
 			result = true;
-		} else {
-			// Clear this name; we cannot use it. *sigh*
-			result = false;
-		}
+		} 
 		return result;
 	}
 
@@ -232,8 +229,6 @@ public class ClientRunnable implements Connection {
 				MessageHandler messageHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
 				messageHandler.handleMessage(userName, msg.getMessage(), this);
 			}
-
-			
 		}
 	}
 
