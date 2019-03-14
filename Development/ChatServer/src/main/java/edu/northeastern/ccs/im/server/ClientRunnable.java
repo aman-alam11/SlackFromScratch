@@ -93,6 +93,8 @@ public class ClientRunnable implements Connection {
 		messageIter = connection.iterator();
 	}
 
+
+	// TODO can this be deleted?
 	/**
 	 * Check if the message is properly formed. At the moment, this means checking
 	 * that the identifier is set properly.
@@ -231,6 +233,7 @@ public class ClientRunnable implements Connection {
 				terminate = true;
 			}
 
+			// TODO can this be in else block?
 			MessageHandler messageHandler = connection.getMessageHandlerFactory()
 					.getMessageHandler(msg.getMessageType());
 			messageHandler.handleMessage(userName, msg.getMessage(), this);
