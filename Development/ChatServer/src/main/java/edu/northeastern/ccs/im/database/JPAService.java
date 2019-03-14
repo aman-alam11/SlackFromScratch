@@ -92,7 +92,7 @@ public class JPAService {
     	return ud.findUserByName(name);
     }
 	
-	public List<User> searchUserbyUserName(String userName) {
+	public List<String> searchUserbyUserName(String userName) {
 		return ud.searchUserByName(userName);
 	}
 

@@ -22,7 +22,7 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
         break;
        
       case USER_SEARCH:
-    	handler = new UserSearch();
+    	handler = new UserSearchHandler();
     	break;
 
       default:

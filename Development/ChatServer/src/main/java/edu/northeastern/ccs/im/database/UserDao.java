@@ -176,12 +176,12 @@ public class UserDao {
    * @param name
    * @return
    */
-  public List<User> searchUserByName(String name) {
+  public List<String> searchUserByName(String name) {
 	    Session session = mSessionFactory.openSession();
 	    try{
-	      String sql = "select * from users where users.user_name like %?%";
-	      Query<User> query = session.createNativeQuery(sql, User.class);
-	      query.setParameter(1, name);
+	      String sql = "select users.user_name from users where users.user_name like ?";
+	      Query query = session.createNativeQuery(sql);
+	      query.setParameter(1, "%"+ name+ "%");
 	      return query.getResultList();
 	    }catch (HibernateException | NoResultException ex){
 	      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());

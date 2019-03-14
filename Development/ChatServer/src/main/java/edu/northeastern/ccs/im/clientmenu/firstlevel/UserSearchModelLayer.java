@@ -35,29 +35,41 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
 
     String userSearchJsonString = new Gson().toJson(userSearch);
     MessageJson messageJson = new MessageJson(myUsername, MessageType.USER_SEARCH, userSearchJsonString);
-    model.registerListener(this, MessageType.USER_SEARCH);
+//    model.registerListener(this, MessageType.USER_SEARCH);
     model.sendMessage(messageJson);
-    FrontEnd.getView().showLoadingView(false);
+//    FrontEnd.getView().showLoadingView(false);
+
+    while(!model.hasNext()){
+    	
+    }
+    
+    MessageJson mjson;
+    while((mjson = model.next()).getMessageType().equals(MessageType.USER_SEARCH)) {
+    	  
+    	  break;
+    }
+    String json = mjson.getMessage();
+	  
+	  UserSearch user = mGson.fromJson(json, UserSearch.class);
+	  List<String> usernames = userSearch.getListUserString();
+	  if (usernames.isEmpty()) {
+		  FrontEnd.getView().sendToView("No users with that name found");
+	  } else {
+		  for (String username : usernames) {
+			  FrontEnd.getView().sendToView(username);
+		  }
+	  }
+	  
+    
+    String userToChatWith = mScanner.nextLine();
+    new UserChatModelLayer(userToChatWith).passControl(mScanner, this.mConnection);
+
   }
 
 
   @Override
   public void listen(String message) {
-    FrontEnd.getView().showLoadingView(true);
-    UserSearch userSearch = mGson.fromJson(message, UserSearch.class);
-    List<String> usernames = userSearch.getListUserString();
-    if (usernames.isEmpty()) {
-      FrontEnd.getView().sendToView("No users with that name found");
-    } else {
-      for (String username : usernames) {
-        FrontEnd.getView().sendToView(username);
-      }
-    }
-
-    String userToChatWith = this.mScanner.next().toLowerCase().trim();
-    UserChatModelLayer model = new UserChatModelLayer(userToChatWith);
-    model.passControl(mScanner, this.mConnection);
-
+//    FrontEnd.getView().showLoadingView(true);
 
   }
 }
