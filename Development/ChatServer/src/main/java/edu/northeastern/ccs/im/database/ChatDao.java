@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+@SuppressWarnings("all")
 public class ChatDao {
 
 	SessionFactory mSessionFactory;
@@ -31,10 +32,11 @@ public class ChatDao {
     public int create(User fromId, User toId, String msg, int replyTo, Date expiry,
                    Boolean grpMsg, Boolean isDelivered) {
         // Create a session
-        Session session = mSessionFactory.openSession();
+        Session session = null;
         Transaction transaction = null;
         int id  = 0;
         try {
+            session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            Chat chat = new Chat();
@@ -51,12 +53,10 @@ public class ChatDao {
            // Commit the transaction
            transaction.commit();
         } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
-           // Print the Exception
+            // Print the Exception
             Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            transaction.rollback();
         } finally {
            // Close the session
            session.close();
@@ -72,10 +72,11 @@ public class ChatDao {
     */
 
    public List<Chat> findByReceiver(int receiverId) {
-	Session session = mSessionFactory.openSession();
+	Session session = null;
 	Transaction transaction = null;
 	List<Chat> chat = null;
        try {
+           session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            String sql = "select *from chat where chat.To_id = ?";
@@ -85,13 +86,11 @@ public class ChatDao {
            chat = query.getResultList();
            // Commit the transaction
            transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
+       } catch (Exception ex) {
            // Print the Exception
            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           // If there are any exceptions, roll back the changes
+           transaction.rollback();
        } finally {
            // Close the session
            session.close();
@@ -104,9 +103,10 @@ public class ChatDao {
     * @param receiverId
     */
    public void deleteChatByReceiver(int receiverId) {
-	   Session session = mSessionFactory.openSession();
+	   Session session = null;
        Transaction transaction = null;
        try {
+           session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            String sql = "delete from chat where chat.To_id = ?";
@@ -116,13 +116,11 @@ public class ChatDao {
 	   	   	query.executeUpdate();
            // Commit the transaction
            transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
+       } catch (Exception ex) {
            // Print the Exception
            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           // If there are any exceptions, roll back the changes
+           transaction.rollback();
        } finally {
            // Close the session
            session.close();
@@ -135,9 +133,10 @@ public class ChatDao {
     */
    public void delete(int id) {
        // Create a session
-       Session session = mSessionFactory.openSession();
+       Session session = null;
        Transaction transaction = null;
        try {
+           session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
            // Get the User from the database.
@@ -146,19 +145,17 @@ public class ChatDao {
            session.delete(chat);
            // Commit the transaction
            transaction.commit();
-       } catch (HibernateException ex) {
-           // If there are any exceptions, roll back the changes
-           if (transaction != null) {
-               transaction.rollback();
-           }
+       } catch (Exception ex) {
            // Print the Exception
-         Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+           // If there are any exceptions, roll back the changes
+           transaction.rollback();
        } finally {
            // Close the session
            session.close();
        }
    }
-   
+
 	public void updateDeliveryStatus(int id, boolean status) {
 
 		Transaction tx = null;
@@ -168,10 +165,9 @@ public class ChatDao {
 			chat.setIsDelivered(status);
 			session.update(chat);
 			tx.commit();
-		} catch (HibernateException e) {
-			if (tx != null)
-				tx.rollback();
-			e.printStackTrace();
+		} catch (Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).info(e.getMessage());
+            tx.rollback();
 		}
 	}
 }

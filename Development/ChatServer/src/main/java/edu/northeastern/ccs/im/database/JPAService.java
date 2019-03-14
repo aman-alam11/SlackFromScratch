@@ -91,11 +91,10 @@ public class JPAService {
 	public User findUserByName(String name) {
     	return ud.findUserByName(name);
     }
-	
+
 	public List<String> searchUserbyUserName(String userName) {
 		return ud.searchUserByName(userName);
 	}
-
 
 	public String getHashFromUsername(String username) {
 		return ud.findHashForUsername(username);
@@ -137,6 +136,7 @@ public class JPAService {
 		return cd.findByReceiver(user.getId());
 		
 	}
+
 	/**
 	 * update the delivery status of chat for a chat id
 	 * @param chatId

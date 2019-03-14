@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+@SuppressWarnings("all")
 public class UserDao {
 
   SessionFactory mSessionFactory;
@@ -27,9 +28,10 @@ public class UserDao {
   public boolean create(String name, String email, String password) {
     boolean isTransactionSuccessful = false;
     // Create a session
-    Session session = mSessionFactory.openSession();
+    Session session = null;
     Transaction transaction = null;
     try {
+      session = mSessionFactory.openSession();
       // Begin a transaction
       transaction = session.beginTransaction();
       User user = new User(name, password, email);
@@ -41,12 +43,10 @@ public class UserDao {
       transaction.commit();
       isTransactionSuccessful = true;
     } catch (HibernateException ex) {
-      // If there are any exceptions, roll back the changes
-      if (transaction != null) {
-        transaction.rollback();
-      }
       // Print the Exception
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+      // If there are any exceptions, roll back the changes
+      transaction.rollback();
     } finally {
       // Close the session
       session.close();
@@ -63,22 +63,21 @@ public class UserDao {
   public List<User> readAll() {
     List<User> users = null;
     // Create a session
-    Session session = mSessionFactory.openSession();
+    Session session = null;
     Transaction transaction = null;
     try {
+      session = mSessionFactory.openSession();
       // Begin a transaction
       transaction = session.beginTransaction();
       users = session.createQuery("FROM User").list();
 
       // Commit the transaction
       transaction.commit();
-    } catch (HibernateException ex) {
-      // If there are any exceptions, roll back the changes
-      if (transaction != null) {
-        transaction.rollback();
-      }
+    } catch (Exception ex) {
       // Print the Exception
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+      // If there are any exceptions, roll back the changes
+      transaction.rollback();
     } finally {
       // Close the session
       session.close();
@@ -103,12 +102,10 @@ public class UserDao {
       // Commit the transaction
       transaction.commit();
     } catch (HibernateException | IllegalArgumentException ex) {
-      // If there are any exceptions, roll back the changes
-      if (transaction != null) {
-        transaction.rollback();
-      }
       // Print the Exception
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+      // If there are any exceptions, roll back the changes
+      transaction.rollback();
     } finally {
       // Close the session
       session.close();
@@ -120,9 +117,10 @@ public class UserDao {
    */
   public void update(int id, String name, String email, String password) {
     // Create a session
-    Session session = mSessionFactory.openSession();
+    Session session = null;
     Transaction transaction = null;
     try {
+      session = mSessionFactory.openSession();
       // Begin a transaction
       transaction = session.beginTransaction();
 
@@ -139,13 +137,11 @@ public class UserDao {
 
       // Commit the transaction
       transaction.commit();
-    } catch (HibernateException ex) {
-      // If there are any exceptions, roll back the changes
-      if (transaction != null) {
-        transaction.rollback();
-      }
+    } catch (Exception ex) {
       // Print the Exception
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+      // If there are any exceptions, roll back the changes
+      transaction.rollback();
     } finally {
       // Close the session
       session.close();
@@ -156,8 +152,9 @@ public class UserDao {
    * Find a user by unique key user name.
    */
   public User findUserByName(String name) {
-    Session session = mSessionFactory.openSession();
+    Session session = null;
     try{
+      session = mSessionFactory.openSession();
       String sql = "select * from users where users.user_name = ?";
 
       Query query = session.createNativeQuery(sql, User.class);
@@ -170,7 +167,7 @@ public class UserDao {
     }
     return null;
   }
-  
+
   /**
    * Search user with keyword given
    * @param name
@@ -183,14 +180,13 @@ public class UserDao {
 	      Query query = session.createNativeQuery(sql);
 	      query.setParameter(1, "%"+ name+ "%");
 	      return query.getResultList();
-	    }catch (HibernateException | NoResultException ex){
+	    }catch (Exception ex){
 	      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
 	    }finally {
 	      session.close();
 	    }
-	    return Arrays.asList();
+	    return null;
 	  }
-
 
   public String findHashForUsername(String username) {
     Session session = mSessionFactory.openSession();
