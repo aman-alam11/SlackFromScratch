@@ -153,19 +153,20 @@ public class UserDao {
    */
   public User findUserByName(String name) {
     Session session = null;
+    User user = null;
     try{
       session = mSessionFactory.openSession();
       String sql = "select * from users where users.user_name = ?";
 
       Query query = session.createNativeQuery(sql, User.class);
       query.setParameter(1, name);
-      return (User) query.getSingleResult();
+      user = (User) query.getSingleResult();
     }catch (HibernateException | NoResultException ex){
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
     }finally {
       session.close();
     }
-    return null;
+    return user;
   }
 
   /**
