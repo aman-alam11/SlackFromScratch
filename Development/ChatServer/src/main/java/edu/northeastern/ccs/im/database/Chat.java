@@ -40,77 +40,76 @@ public class Chat implements Serializable{
 	@Column(name="isDelivered", nullable=false)
 	private Boolean isDelivered;
 
-	public int getId() {
+	protected int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 
-	public User getFromId() {
+	protected User getFromId() {
 		return fromId;
 	}
 
-	public void setFromId(User fromId) {
+	protected void setFromId(User fromId) {
 		this.fromId = fromId;
 	}
 
-	public User getToId() {
+	protected User getToId() {
 		return toId;
 	}
 
-	public void setToId(User toId) {
+	protected void setToId(User toId) {
 		this.toId = toId;
 	}
 
-	public String getMsg() {
+	protected String getMsg() {
 		return msg;
 	}
 
-	public void setMsg(String msg) {
+	protected void setMsg(String msg) {
 		this.msg = msg;
 	}
 
-	public int getReplyTo() {
+	protected int getReplyTo() {
 		return replyTo;
 	}
 
-	public void setReplyTo(int replyTo) {
+	protected void setReplyTo(int replyTo) {
 		this.replyTo = replyTo;
 	}
 
-	public Date getCreated() {
+	protected Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(Date created) {
+	protected void setCreated(Date created) {
 		this.created = created;
 	}
 
-	public Date getExpiry() {
+	protected Date getExpiry() {
 		return expiry;
 	}
 
-	public void setExpiry(Date expiry) {
+	protected void setExpiry(Date expiry) {
 		this.expiry = expiry;
 	}
 
-	public Boolean getGrpMsg() {
+	protected Boolean getGrpMsg() {
 		return grpMsg;
 	}
 
-	public void setGrpMsg(Boolean grpMsg) {
+	protected void setGrpMsg(Boolean grpMsg) {
 		this.grpMsg = grpMsg;
 	}
 
-	public Boolean getIsDelivered() {
+	protected Boolean getIsDelivered() {
 		return isDelivered;
 	}
 
-	public void setIsDelivered(Boolean isDelivered) {
+	protected void setIsDelivered(Boolean isDelivered) {
 		this.isDelivered = isDelivered;
 	}
-	
-	
+
 }

@@ -52,7 +52,7 @@ public class User implements Serializable {
    *
    * @return an integer id.
    */
-  public int getId() {
+  protected int getId() {
     return id;
   }
 
@@ -61,7 +61,7 @@ public class User implements Serializable {
    *
    * @param id Takes an integer id to set it as an id of a user.
    */
-  public void setId(int id) {
+  protected void setId(int id) {
     this.id = id;
   }
 
@@ -70,7 +70,7 @@ public class User implements Serializable {
    *
    * @return a String username.
    */
-  public String getName() {
+  protected String getName() {
     return name;
   }
 
@@ -79,7 +79,7 @@ public class User implements Serializable {
    *
    * @param name Takes a string name to set it as the username for the user.
    */
-  public void setName(String name) {
+  protected void setName(String name) {
     this.name = name;
   }
 
