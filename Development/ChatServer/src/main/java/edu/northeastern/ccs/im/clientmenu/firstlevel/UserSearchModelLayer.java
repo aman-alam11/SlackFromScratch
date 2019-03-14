@@ -43,15 +43,18 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
     	
     }
     
-    MessageJson mjson;
-    while((mjson = model.next()).getMessageType().equals(MessageType.USER_SEARCH)) {
+    MessageJson mjson = null;
+    while(mConnection.hasNext()) {
     	  
-    	  break;
+    	mjson = model.next();
+    	if (mjson.getMessageType().equals(MessageType.USER_SEARCH)) {
+    		break;
+    	}
     }
     String json = mjson.getMessage();
 	  
 	  UserSearch user = mGson.fromJson(json, UserSearch.class);
-	  List<String> usernames = userSearch.getListUserString();
+	  List<String> usernames = user.getListUserString();
 	  if (usernames.isEmpty()) {
 		  FrontEnd.getView().sendToView("No users with that name found");
 	  } else {
