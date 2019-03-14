@@ -64,6 +64,9 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
 
   }
 
+  /**
+   * This method runs in a loop when thread starts till messgage quit comes
+   */
 	@Override
 	public void run() {
 		while (isAlive) {
