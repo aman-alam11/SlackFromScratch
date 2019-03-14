@@ -64,8 +64,8 @@ public class SocketConnection implements Connection {
   }
 
   private static void initThread() {
-    messageQueue = new ConcurrentLinkedQueue<>();
-    messageBuffer = new StringBuilder();
+	  messageQueue = new ConcurrentLinkedQueue<>();
+	  messageBuffer = new StringBuilder();
     Thread messageListenerFromServer = new Thread(() -> {
       boolean isAlive = true;
       ByteBuffer buff = ByteBuffer.allocate(BUFFER_SIZE);
@@ -138,10 +138,7 @@ public class SocketConnection implements Connection {
 
   @Override
   public MessageJson next() {
-    if (hasNext()) {
-      return messageQueue.remove();
-    }
-    return null;
+      return messageQueue.poll();
   }
 
   @Override

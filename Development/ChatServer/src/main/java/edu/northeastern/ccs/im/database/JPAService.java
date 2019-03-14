@@ -120,7 +120,7 @@ public class JPAService {
 	 *
 	 * @return A boolean representing if the transaction was successful or not.
 	 */
-	public boolean createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
+	public int createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
 									 Date expiry, Boolean grpMsg, Boolean isDelivered) {
 		User fromUser = findUserByName(fromUserName);
 		User toUser = findUserByName(toUserName);

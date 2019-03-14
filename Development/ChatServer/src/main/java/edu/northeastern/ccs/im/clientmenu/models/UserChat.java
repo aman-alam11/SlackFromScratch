@@ -59,4 +59,12 @@ public class UserChat {
   public void setFromUserName(String fromUserName) {
     this.fromUserName = fromUserName;
   }
+  
+  @Override
+  public String toString() {
+  	StringBuilder sb = new StringBuilder(fromUserName);
+  	sb.append(": ")
+  	.append(msg);
+  	return sb.toString();
+  }
 }
