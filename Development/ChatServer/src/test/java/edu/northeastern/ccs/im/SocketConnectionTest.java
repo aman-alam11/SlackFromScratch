@@ -36,7 +36,7 @@ import edu.northeastern.ccs.im.message.MessageType;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SocketConnectionTest {
 
-  private SocketConnection socketConnection;
+  private Connection socketConnection;
   private static SocketChannel clientChannelOnServer;
   private static ServerSocketChannel serverSocket;
   
@@ -45,7 +45,7 @@ public class SocketConnectionTest {
     serverSocket = ServerSocketChannel.open();
     try {
       serverSocket.configureBlocking(false);
-      serverSocket.bind(new InetSocketAddress(4444));
+      serverSocket.bind(new InetSocketAddress(4445));
       Selector selector = SelectorProvider.provider().openSelector();
       serverSocket.register(selector, SelectionKey.OP_ACCEPT);
 
@@ -120,7 +120,8 @@ public class SocketConnectionTest {
   	synchronized (this) {
   		wait(1000);
 		}
-  	Connection c = SocketConnection.getInstance("localhost", 4444);
+  	Connection c = SocketConnection.getInstance("localhost", 4445);
+  	socketConnection = c;
   	assertNotNull(c);
   	
   }
@@ -135,21 +136,21 @@ public class SocketConnectionTest {
   	synchronized (this) {
   		wait(1000);
 		}
-  	boolean b= SocketConnection.getInstance("localhost", 4444).hasNext();
-  	MessageJson msgReceived = SocketConnection.getInstance("localhost", 4444).next();
+  	boolean b= SocketConnection.getInstance("localhost", 4445).hasNext();
+  	MessageJson msgReceived = SocketConnection.getInstance("localhost", 4445).next();
   	assertTrue(b);
   	assertEquals("hello", msgReceived.getMessage());
   }
   
   @Test
-  public void testReceiveMalFormedMessage() throws InterruptedException {
+  public void testReceiveMessage2() throws InterruptedException {
   	String msgToSend = "#" + "{name:Hello World}" + "#";
   	writeToChannel(clientChannelOnServer, msgToSend);
   	synchronized (this) {
   		wait(1000);
 		}
-  	boolean b= SocketConnection.getInstance("localhost", 4444).hasNext();
-  	MessageJson msgReceived = SocketConnection.getInstance("localhost", 4444).next();
+  	boolean b= SocketConnection.getInstance("localhost", 4445).hasNext();
+  	MessageJson msgReceived = SocketConnection.getInstance("localhost", 4445).next();
   	assertFalse(b);
   	assertNull(msgReceived);
   }
@@ -157,12 +158,12 @@ public class SocketConnectionTest {
   @Test
   public void testSendMessage() {
   	MessageJson msg = new MessageJson("", MessageType.HELLO, "hello");
-  	boolean b= SocketConnection.getInstance("localhost", 4444).sendMessage(msg);
+  	boolean b= SocketConnection.getInstance("localhost", 4445).sendMessage(msg);
   	assertTrue(b);
   }
   
   @Test
-  public void test2() throws NoSuchMethodException {
+  public void testListener() throws NoSuchMethodException {
     socketConnection.registerListener(message -> {
     }, MessageType.HELLO);
     Method decodeMessageMethod = SocketConnection.class.getDeclaredMethod("decodeMessage");
@@ -185,12 +186,13 @@ public class SocketConnectionTest {
     }
   }
   
-  private void writeToChannel(SocketChannel channel, String message) {
+  private synchronized void writeToChannel(SocketChannel channel, String message) {
   	ByteBuffer b = ByteBuffer.wrap(message.getBytes());
     while (b.hasRemaining()) {
       try {
         channel.write(b);
       } catch (IOException e) {
+      	
       	e.printStackTrace();
       }
     }
