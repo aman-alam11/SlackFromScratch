@@ -136,7 +136,6 @@ public class NetworkConnectionTest {
 //      //System.out.println(messageItr.next().getText());
 //      messageItr.next();
 //    }
-//    // TODO: Check
 //    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
 //            "pass",
 //            MessageType.LOGIN);
@@ -168,7 +167,6 @@ public class NetworkConnectionTest {
       //System.out.println(messageItr.next().getText());
       messageItr.next();
     }
-    // TODO: Check
     MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
             "pass",
             MessageType.LOGIN);
@@ -200,7 +198,6 @@ public class NetworkConnectionTest {
       //System.out.println(messageItr.next().getText());
       messageItr.next();
     }
-    // TODO: Check
     MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
             "pass",
             MessageType.LOGIN);
@@ -228,7 +225,6 @@ public class NetworkConnectionTest {
       //System.out.println(messageItr.next().getText());
       messageItr.next();
     }
-    // TODO: Check
 //		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
     messageItr.next();
     netConn.close();
@@ -255,7 +251,6 @@ public class NetworkConnectionTest {
       e.printStackTrace();
     }
 
-    // TODO: Check
 //		boolean b = netConn.sendMessage(Message.makeHelloMessage(""));
 //		assertEquals(true, b);
 

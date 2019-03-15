@@ -10,6 +10,8 @@ import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -31,7 +33,7 @@ public class SocketConnection implements Connection {
   private static Gson gson;
 
   private static StringBuilder messageBuffer;
-  private static AsyncListener mAsyncListener;
+  private static List<AsyncListener> mAsyncListenerList;
   private static MessageType listenerMessageType;
 
   //singleton implementation
@@ -59,7 +61,10 @@ public class SocketConnection implements Connection {
 
   @Override
   public void registerListener(AsyncListener asyncListener, MessageType messageType) {
-    mAsyncListener = asyncListener;
+    if(mAsyncListenerList == null){
+        mAsyncListenerList = new ArrayList<>();
+    }
+    mAsyncListenerList.add(asyncListener);
     listenerMessageType = messageType;
   }
 
@@ -107,10 +112,10 @@ public class SocketConnection implements Connection {
           isMessageDecoded = true;
           messageQueue.add(extractedMessage);
 
-          // Remove async listener as the controller is synchronous
-
           if (extractedMessage.getMessageType().equals(listenerMessageType)) {
-            mAsyncListener.listen(extractedMessage.getMessage());
+            for (AsyncListener asyncListener : mAsyncListenerList) {
+              asyncListener.listen(extractedMessage.getMessage());
+            }
           }
           messageBuffer.delete(start - 1, end + 1);
         } catch (JsonSyntaxException e) {

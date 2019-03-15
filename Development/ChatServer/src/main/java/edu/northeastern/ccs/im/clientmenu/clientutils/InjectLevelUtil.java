@@ -30,6 +30,7 @@ public final class InjectLevelUtil {
     if (mInjectUtil == null) {
       mInjectUtil = new InjectLevelUtil();
       mClientOptionsMap = new HashMap<>();
+
     }
 
     return mInjectUtil;
@@ -38,7 +39,6 @@ public final class InjectLevelUtil {
 
   public void injectLevel(CurrentLevel currentLevel) {
     clearMap();
-
     // Update HashMap based on the levels
 
     switch (currentLevel) {
@@ -51,7 +51,7 @@ public final class InjectLevelUtil {
         break;
 
       default:
-        injectFirstLevel();
+        injectLoginLevel();
     }
     // Feed the appropriate options
   }
@@ -72,8 +72,8 @@ public final class InjectLevelUtil {
 
   private void injectFirstLevel() {
     FrontEnd.getView().showFirstLevelOptions();
-    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
-    mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
+//    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
+    mClientOptionsMap.put(1, scanner -> new UserSearchModelLayer());
   }
 
 }

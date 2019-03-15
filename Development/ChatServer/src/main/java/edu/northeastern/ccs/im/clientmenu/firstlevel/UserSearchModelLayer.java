@@ -32,8 +32,7 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
 		String chatUserOtherEnd = scanner.nextLine().toLowerCase().trim();
 
 		String myUsername = GenerateLoginCredentials.getUsername();
-		edu.northeastern.ccs.im.clientmenu.models.UserSearch userSearch = new edu.northeastern.ccs.im.clientmenu.models.UserSearch(
-				chatUserOtherEnd);
+		UserSearch userSearch = new UserSearch(chatUserOtherEnd);
 
 		String userSearchJsonString = new Gson().toJson(userSearch);
 		MessageJson messageJson = new MessageJson(myUsername, MessageType.USER_SEARCH, userSearchJsonString);

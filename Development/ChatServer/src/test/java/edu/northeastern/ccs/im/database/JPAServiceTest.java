@@ -117,7 +117,7 @@ public class JPAServiceTest {
       User alice = jpaS.findUserByName("Alice");
 //    assertEquals("", alice.getEmail());
     } catch (Exception e) {
-      assertEquals("could not extract ResultSet", e.getMessage());
+      assertTrue(e.getMessage().contains("could not extract ResultSet"));
     }
   }
 
