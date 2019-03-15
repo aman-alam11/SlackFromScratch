@@ -193,7 +193,7 @@ public class UserDao {
       String hql = "FROM User U WHERE U.name = :user_name";
       Query query = session.createQuery(hql);
       query.setParameter("user_name",username);
-      return ((User) query.getSingleResult()).getPassword();
+      return (String) query.getSingleResult();
     } catch (HibernateException | NoResultException ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());

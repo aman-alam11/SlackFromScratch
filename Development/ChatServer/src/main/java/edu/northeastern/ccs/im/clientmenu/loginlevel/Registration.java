@@ -53,12 +53,7 @@ public class Registration extends CommonOperations implements AsyncListener {
   public void listen(String message) {
     FrontEnd.getView().showLoadingView(true);
     AckModel ackModel = new Gson().fromJson(message, AckModel.class);
-
     if (ackModel.isLogin()) {
-      return;
-    }
-
-    if (!ackModel.getUsername().equals(GenerateLoginCredentials.getUsername())) {
       return;
     }
 
