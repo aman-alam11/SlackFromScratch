@@ -1,12 +1,10 @@
 package edu.northeastern.ccs.im.clientmenu;
 
-import java.util.Scanner;
-
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
-import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
+
+import java.util.Scanner;
 
 public class DefaultOperation implements CoreOperation {
 

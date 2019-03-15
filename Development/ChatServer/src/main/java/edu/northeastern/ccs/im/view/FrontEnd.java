@@ -1,7 +1,5 @@
 package edu.northeastern.ccs.im.view;
 
-import java.util.logging.Logger;
-
 public class FrontEnd {
 
   private static FrontEnd mFrontEnd;

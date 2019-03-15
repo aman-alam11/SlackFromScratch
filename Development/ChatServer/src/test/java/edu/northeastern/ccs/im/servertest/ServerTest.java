@@ -1,32 +1,23 @@
 package edu.northeastern.ccs.im.servertest;
 
 
-import static edu.northeastern.ccs.im.server.Prattle.broadcastMessage;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.InetSocketAddress;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Logger;
-
+import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.server.Prattle;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import edu.northeastern.ccs.im.Message;
-import edu.northeastern.ccs.im.NetworkConnection;
-import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
-import edu.northeastern.ccs.im.server.ClientRunnable;
-import edu.northeastern.ccs.im.server.ClientTimer;
-import edu.northeastern.ccs.im.server.Prattle;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Logger;
 
 public class ServerTest {
   private static SocketChannel clientSocket;

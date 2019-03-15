@@ -4,12 +4,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
