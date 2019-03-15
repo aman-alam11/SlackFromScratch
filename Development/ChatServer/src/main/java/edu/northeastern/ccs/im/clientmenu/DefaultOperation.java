@@ -11,11 +11,9 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 public class DefaultOperation implements CoreOperation {
 
 
-    private Scanner mScanner;
 
     @Override
     public void passControl(Scanner scanner, Connection model) {
-        this.mScanner = scanner;
         FrontEnd.getView().sendToView("Invalid Response, please try again");
     }
 }

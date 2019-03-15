@@ -17,7 +17,7 @@ public class AuthFlag implements AsyncListener {
   }
 
 
-  public static boolean isUserAuthenticated() {
+  public boolean isUserAuthenticated() {
     return IS_USER_AUTHENTICATED;
   }
 

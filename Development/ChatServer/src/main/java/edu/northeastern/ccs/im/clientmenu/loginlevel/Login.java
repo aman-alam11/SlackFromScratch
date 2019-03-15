@@ -16,6 +16,8 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
+import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials.generateLoginCredentials;
+
 /**
  * This is the Login class which is being used for the Login level
  */
@@ -37,9 +39,7 @@ public class Login extends CommonOperations implements AsyncListener {
 
     // Tell the server we are trying to authenticate user
     modelLayer.registerListener(this, MessageType.AUTH_ACK);
-    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username,
-            password,
-            MessageType.LOGIN);
+    MessageJson messageJson = generateLoginCredentials(username, password, MessageType.LOGIN);
     modelLayer.sendMessage(messageJson);
     FrontEnd.getView().showLoadingView(false);
   }

@@ -15,6 +15,8 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
+import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials.generateLoginCredentials;
+
 public class Registration extends CommonOperations implements AsyncListener {
 
   @Override
@@ -39,7 +41,7 @@ public class Registration extends CommonOperations implements AsyncListener {
      * If the passwords don't match then return the message to user.
      */
     if (password.equals(passwordCheck)) {
-      MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username, password, MessageType.CREATE_USER);
+      MessageJson messageJson = generateLoginCredentials(username, password, MessageType.CREATE_USER);
       FrontEnd.getView().showLoadingView(false);
       model.registerListener(this, MessageType.AUTH_ACK);
       model.sendMessage(messageJson);

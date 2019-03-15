@@ -32,13 +32,13 @@ public class AuthFlagTest {
 
   @Test
   public void isUserAuthTest() {
-    assertTrue(AuthFlag.isUserAuthenticated());
+    assertTrue(new AuthFlag(true).isUserAuthenticated());
   }
 
   @Test
   public void resetFlagTest() {
     authFlag.resetFlags();
-    assertFalse(AuthFlag.isUserAuthenticated());
+    assertFalse(new AuthFlag(false).isUserAuthenticated());
   }
 
   @Test

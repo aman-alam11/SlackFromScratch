@@ -9,17 +9,21 @@ import edu.northeastern.ccs.im.model.LoginCredentials;
 public class GenerateLoginCredentials {
 
 
-  private static String username;
+    private static String username;
 
-  @SuppressWarnings("squid:S2296")
-  public static MessageJson generateLoginCredentials(String username1, String password, MessageType messageType) {
-    LoginCredentials loginCredentials = new LoginCredentials(username1, password);
-    username = username1;
-    String jsonLoginCredentials = new Gson().toJson(loginCredentials);
-    return new MessageJson(username, messageType, jsonLoginCredentials);
-  }
+    public GenerateLoginCredentials() {
+        // Default private constructor
+    }
 
-  public static String getUsername() {
-    return (username == null) ? "" : username;
-  }
+    @SuppressWarnings("squid:S2296")
+    public static MessageJson generateLoginCredentials(String username1, String password, MessageType messageType) {
+        LoginCredentials loginCredentials = new LoginCredentials(username1, password);
+        username = username1;
+        String jsonLoginCredentials = new Gson().toJson(loginCredentials);
+        return new MessageJson(username, messageType, jsonLoginCredentials);
+    }
+
+    public static String getUsername() {
+        return (username == null) ? "" : username;
+    }
 }
