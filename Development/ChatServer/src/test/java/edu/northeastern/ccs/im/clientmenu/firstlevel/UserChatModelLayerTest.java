@@ -12,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.clientmenu.firstlevel.UserChatModelLayer;
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;

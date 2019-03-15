@@ -4,10 +4,8 @@ import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import edu.northeastern.ccs.im.auth.SessionFactory;
 import edu.northeastern.ccs.im.database.JPAService;
 
-import static org.junit.Assert.assertFalse;
 
 public class TestBasicAuth {
 
