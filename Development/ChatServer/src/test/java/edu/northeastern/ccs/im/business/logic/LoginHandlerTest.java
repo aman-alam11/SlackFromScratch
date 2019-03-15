@@ -11,7 +11,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.server.Connection;
 

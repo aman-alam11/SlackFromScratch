@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
@@ -40,6 +39,4 @@ public class AuthFlag implements AsyncListener {
     AckModel ackModel = new Gson().fromJson(message, AckModel.class);
     IS_USER_AUTHENTICATED = ackModel.isUserAuthenticated();
   }
-
-  // TODO: Reset after logout/terminate as well just to be sure
 }

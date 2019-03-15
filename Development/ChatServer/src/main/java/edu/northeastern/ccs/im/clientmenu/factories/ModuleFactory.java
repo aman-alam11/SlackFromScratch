@@ -18,10 +18,6 @@ public class ModuleFactory {
       case REGISTRATION:
         return new Registration();
 
-//      case LEVEL1:
-//        return new FirstLevelModel();
-
-
       default:
         // This will return first level module when implemented as default
         return new DefaultOperation();
