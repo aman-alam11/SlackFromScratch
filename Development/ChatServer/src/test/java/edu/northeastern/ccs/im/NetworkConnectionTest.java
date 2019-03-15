@@ -113,36 +113,36 @@ public class NetworkConnectionTest {
     assertTrue(b);
   }
 
-  @Test
-  public void test_iterator() throws IOException, InterruptedException {
-    synchronized (this) {
-
-      wait(1000);
-    }
-    InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
-    clientSocket = SocketChannel.open(hostAddress);
-    netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
-    String str = Message.makeHelloMessage("hellow world").toString();
-    ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
-    serverSocketChannel.write(wrapper);
-    synchronized (this) {
-      wait(1000);
-    }
-    Iterator<MessageJson> messageItr = netConn.iterator();
-
-    //serverSocketChannel.write(src)
-    while (messageItr.hasNext()) {
-      //System.out.println(messageItr.next().getText());
-      messageItr.next();
-    }
-    // TODO: Check
-    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
-            "pass",
-            MessageType.LOGIN);
-    boolean b = netConn.sendMessage(messageJson);
-    netConn.close();
-    assertTrue(b);
-  }
+//  @Test
+//  public void test_iterator() throws IOException, InterruptedException {
+//    synchronized (this) {
+//
+//      wait(1000);
+//    }
+//    InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
+//    clientSocket = SocketChannel.open(hostAddress);
+//    netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
+//    String str = Message.makeHelloMessage("hellow world").toString();
+//    ByteBuffer wrapper = ByteBuffer.wrap(str.getBytes());
+//    serverSocketChannel.write(wrapper);
+//    synchronized (this) {
+//      wait(1000);
+//    }
+//    Iterator<MessageJson> messageItr = netConn.iterator();
+//
+//    //serverSocketChannel.write(src)
+//    while (messageItr.hasNext()) {
+//      //System.out.println(messageItr.next().getText());
+//      messageItr.next();
+//    }
+//    // TODO: Check
+//    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+//            "pass",
+//            MessageType.LOGIN);
+//    boolean b = netConn.sendMessage(messageJson);
+//    netConn.close();
+//    assertTrue(b);
+//  }
 
 
   @Test
