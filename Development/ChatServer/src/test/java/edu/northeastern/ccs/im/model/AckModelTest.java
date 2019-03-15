@@ -45,14 +45,4 @@ public class AckModelTest {
     assertEquals("", mAckModel.getErrorMessage());
   }
 
-
-  @Test
-  public void testOverloadedConstructor(){
-    AckModel mAckModel = new AckModel(false, "", false, "newUser");
-    assertFalse(mAckModel.isUserAuthenticated());
-    assertFalse(mAckModel.isLogin());
-    assertEquals("", mAckModel.getErrorMessage());
-    assertEquals("newUser", mAckModel.getUsername());
-  }
-
 }

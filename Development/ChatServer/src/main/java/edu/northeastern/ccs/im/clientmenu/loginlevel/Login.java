@@ -8,7 +8,6 @@ import java.util.Scanner;
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
-import edu.northeastern.ccs.im.clientmenu.clientutils.AuthFlag;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
@@ -54,23 +53,14 @@ public class Login extends CommonOperations implements AsyncListener {
       return;
     }
 
-    if (!ackModel.getUsername().equals(GenerateLoginCredentials.getUsername())) {
-      if (!AuthFlag.isUserAuthenticated()) {
-        FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
-        InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
-      }
-      return;
-    }
-
     if (!ackModel.isUserAuthenticated()) {
       FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
     } else {
+
       FrontEnd.getView().sendToView("Welcome ");
 
-      // User is authenticated by server. Hence update flags as well for util
-      new AuthFlag(true);
-
+      // User is authenticated by server
       // Send user forward
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
     }

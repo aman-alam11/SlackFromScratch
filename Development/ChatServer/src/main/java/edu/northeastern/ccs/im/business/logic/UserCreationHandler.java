@@ -14,7 +14,6 @@ import edu.northeastern.ccs.im.server.Connection;
 public class UserCreationHandler implements MessageHandler {
 
   private Gson gson;
-  private String username;
 
   public UserCreationHandler() {
     gson = new Gson();
@@ -25,7 +24,7 @@ public class UserCreationHandler implements MessageHandler {
   public boolean handleMessage(String user, String message, Connection connection) {
 
     LoginCredentials loginCredentials = gson.fromJson(message, LoginCredentials.class);
-    this.username = loginCredentials.getUserName();
+
     SessionFactory sessionFactory = SessionFactory.getInstance(loginCredentials.getUserName(),
             loginCredentials.getPassword(), new JPAService());
 
@@ -38,7 +37,7 @@ public class UserCreationHandler implements MessageHandler {
             MessageConstants.REGISTRATION_SUCCESS :
             MessageConstants.REGISTRATION_FAILURE;
 
-    AckModel ackMessage = new AckModel(isSuccessful, responseMsg, false, username);
+    AckModel ackMessage = new AckModel(isSuccessful, responseMsg, false);
     MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
             MessageType.AUTH_ACK, gson.toJson(ackMessage));
     sendResponse(responsePacket, connection);

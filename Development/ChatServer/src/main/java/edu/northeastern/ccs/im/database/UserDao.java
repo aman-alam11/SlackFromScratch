@@ -4,10 +4,12 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -154,9 +156,10 @@ public class UserDao {
     User user = null;
     try{
       session = mSessionFactory.openSession();
-      String hql = "FROM User U WHERE U.name = :user_name";
-      Query query = session.createQuery(hql);
-      query.setParameter("user_name",name);
+      String sql = "select * from users where users.user_name = ?";
+
+      Query query = session.createNativeQuery(sql, User.class);
+      query.setParameter(1, name);
       user = (User) query.getSingleResult();
     }catch (HibernateException | NoResultException ex){
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
@@ -174,9 +177,9 @@ public class UserDao {
   public List<String> searchUserByName(String name) {
 	    Session session = mSessionFactory.openSession();
 	    try{
-	      String sql = "FROM User U WHERE U.name like :searchString";
-	      Query query = session.createQuery(sql);
-	      query.setParameter("searchString", "%"+ name+ "%");
+	      String sql = "select users.user_name from users where users.user_name like ?";
+	      Query query = session.createNativeQuery(sql);
+	      query.setParameter(1, "%"+ name+ "%");
 	      return query.getResultList();
 	    }catch (Exception ex){
 	      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
@@ -190,10 +193,11 @@ public class UserDao {
     Session session = mSessionFactory.openSession();
 
     try {
-      String hql = "FROM User U WHERE U.name = :user_name";
-      Query query = session.createQuery(hql);
-      query.setParameter("user_name",username);
-      return ((User) query.getSingleResult()).getPassword();
+      String sql = "SELECT users.user_password FROM users WHERE users.user_name = ?";
+
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, username);
+      return (String) query.getSingleResult();
     } catch (HibernateException | NoResultException ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());

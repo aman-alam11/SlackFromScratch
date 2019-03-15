@@ -1,14 +1,14 @@
 package edu.northeastern.ccs.im.database;
 
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
 
 @SuppressWarnings("all")
 public class ChatDao {
@@ -30,48 +30,45 @@ public class ChatDao {
      * @param isDelivered
      */
     public int create(User fromId, User toId, String msg, int replyTo, Date expiry,
-                   Boolean grpMsg, Boolean isDelivered) {
-        // Create a session
-        Session session = null;
-        Transaction transaction = null;
-        int id  = 0;
-        try {
-          Date date = new Date();
-            session = mSessionFactory.openSession();
-           // Begin a transaction
-           transaction = session.beginTransaction();
-           Chat chat = new Chat();
-           chat.setFromId(fromId);
-           chat.setToId(toId);
-           chat.setMsg(msg);
-           chat.setReplyTo(replyTo);
-           chat.setCreated(date);
-           chat.setExpiry(expiry);
-           chat.setGrpMsg(grpMsg);
-           chat.setIsDelivered(isDelivered);
-           // Save the User
-           id = (int) session.save(chat);
-           // Commit the transaction
-           transaction.commit();
-        } catch (HibernateException ex) {
-            // Print the Exception
-            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
-            // If there are any exceptions, roll back the changes
-            transaction.rollback();
-        } finally {
-           // Close the session
-           session.close();
-        }
-
-     return id;
-   }
-
+			Boolean grpMsg, Boolean isDelivered) {
+		// Create a session
+		Session session = mSessionFactory.openSession();
+		Transaction transaction = null;
+		int id = 0;
+		try {
+			// Begin a transaction
+			transaction = session.beginTransaction();
+			Chat chat = new Chat();
+			chat.setFromId(fromId);
+			chat.setToId(toId);
+			chat.setMsg(msg);
+			chat.setReplyTo(replyTo);
+			chat.setCreated(new Date());
+			chat.setExpiry(expiry);
+			chat.setGrpMsg(grpMsg);
+			chat.setIsDelivered(isDelivered);
+			// Save the User
+			id = (int) session.save(chat);
+			// Commit the transaction
+			// Commit the transaction
+			transaction.commit();
+		} catch (HibernateException ex) {
+			// Print the Exception
+			Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+			// If there are any exceptions, roll back the changes
+			transaction.rollback();
+		} finally {
+			// Close the session
+			session.close();
+		}
+		return id;
+	}
+   
    /**
     * Find chat for a particular user or a group.
     * @param receiverId
     * @return
     */
-
    public List<Chat> findByReceiver(int receiverId) {
 	Session session = null;
 	Transaction transaction = null;
@@ -80,10 +77,10 @@ public class ChatDao {
            session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
-           String sql = "FROM Chat C WHERE C.toId = :toId";
+           String sql = "select *from chat where chat.To_id = ?";
 
-           Query query = session.createQuery(sql, Chat.class);
-           query.setParameter("toId", receiverId);
+           Query query = session.createNativeQuery(sql, Chat.class);
+           query.setParameter(1, receiverId);
            chat = query.getResultList();
            // Commit the transaction
            transaction.commit();
@@ -110,10 +107,10 @@ public class ChatDao {
            session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
-           String sql = "DELETE FROM Chat C WHERE C.toId = :toID";
+           String sql = "delete from chat where chat.To_id = ?";
 
-	   	   	Query query = session.createQuery(sql, Chat.class);
-	   	   	query.setParameter("toId", receiverId);
+	   	   	Query query = session.createNativeQuery(sql, Chat.class);
+	   	   	query.setParameter(1, receiverId);
 	   	   	query.executeUpdate();
            // Commit the transaction
            transaction.commit();

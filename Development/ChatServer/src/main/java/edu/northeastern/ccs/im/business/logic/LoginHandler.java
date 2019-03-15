@@ -20,7 +20,6 @@ public class LoginHandler implements MessageHandler {
 
   private Gson gson;
   private static final String TAG = LoginHandler.class.getSimpleName();
-  private String username;
 
   public LoginHandler() {
     gson = new Gson();
@@ -30,7 +29,7 @@ public class LoginHandler implements MessageHandler {
   public boolean handleMessage(String user, String message, Connection conn) {
     try {
       LoginCredentials lgn = gson.fromJson(message, LoginCredentials.class);
-      this.username = lgn.getUserName();
+
       SessionFactory sessionFactory = SessionFactory.getInstance(lgn.getUserName(), lgn.getPassword(),
               new JPAService());
 
@@ -50,7 +49,7 @@ public class LoginHandler implements MessageHandler {
   private void respond(boolean isAuthenticated, Connection conn) {
     String strMsg = isAuthenticated ? MessageConstants.LOGIN_SUCCESS :
             MessageConstants.LOGIN_FAILURE;
-    AckModel responseMessage = new AckModel(isAuthenticated, strMsg, true, username);
+    AckModel responseMessage = new AckModel(isAuthenticated, strMsg, true);
     MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
             MessageType.AUTH_ACK,
             gson.toJson(responseMessage));
