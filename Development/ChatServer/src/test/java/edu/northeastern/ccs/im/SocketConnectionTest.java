@@ -20,6 +20,7 @@ import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import edu.northeastern.ccs.im.message.MessageType;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SocketConnectionTest {
 
-  private SocketConnection socketConnection;
+  private Connection socketConnection;
   private static SocketChannel clientChannelOnServer;
   private static ServerSocketChannel serverSocket;
   
@@ -61,6 +62,7 @@ public class SocketConnectionTest {
                   SelectionKey key = it.next();
                   it.remove();
                   clientChannelOnServer = serverSocket.accept();
+                  System.out.println("===================================================== new ");
                 }
               }
             } catch (IOException e) {
@@ -77,7 +79,7 @@ public class SocketConnectionTest {
     }
   } 
 
-  //@Before
+  @Before
   public void init() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
     Constructor<?> constructor = SocketConnection.class.getDeclaredConstructor();
     constructor.setAccessible(true);
@@ -120,6 +122,7 @@ public class SocketConnectionTest {
   		wait(1000);
 		}
   	Connection c = SocketConnection.getInstance("localhost", 4445);
+  	socketConnection = c;
   	assertNotNull(c);
   	
   }
@@ -141,7 +144,7 @@ public class SocketConnectionTest {
   }
   
   @Test
-  public void testReceiveMalFormedMessage() throws InterruptedException {
+  public void testReceiveMessage2() throws InterruptedException {
   	String msgToSend = "#" + "{name:Hello World}" + "#";
   	writeToChannel(clientChannelOnServer, msgToSend);
   	synchronized (this) {
@@ -160,8 +163,8 @@ public class SocketConnectionTest {
   	assertTrue(b);
   }
   
-  //@Test
-  public void test2() throws NoSuchMethodException {
+  @Test
+  public void testListener() throws NoSuchMethodException {
     socketConnection.registerListener(message -> {
     }, MessageType.HELLO);
     Method decodeMessageMethod = SocketConnection.class.getDeclaredMethod("decodeMessage");
@@ -188,8 +191,10 @@ public class SocketConnectionTest {
   	ByteBuffer b = ByteBuffer.wrap(message.getBytes());
     while (b.hasRemaining()) {
       try {
+      	System.out.println("===============================================================" + channel);
         channel.write(b);
       } catch (IOException e) {
+      	
       	e.printStackTrace();
       }
     }
