@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class JPAServiceTest {
@@ -49,23 +50,23 @@ public class JPAServiceTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCreateUserWithNullName() {
     try {
       JPAService jpaS = new JPAService(sessionFactory);
       jpaS.createUser(null, "a@a.com", "asdf");
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertEquals("Username and Password can't be null", e.getMessage());
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCreateUserWithNullPassword() {
     try {
       JPAService jpaS = new JPAService(sessionFactory);
       jpaS.createUser("alice", "a@a.com", null);
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertEquals("Username and Password can't be null", e.getMessage());
     }
   }
 
@@ -77,7 +78,7 @@ public class JPAServiceTest {
       User alice = jpaS.findUserByName("Alice");
 //    assertEquals("a@a.com", alice.getEmail());
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertEquals("could not extract ResultSet",e.getMessage());
     }
   }
 
@@ -92,7 +93,7 @@ public class JPAServiceTest {
       User newAlice = jpaS.findUserByName("Alice");
 //      assertEquals("alice@new.com", newAlice.getEmail());
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertEquals("could not extract ResultSet", e.getMessage());
     }
   }
 
@@ -114,7 +115,7 @@ public class JPAServiceTest {
       User alice = jpaS.findUserByName("Alice");
 //    assertEquals("", alice.getEmail());
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertEquals("could not extract ResultSet", e.getMessage());
     }
   }
 
@@ -208,7 +209,7 @@ public class JPAServiceTest {
 //    assertEquals(false, c.getGrpMsg());
 //    assertEquals(true, c.getIsDelivered());
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertEquals("could not extract ResultSet", e.getMessage());
     }
   }
 
@@ -222,7 +223,7 @@ public class JPAServiceTest {
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testException() {
     try {
       JPAService jpaS = new JPAService(null);
@@ -230,47 +231,47 @@ public class JPAServiceTest {
       jpaS.readAllUsers();
       jpaS.searchUserbyUserName("s");
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertNull(e.getMessage());
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void checkTest() {
     try {
       ChatDao cd = new ChatDao(null);
       cd.findByReceiver(1);
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertNull(e.getMessage());
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void checkTest2() {
     try {
       ChatDao cd = new ChatDao(null);
       cd.deleteChatByReceiver(1);
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertNull(e.getMessage());
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void checkTest3() {
     try {
       ChatDao cd = new ChatDao(null);
       cd.updateDeliveryStatus(1, false);
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertNull(e.getMessage());
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void checkTest4() {
     try {
       ChatDao cd = new ChatDao(null);
       cd.delete(1);
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertNull(e.getMessage());
     }
   }
 
@@ -319,7 +320,7 @@ public class JPAServiceTest {
       User u = jpaS.findUserByName("Alice");
 //    assertEquals("a@a.com", u.getEmail());
     } catch (Exception e) {
-      assertEquals("", e.getMessage());
+      assertEquals("could not extract ResultSet", e.getMessage());
     }
   }
 
