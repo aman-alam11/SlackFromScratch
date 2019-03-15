@@ -3,7 +3,6 @@ package edu.northeastern.ccs.im.view;
 public class FrontEnd {
 
   private static FrontEnd mFrontEnd;
-  private static boolean isWaitingForResponse = false;
 
 
   private FrontEnd() {
@@ -47,7 +46,6 @@ public class FrontEnd {
   public static void showLoadingView(boolean shouldStopLoading) {
     System.out.println(shouldStopLoading ? "Loading complete" : "\nLoading" );
     long getStartTime = shouldStopLoading ?  System.currentTimeMillis() + 10000 : System.currentTimeMillis();
-    isWaitingForResponse = !shouldStopLoading;
 
     while (!shouldStopLoading && (System.currentTimeMillis() - getStartTime < 200)) {
       System.out.print(".");

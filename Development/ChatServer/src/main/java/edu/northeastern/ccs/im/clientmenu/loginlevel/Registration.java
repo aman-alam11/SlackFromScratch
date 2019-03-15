@@ -1,19 +1,19 @@
 package edu.northeastern.ccs.im.clientmenu.loginlevel;
 
 import com.google.gson.Gson;
-
-import java.util.Scanner;
-
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
-import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
+
+import java.util.Scanner;
+
+import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials.generateLoginCredentials;
 
 public class Registration extends CommonOperations implements AsyncListener {
 
@@ -39,7 +39,7 @@ public class Registration extends CommonOperations implements AsyncListener {
      * If the passwords don't match then return the message to user.
      */
     if (password.equals(passwordCheck)) {
-      MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials(username, password, MessageType.CREATE_USER);
+      MessageJson messageJson = generateLoginCredentials(username, password, MessageType.CREATE_USER);
       FrontEnd.getView().showLoadingView(false);
       model.registerListener(this, MessageType.AUTH_ACK);
       model.sendMessage(messageJson);

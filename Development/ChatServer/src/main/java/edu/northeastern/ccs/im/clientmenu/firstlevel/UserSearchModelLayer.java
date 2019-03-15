@@ -70,7 +70,6 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
 
   @Override
   public void listen(String message) {
-//    FrontEnd.getView().showLoadingView(true);
     FrontEnd.getView().showLoadingView(true);
     UserSearch userSearch = mGson.fromJson(message, UserSearch.class);
     List<String> usernames = userSearch.getListUserString();

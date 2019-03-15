@@ -1,10 +1,9 @@
 package edu.northeastern.ccs.im.model;
 
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class AckModelTest {
 
@@ -43,6 +42,7 @@ public class AckModelTest {
     assertFalse(mAckModel.isUserAuthenticated());
     assertFalse(mAckModel.isLogin());
     assertEquals("", mAckModel.getErrorMessage());
+    new GenerateLoginCredentials();
   }
 
 }
