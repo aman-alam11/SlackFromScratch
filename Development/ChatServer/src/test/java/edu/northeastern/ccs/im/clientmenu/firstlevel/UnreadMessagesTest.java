@@ -24,7 +24,7 @@ public class UnreadMessagesTest {
     unreadMessages = new UnreadMessages();
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void passControlUnreadMessagesTest() {
 
     String str = "";
