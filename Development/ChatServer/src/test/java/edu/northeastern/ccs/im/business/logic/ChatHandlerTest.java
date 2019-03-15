@@ -11,8 +11,6 @@ import static org.junit.Assert.assertFalse;
 
 
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
-import edu.northeastern.ccs.im.message.MessageJson;
-import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
 
 

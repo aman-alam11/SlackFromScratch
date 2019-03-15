@@ -24,5 +24,4 @@ public class GenericLoginCredentialTest {
     generateLoginCredentials.generateLoginCredentials(null, "user", MessageType.LOGIN);
     assertEquals("",GenerateLoginCredentials.getUsername());
   }
-
 }
