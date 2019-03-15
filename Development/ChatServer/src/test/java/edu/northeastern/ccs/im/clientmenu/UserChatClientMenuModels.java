@@ -35,8 +35,8 @@ public class UserChatClientMenuModels {
     userChat.setFromUserName("FROM");
     userChat.setMsg("MESSAGE");
     userChat.setTimestamp(date);
-    userChat.setExpiry(date);
-    userChat.setErrorCode("404");
+    //userChat.setExpiry(date);
+    //userChat.setErrorCode("404");
 
     assertEquals("TO", userChat.getToUserName());
     assertEquals("FROM", userChat.getFromUserName());

@@ -12,9 +12,12 @@ public class ChatModelTest {
 
   private Chat chat;
 
+  private User user;
+
   @Before
   public void init() {
     chat = new Chat();
+    user = new User();
   }
 
   @Test
@@ -38,6 +41,16 @@ public class ChatModelTest {
     chat.setReplyTo(1);
     assertEquals(1,chat.getReplyTo());
 
+  }
+
+  @Test
+  public void userTest() {
+    user.setId(2);
+    assertEquals(2,user.getId());
+    user.setEmail("hello");
+    assertEquals("hello",user.getEmail());
+    user.setEmail(null);
+    assertEquals("",user.getEmail());
   }
 
 }
