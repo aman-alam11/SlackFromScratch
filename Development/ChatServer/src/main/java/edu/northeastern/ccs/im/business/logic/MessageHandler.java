@@ -8,6 +8,14 @@ import edu.northeastern.ccs.im.server.Connection;
  */
 public interface MessageHandler {
 
+  /**
+   * This method is used to handle the message that is being transmitted between the users.
+   *
+   * @param user
+   * @param message
+   * @param clientConnection
+   * @return
+   */
   boolean handleMessage(String user, String message, Connection clientConnection);
 
   default void sendResponse(MessageJson msg, Connection clientConnection) {

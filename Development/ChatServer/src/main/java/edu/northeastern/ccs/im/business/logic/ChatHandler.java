@@ -35,6 +35,11 @@ public class ChatHandler implements MessageHandler {
       																							false,
       																							false);
 
+    /*
+    * If the user to whom the message is sent is currently online,
+    * then set the receiver for the message type user chat,
+    * mark that message as delivered.
+    */
     if (id !=0 && Prattle.isUserOnline(chatModel.getToUserName())) {
 
       MessageJson msg = new MessageJson(chatModel.getFromUserName(), MessageType.USER_CHAT, message);
