@@ -27,7 +27,7 @@ public class UserChatClientMenuModels {
 
 
   @Test
-  public void testGetSet(){
+  public void testGetSet() {
     Date date = new Date();
     UserChat userChat = new UserChat();
     userChat.setDelivered(true);
@@ -35,12 +35,16 @@ public class UserChatClientMenuModels {
     userChat.setFromUserName("FROM");
     userChat.setMsg("MESSAGE");
     userChat.setTimestamp(date);
+    userChat.setExpiry(date);
+    userChat.setErrorCode("404");
 
     assertEquals("TO", userChat.getToUserName());
     assertEquals("FROM", userChat.getFromUserName());
     assertEquals("MESSAGE", userChat.getMsg());
     assertEquals(date, userChat.getTimestamp());
     assertTrue(userChat.getDelivered());
+    assertEquals(date, userChat.getExpiry());
+    assertEquals("404", userChat.getErrorCode());
 
     userChat.setDelivered(false);
     assertFalse(userChat.getDelivered());
