@@ -62,7 +62,6 @@ public class SocketConnectionTest {
                   SelectionKey key = it.next();
                   it.remove();
                   clientChannelOnServer = serverSocket.accept();
-                  System.out.println("===================================================== new ");
                 }
               }
             } catch (IOException e) {
@@ -191,7 +190,6 @@ public class SocketConnectionTest {
   	ByteBuffer b = ByteBuffer.wrap(message.getBytes());
     while (b.hasRemaining()) {
       try {
-      	System.out.println("===============================================================" + channel);
         channel.write(b);
       } catch (IOException e) {
       	

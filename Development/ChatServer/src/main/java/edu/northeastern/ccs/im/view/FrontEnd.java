@@ -3,7 +3,7 @@ package edu.northeastern.ccs.im.view;
 public class FrontEnd {
 
   private static FrontEnd mFrontEnd;
-  public static boolean isWaitingForResponse = false;
+  private static boolean isWaitingForResponse = false;
 
 
   private FrontEnd() {
