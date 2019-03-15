@@ -13,6 +13,7 @@ public class UserChatClientModel {
 
 
   private UserChat userChat;
+  private final static String MESSAGE = "message";
 
   @Before
   public void init() {
@@ -34,11 +35,12 @@ public class UserChatClientModel {
 
   @Test
   public void testGetters() {
+
     userChat.setFromUserName("from");
     assertEquals("from",userChat.getFromUserName());
 
-    userChat.setMsg("message");
-    assertEquals("message",userChat.getMsg());
+    userChat.setMsg(MESSAGE);
+    assertEquals(MESSAGE,userChat.getMsg());
 
     userChat.setToUserName("to");
     assertEquals("to",userChat.getToUserName());
@@ -53,10 +55,8 @@ public class UserChatClientModel {
   @Test
   public void toStringTest() {
     userChat.setFromUserName("from");
-    userChat.setMsg("message");
+    userChat.setMsg(MESSAGE);
     assertEquals("from: message",userChat.toString());
   }
-
-
 
 }
