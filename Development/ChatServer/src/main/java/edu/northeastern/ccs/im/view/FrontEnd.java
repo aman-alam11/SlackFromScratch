@@ -44,7 +44,7 @@ public class FrontEnd {
   }
 
 
-  public void showLoadingView(boolean shouldStopLoading) {
+  public static void showLoadingView(boolean shouldStopLoading) {
     System.out.println(shouldStopLoading ? "Loading complete" : "\nLoading" );
     long getStartTime = shouldStopLoading ?  System.currentTimeMillis() + 10000 : System.currentTimeMillis();
     isWaitingForResponse = !shouldStopLoading;
