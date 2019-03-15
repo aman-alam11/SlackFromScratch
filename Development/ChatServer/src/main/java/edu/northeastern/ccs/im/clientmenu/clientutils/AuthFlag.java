@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
