@@ -2,7 +2,13 @@ package edu.northeastern.ccs.im.authtest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+import edu.northeastern.ccs.im.auth.AuthModulesImpl;
 import edu.northeastern.ccs.im.auth.SessionFactory;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.database.User;
@@ -14,9 +20,16 @@ public class AuthTest {
 
   private JPAService mJpaService;
 
+  @Mock
+  private JPAService mockedJPAService;
+
+  private AuthModulesImpl authModules;
+
   @Before
   public void init() {
+    MockitoAnnotations.initMocks(this);
     mJpaService = new JPAService();
+    authModules = new AuthModulesImpl();
   }
 
   @Test
@@ -88,6 +101,24 @@ public class AuthTest {
     // assertFalse(SessionFactory.getInstance("usernameDoesNotExists","pwd3", mJpaService).login());
   }
 
+
+  @Test
+  public void loginUserFailedTest() {
+
+    when(mockedJPAService.findUserByName(eq("user"))).thenReturn(null);
+    assertFalse(authModules.loginIn("user","pass",mockedJPAService));
+
+
+  }
+
+  @Test
+  public void loginUserNewTest() {
+
+    when(mockedJPAService.findUserByName(eq("user"))).thenReturn(new User());
+    String hash = "$2a$10$8vfK8KcwZ9xw7I8Ek5OzkuwZp75cKxaEbc7m6lmzr.YVzDadBI162";
+    when(mockedJPAService.getHashFromUsername(eq("user"))).thenReturn(hash);
+    assertFalse(authModules.loginIn("user","pass",mockedJPAService));
+  }
 
   @Test
   public void createUserTest() {

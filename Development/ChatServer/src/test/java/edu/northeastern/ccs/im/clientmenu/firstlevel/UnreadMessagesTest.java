@@ -12,8 +12,8 @@ import edu.northeastern.ccs.im.client.communication.Connection;
 
 public class UnreadMessagesTest {
 
-  @Mock
-  UnreadMessages unreadMessages;
+
+  private UnreadMessages unreadMessages;
 
   @Mock
   Connection connection;
@@ -21,7 +21,7 @@ public class UnreadMessagesTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
-
+    unreadMessages = new UnreadMessages();
   }
 
   @Test
