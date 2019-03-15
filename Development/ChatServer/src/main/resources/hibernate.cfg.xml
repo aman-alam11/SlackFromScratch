@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Create table if not exists -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <!-- The JDBC driver of your database -->
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <!-- Indicate the database to generate suitable SQL -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <!-- The JDBC URL to the database instance -->
+        <property name="hibernate.connection.url">jdbc:mysql://ec2-13-59-164-30.us-east-2.compute.amazonaws.com:3306/test_hibernate</property>
+        <!-- The database username -->
+        <property name="hibernate.connection.username">team212</property>
+        <!-- The database password -->
+        <property name="hibernate.connection.password">Team212$0</property>
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="use_sql_comments">true</property>
+        <!-- Mapping class -->
+        <mapping class="edu.northeastern.ccs.im.database.User"/>
+        <mapping class="edu.northeastern.ccs.im.database.Chat"/>
+    </session-factory>
+</hibernate-configuration>

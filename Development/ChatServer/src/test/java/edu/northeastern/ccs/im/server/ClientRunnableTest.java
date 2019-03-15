@@ -1,167 +1,167 @@
 package edu.northeastern.ccs.im.server;
 
+import com.google.gson.Gson;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.ScheduledFuture;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import edu.northeastern.ccs.im.Message;
+import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.business.logic.MessageHandlerFactory;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.model.LoginCredentials;
 
 public class ClientRunnableTest {
+
+	private Gson mGson;
 	
 	@Mock
 	private NetworkConnection networkConnectionMock;
+
 	@Mock
-	private Iterator<Message> messageIterMock;
-	@Mock
-	private Message messageMock;
+	private Iterator<MessageJson> messageIterMock;
+
 	@Mock
 	private ScheduledFuture<?> futureMock;
-	
+
+	@Mock
+	private MessageHandler messageHandler;
+
+	@Mock
+	private MessageHandlerFactory messageHandlerFactory;
+
 	private ClientRunnable clientRunnable;
-	
+
+	@Mock
+	private ClientTimer clientTimer;
 	
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
+		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
 		clientRunnable = new ClientRunnable(networkConnectionMock);
 		clientRunnable.setFuture(futureMock);
-	
+		mGson = new Gson();
+
 	}
 
 	@Test
-	public void testRun_whenMessageHasUserName() {
-		
-		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
+	public void testRunwhenMessageUnauthenticatedUser() {
+
+		LoginCredentials loginCredentials = new LoginCredentials("user","pass");
+		String loginCredential = mGson.toJson(loginCredentials);
+		MessageJson msgJson = new MessageJson("", MessageType.LOGIN, loginCredential);
+
+
 		when(messageIterMock.hasNext()).thenReturn(true);
-		when(messageIterMock.next()).thenReturn(messageMock);
-		when(messageMock.getName()).thenReturn("testName");
+		when(messageIterMock.next()).thenReturn(msgJson);
+		when(networkConnectionMock.getMessageHandlerFactory()).thenReturn(messageHandlerFactory);
+		when(messageHandlerFactory.getMessageHandler(MessageType.LOGIN)).thenReturn(messageHandler);
+		when(messageHandler.handleMessage(any(),any(), any())).thenReturn(true);
 		clientRunnable.run();
-		assertEquals("testName", clientRunnable.getName());
-		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
+		assertNull(null, clientRunnable.getUserName());
 	}
-	
+
+
 	@Test
-	public void testRun_whenMessageDoesNotHaveUserName() {
-		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
-		when(messageIterMock.hasNext()).thenReturn(true);
-		when(messageIterMock.next()).thenReturn(messageMock);
-		when(messageMock.getName()).thenReturn(null);
+	public void testRunwhenUserSendingChat() {
+
+		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
+		String loginCredential = mGson.toJson(chatModel);
+		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
+
+		try {
+			Field state = clientRunnable.getClass().getDeclaredField("state");
+			state.setAccessible(true);
+			state.set(clientRunnable,ClientState.LOGGED_IN);
+			when(messageIterMock.hasNext()).thenReturn(true);
+			when(messageIterMock.next()).thenReturn(msgJson);
+
+
+			when(networkConnectionMock.getMessageHandlerFactory()).thenReturn(messageHandlerFactory);
+			when(messageHandlerFactory.getMessageHandler(Matchers.eq(MessageType.USER_CHAT))).thenReturn(messageHandler);
+			when(messageHandler.handleMessage(Matchers.contains("User"),any(), any())).thenReturn(true);
+			clientRunnable.run();
+			assertNull(clientRunnable.getUserName());
+
+
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			ChatLogger.error(e.toString());
+		}
+
+	}
+
+	@Test
+	public void testRuntimerIsBehind() {
+		Field timer = null;
+		try {
+			timer = clientRunnable.getClass().getDeclaredField("timer");
+			timer.setAccessible(true);
+			when(clientTimer.isBehind()).thenReturn(true);
+			timer.set(clientRunnable, clientTimer);
+			clientRunnable.run();
+			assertNull(clientRunnable.getUserName());
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			ChatLogger.error(e.toString());
+		}
+
+	}
+
+
+	@Test
+	public void testRunoutGoingMessage() {
+
+		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
+		String loginCredential = mGson.toJson(chatModel);
+		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
+		MessageJson msgJson1 = new MessageJson("", MessageType.USER_CHAT, loginCredential);
+		clientRunnable.enqueueMessage(msgJson);
+		clientRunnable.enqueueMessage(msgJson1);
 		clientRunnable.run();
-		assertEquals(null, clientRunnable.getName());
-		assertEquals(-1, clientRunnable.getUserId());
-		assertEquals(false, clientRunnable.isInitialized());
+		assertNull(clientRunnable.getUserName());
 	}
-	
+
+
 	@Test
-	public void testRun_whenMessageIteratorReturnsFalse() {
-		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
+	public void testRunmethodTests() {
+		clientRunnable.setState(ClientState.LOGGED_IN);
+		assertEquals(ClientState.LOGGED_IN, clientRunnable.getState());
+	}
+
+	@Test
+	public void testRunSignInUser() {
+		clientRunnable.signInUser("user");
+		assertEquals("user", clientRunnable.getUserName());
+	}
+
+	@Test
+	public void testRunSignInUserNullTest() {
+		clientRunnable.signInUser(null);
+		assertNull(clientRunnable.getUserName());
+	}
+
+	@Test
+	public void testRunmessageIncomingFalseTest() {
+		clientRunnable.setState(ClientState.LOGGED_IN);
 		when(messageIterMock.hasNext()).thenReturn(false);
 		clientRunnable.run();
-		assertEquals(null, clientRunnable.getName());
-		assertEquals(0, clientRunnable.getUserId());
+		assertNull(clientRunnable.getUserName());
 	}
-	
-	@Test
-	public void testRun_whenMessageIsTerminate() {
-		initClient();
-		assertEquals("testName", clientRunnable.getName());
-		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		
-		when(messageMock.terminate()).thenReturn(true);
-		clientRunnable.run();
-		//clientRunnable.run();
-		verify(networkConnectionMock, Mockito.times(1)).close();
-		verify(futureMock, Mockito.atLeastOnce()).cancel(false);
-		ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
-		verify(networkConnectionMock, Mockito.times(1)).sendMessage(messageArgumentCaptor.capture());
-		Message msgSent = messageArgumentCaptor.getValue();
-		assertEquals(null, msgSent.getText());
-	}
-	
-	@Test
-	public void testRun_whenMessageIsBroadcast() {
-		initClient();
-		assertEquals("testName", clientRunnable.getName());
-		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(true);
-		clientRunnable.run();
-		clientRunnable.run();
-	}
-	
-	
-	@Test
-	public void testRun_whenMessageIsNotBroadcast() {
-		initClient();
-		assertEquals("testName", clientRunnable.getName());
-		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(false);
-		clientRunnable.run();
-		verify(networkConnectionMock, Mockito.times(0)).sendMessage(Mockito.any(Message.class));
-	}
-	
-	@Test
-	public void testRun_whenMessageIsIllegal_NameNotMatch() {
-		initClient();
-		assertEquals("testName", clientRunnable.getName());
-		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(true);
-		when(messageMock.getName()).thenReturn("testName2");
-		clientRunnable.run();
-		ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
-		verify(networkConnectionMock, Mockito.times(1)).sendMessage(messageArgumentCaptor.capture());
-		Message msgSent = messageArgumentCaptor.getValue();
-		assertEquals("Last message was rejected because it specified an incorrect user name.",
-				msgSent.getText());
-	}
-	
-	@Test
-	public void testRun_whenMessageIsIllegal_NameIsNull() {
-		initClient();
-		assertEquals("testName", clientRunnable.getName());
-		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageMock.terminate()).thenReturn(false);
-		when(messageMock.isBroadcastMessage()).thenReturn(true);
-		when(messageMock.getName()).thenReturn(null);
-		clientRunnable.run();
-		ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
-		verify(networkConnectionMock, Mockito.times(1)).sendMessage(messageArgumentCaptor.capture());
-		Message msgSent = messageArgumentCaptor.getValue();
-		assertEquals("Last message was rejected because it specified an incorrect user name.",
-				msgSent.getText());
-	}
-	
-	@Test
-	public void testRun_whenIncomingMessageIsEmpty() {
-		initClient();
-		assertEquals("testName", clientRunnable.getName());
-		assertEquals(clientRunnable.hashCode(), clientRunnable.getUserId());
-		when(messageIterMock.hasNext()).thenReturn(false);
-		clientRunnable.run();
-		verify(networkConnectionMock, Mockito.times(0)).sendMessage(Mockito.any(Message.class));
-	}
-	
-	private void initClient() {
-		when(networkConnectionMock.iterator()).thenReturn(messageIterMock);
-		when(messageIterMock.hasNext()).thenReturn(true);
-		when(messageIterMock.next()).thenReturn(messageMock);
-		when(messageMock.getName()).thenReturn("testName");
-		clientRunnable.run();
-	}
-	
-	
+
 }

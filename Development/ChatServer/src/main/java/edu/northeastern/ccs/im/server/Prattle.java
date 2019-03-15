@@ -7,17 +7,21 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
+import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.message.MessageJson;
 
 /**
  * A network server that communicates with IM clients that connect to it. This version of the server
@@ -39,17 +43,24 @@ public abstract class Prattle {
    */
   private static boolean isReady = false;
 
+  @SuppressWarnings({"squid:S1450"})
   private static SelectionKey key;
 
   /**
-   * Collection of threads that are currently being used.
+   * Collection of users connected as threads that are currently not authenticated.
    */
-  private static ConcurrentLinkedQueue<ClientRunnable> active;
+  private static Set<ClientRunnable> unAuthenticatedActiveUsers;
+  
+  /**
+   * Collection of users connected as threads that are currently authenticated  with key as userName.
+   */
+  private static ConcurrentHashMap<String, Connection> authenticatedActiveUsers;
 
   /** All of the static initialization occurs in this "method" */
   static {
     // Create the new queue of active threads.
-    active = new ConcurrentLinkedQueue<>();
+    unAuthenticatedActiveUsers = Collections.newSetFromMap(new ConcurrentHashMap<ClientRunnable, Boolean>());
+    authenticatedActiveUsers = new ConcurrentHashMap<>();
   }
 
 
@@ -60,27 +71,66 @@ public abstract class Prattle {
    *
    * @param message Message that the client sent.
    */
-  public static void broadcastMessage(Message message) {
+  public static void broadcastMessage(MessageJson message) {
     // Loop through all of our active threads
-    for (ClientRunnable tt : active) {
+    for (ClientRunnable tt : unAuthenticatedActiveUsers) {
       // Do not send the message to any clients that are not ready to receive it.
-      if (tt.isInitialized()) {
+      if (tt.isAuthenticated()) {
         tt.enqueueMessage(message);
       }
     }
   }
+  
+  public static boolean sendMessageTo(String userName, MessageJson msg) {
+	  boolean isSuccessfull = false;
+	  if (authenticatedActiveUsers.containsKey(userName)) {
+		  authenticatedActiveUsers.get(userName).enqueueMessage(msg);
+		  isSuccessfull = true;
+	  }
+	  return isSuccessfull;
+  }
+  
+  public static boolean isUserOnline(String userName) {
+	  return authenticatedActiveUsers.containsKey(userName);
+  }
 
+ /**
+  *  This method is used to change an unauthenticated user thread to authenticated
+  * @param clientThread
+  * @param userName
+  * @return true if succeeded else false
+  */
+  public static boolean changeToAuthenciatedUser(ClientRunnable clientThread, String userName) {
+		synchronized (Prattle.class) {
+			if (unAuthenticatedActiveUsers.contains(clientThread)) {
+				unAuthenticatedActiveUsers.remove(clientThread);
+				authenticatedActiveUsers.put(userName, clientThread);
+				clientThread.setState(ClientState.LOGGED_IN);
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+  }
   /**
    * Remove the given IM client from the list of active threads.
    *
-   * @param dead Thread which had been handling all the I/O for a client who has since quit.
+   * @param client Thread which had been handling all the I/O for a client who has since quit.
    */
-  public static void removeClient(ClientRunnable dead) {
+  public static void removeClient(Connection client) {
     // Test and see if the thread was in our list of active clients so that we
     // can remove it.
-    if (!active.remove(dead)) {
-      ChatLogger.info("Could not find a thread that I tried to remove!\n");
-    }
+	if (client.isAuthenticated() && authenticatedActiveUsers.containsKey(client.getUserName())) {
+		Connection c = authenticatedActiveUsers.remove(client);
+		ChatLogger.info("Terminated authenticated client " + c.getUserName());
+		
+	} else if (unAuthenticatedActiveUsers.contains(client)) {
+		unAuthenticatedActiveUsers.remove(client);
+		ChatLogger.info("Terminated unauthenticated client ");
+	} else {
+		ChatLogger.info("Could not find a thread that I tried to remove!\n");
+	}
   }
 
 
@@ -112,7 +162,7 @@ public abstract class Prattle {
       // Register to receive any incoming connection messages.
       serverSocket.register(selector, SelectionKey.OP_ACCEPT);
       // Create our pool of threads on which we will execute.
-      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(ServerConstants.THREAD_POOL_SIZE);
+      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(1);
       // If we get this far than the server is initialized correctly
       isReady = true;
       // Now listen on this port as long as the server is ready
@@ -158,10 +208,10 @@ public abstract class Prattle {
       SocketChannel socket = serverSocket.accept();
 
       // Make sure we have a connection to work with.
-      NetworkConnection connection = new NetworkConnection(socket);
+      NetworkConnection connection = new NetworkConnection(socket, new JsonMessageHandlerFactory());
       ClientRunnable tt = new ClientRunnable(connection);
       // Add the thread to the queue of active threads
-      active.add(tt);
+      unAuthenticatedActiveUsers.add(tt);
       // Have the client executed by our pool of threads.
       ScheduledFuture<?> clientFuture = threadPool.scheduleAtFixedRate(tt, ServerConstants.CLIENT_CHECK_DELAY,
               ServerConstants.CLIENT_CHECK_DELAY, TimeUnit.MILLISECONDS);

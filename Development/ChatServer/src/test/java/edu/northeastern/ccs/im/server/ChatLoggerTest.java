@@ -31,7 +31,7 @@ public class ChatLoggerTest {
 	}
 
 	@Test
-	public void tes() {
+	public void test() {
 		ChatLogger.setMode(ChatLogger.HandlerType.CONSOLE);
 		ChatLogger.setMode(ChatLogger.HandlerType.FILE);
 
@@ -57,5 +57,11 @@ public class ChatLoggerTest {
     public void testLoggerInfo(){
         ChatLogger.info("message");
     }
+
+	@Test
+	public void testClientTimer(){
+		ClientTimer clientTimer = new ClientTimer();
+		clientTimer.updateAfterInitialization();
+	}
 
 }

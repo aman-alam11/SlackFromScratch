@@ -1,5 +1,7 @@
 package edu.northeastern.ccs.im;
 
+import edu.northeastern.ccs.im.message.MessageType;
+
 /**
  * Each instance of this class represents a single transmission by our IM
  * clients.
