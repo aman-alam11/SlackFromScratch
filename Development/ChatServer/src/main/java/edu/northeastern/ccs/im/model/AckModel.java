@@ -17,7 +17,7 @@ public class AckModel {
         this.isUserAuthenticated = isUserAuth;
         this.errorMessage = errorMsg;
         this.isLogin = isLogin;
-        this.mUsername = (username == null) ? "" : username;
+        this.mUsername = username;
     }
 
     public boolean isUserAuthenticated() {
@@ -34,6 +34,6 @@ public class AckModel {
     }
 
     public String getUsername() {
-        return mUsername;
+        return (mUsername == null) ? "" : mUsername;
     }
 }
