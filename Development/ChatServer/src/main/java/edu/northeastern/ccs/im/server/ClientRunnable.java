@@ -91,19 +91,6 @@ public class ClientRunnable implements Connection {
 	}
 
 
-	// TODO can this be deleted?
-	/**
-	 * Check if the message is properly formed. At the moment, this means checking
-	 * that the identifier is set properly.
-	 * 
-	 * @param msg Message to be checked
-	 * @return True if message is correct; false otherwise
-	 */
-	private boolean messageChecks(Message msg) {
-		// Check that the message name matches.
-		return (msg.getName() != null) && (msg.getName().compareToIgnoreCase(getUserName()) == 0);
-	}
-
 	/**
 	 * Immediately send this message to the client. This returns if we were
 	 * successful or not in our attempt to send the message.

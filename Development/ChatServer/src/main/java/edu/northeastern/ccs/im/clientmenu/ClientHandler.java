@@ -35,7 +35,6 @@ public final class ClientHandler {
         userChoice = Integer.parseInt(choiceString);
       } catch (Exception e) {
         // Handle with default implementation
-        //TODO Need to stop all threads, quit is not working
         if (choiceString.equals("\\q")) {
           return;
         } else {

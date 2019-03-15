@@ -97,7 +97,6 @@ public class ServerTest {
 //    initField.setAccessible(true);
 //    initField.set(runnable, true);
 //    queue.add(runnable);
-//    // TODO: Check
 ////    broadcastMessage(Message.makeBroadcastMessage("NAME", "HEY WASSUP"));
 //  }
 
@@ -119,7 +118,7 @@ public class ServerTest {
 
 
   @Test
-  public void testKeyNull() throws NoSuchFieldException, IllegalAccessException, IOException {
+  public void testKeyNull() throws NoSuchFieldException, IllegalAccessException {
     Field keyField = Prattle.class.getDeclaredField("key");
     keyField.setAccessible(true);
     SelectionKey key = (SelectionKey) keyField.get(new Prattle() {

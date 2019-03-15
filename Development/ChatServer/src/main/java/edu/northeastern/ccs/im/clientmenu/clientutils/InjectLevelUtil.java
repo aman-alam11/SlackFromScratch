@@ -51,7 +51,7 @@ public final class InjectLevelUtil {
         break;
 
       default:
-        injectFirstLevel();
+        injectLoginLevel();
     }
     // Feed the appropriate options
   }
