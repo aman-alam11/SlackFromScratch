@@ -79,10 +79,10 @@ public class ChatDao {
            session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
-           String sql = "select *from chat where chat.To_id = ?";
+           String sql = "FROM Chat C WHERE C.toId = :toId";
 
-           Query query = session.createNativeQuery(sql, Chat.class);
-           query.setParameter(1, receiverId);
+           Query query = session.createQuery(sql, Chat.class);
+           query.setParameter("toId", receiverId);
            chat = query.getResultList();
            // Commit the transaction
            transaction.commit();
@@ -109,10 +109,10 @@ public class ChatDao {
            session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
-           String sql = "delete from chat where chat.To_id = ?";
+           String sql = "DELETE FROM Chat C WHERE C.toId = :toID";
 
-	   	   	Query query = session.createNativeQuery(sql, Chat.class);
-	   	   	query.setParameter(1, receiverId);
+	   	   	Query query = session.createQuery(sql, Chat.class);
+	   	   	query.setParameter("toId", receiverId);
 	   	   	query.executeUpdate();
            // Commit the transaction
            transaction.commit();
