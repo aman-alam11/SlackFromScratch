@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 
@@ -38,7 +39,7 @@ public class LoginHandlerTest {
     when(connection.signInUser("atti")).thenReturn(true);
 
     boolean b = loginHandler.handleMessage("user",message,connection);
-     assertFalse(b);
+     assertTrue(b);
   }
 
   @Test
