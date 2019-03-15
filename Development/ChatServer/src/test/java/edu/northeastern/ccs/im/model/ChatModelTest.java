@@ -19,11 +19,12 @@ public class ChatModelTest {
 
   @Test
   public void test2() {
-    ChatModel chatModel = new ChatModel("FROM", "TO", "CONVO", new Date(), true);
+    Date date = new Date();
+    ChatModel chatModel = new ChatModel("FROM", "TO", "CONVO", date, true);
     assertEquals("CONVO", chatModel.getConversation());
     assertEquals("FROM", chatModel.getSender());
     assertEquals("TO", chatModel.getReciever());
-    assertEquals(new Date(), chatModel.getTimeStamp());
+    assertEquals(date, chatModel.getTimeStamp());
     Assert.assertTrue(chatModel.isDelivered());
   }
 

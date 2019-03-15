@@ -36,6 +36,7 @@ public class ChatDao {
         Transaction transaction = null;
         int id  = 0;
         try {
+          Date date = new Date();
             session = mSessionFactory.openSession();
            // Begin a transaction
            transaction = session.beginTransaction();
@@ -44,7 +45,7 @@ public class ChatDao {
            chat.setToId(toId);
            chat.setMsg(msg);
            chat.setReplyTo(replyTo);
-           chat.setCreated(new Date());
+           chat.setCreated(date);
            chat.setExpiry(expiry);
            chat.setGrpMsg(grpMsg);
            chat.setIsDelivered(isDelivered);

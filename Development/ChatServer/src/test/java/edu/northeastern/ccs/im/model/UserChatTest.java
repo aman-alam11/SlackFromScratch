@@ -26,17 +26,18 @@ public class UserChatTest {
 
   @Test
   public void testGetSet(){
+    Date date = new Date();
     UserChat userChat = new UserChat();
     userChat.setDelivered(true);
     userChat.setToUserName("TO");
     userChat.setFromUserName("FROM");
     userChat.setMsg("MESSAGE");
-    userChat.setTimestamp(new Date());
+    userChat.setTimestamp(date);
 
     assertEquals("TO", userChat.getToUserName());
     assertEquals("FROM", userChat.getFromUserName());
     assertEquals("MESSAGE", userChat.getMsg());
-    assertEquals(new Date(), userChat.getTimestamp());
+    assertEquals(date, userChat.getTimestamp());
     assertTrue(userChat.getDelivered());
 
     userChat.setDelivered(false);
