@@ -57,7 +57,7 @@ public class JPAServiceTest {
       JPAService jpaS = new JPAService(sessionFactory);
       jpaS.createUser(null, "a@a.com", "asdf");
     } catch (Exception e) {
-      assertEquals("Username and Password can't be null", e.getMessage());
+      assertTrue(e.getMessage().contains("Username and Password can't be null"));
     }
   }
 
@@ -67,7 +67,7 @@ public class JPAServiceTest {
       JPAService jpaS = new JPAService(sessionFactory);
       jpaS.createUser("alice", "a@a.com", null);
     } catch (Exception e) {
-      assertEquals("Username and Password can't be null", e.getMessage());
+      assertTrue(e.getMessage().contains("Username and Password can't be null"));
     }
   }
 
@@ -79,7 +79,7 @@ public class JPAServiceTest {
       User alice = jpaS.findUserByName("Alice");
 //    assertEquals("a@a.com", alice.getEmail());
     } catch (Exception e) {
-      assertEquals("could not extract ResultSet", e.getMessage());
+      assertTrue(e.getMessage().contains("could not extract ResultSet"));
     }
   }
 
@@ -94,7 +94,7 @@ public class JPAServiceTest {
       User newAlice = jpaS.findUserByName("Alice");
 //      assertEquals("alice@new.com", newAlice.getEmail());
     } catch (Exception e) {
-      assertEquals("could not extract ResultSet", e.getMessage());
+      assertTrue(e.getMessage().contains("could not extract ResultSet"));
     }
   }
 
@@ -321,7 +321,7 @@ public class JPAServiceTest {
       User u = jpaS.findUserByName("Alice");
 //    assertEquals("a@a.com", u.getEmail());
     } catch (Exception e) {
-      assertEquals("could not extract ResultSet", e.getMessage());
+      assertTrue(e.getMessage().contains("could not extract ResultSet"));
     }
   }
 
