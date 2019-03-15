@@ -9,6 +9,10 @@ import edu.northeastern.ccs.im.model.UserChat;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.Prattle;
 
+/**
+ * This is the handler for chat.
+ * It sends message to another user.
+ */
 public class ChatHandler implements MessageHandler {
 
   private Gson mGson;

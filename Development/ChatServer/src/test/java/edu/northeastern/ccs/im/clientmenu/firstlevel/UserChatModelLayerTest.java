@@ -19,6 +19,9 @@ import static org.mockito.Mockito.when;
 
 public class UserChatModelLayerTest {
 
+  private static final String USERNAME = "atti\n";
+  private static final String QUIT = "\\q\n";
+
   @Mock
   private Connection connection;
 
@@ -41,7 +44,7 @@ public class UserChatModelLayerTest {
 
   @Test
   public void passControlTest() {
-    String str = "1\n" + "atti\n";
+    String str = "1\n" + USERNAME;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     userChatModelLayer.listen("message");
@@ -50,7 +53,7 @@ public class UserChatModelLayerTest {
 
   @Test
   public void passControlQuitTest() {
-    String str = "\\q\n";
+    String str = QUIT;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     userChatModelLayer.passControl(scanner, connection);
@@ -66,7 +69,7 @@ public class UserChatModelLayerTest {
 
   @Test
   public void runTest() {
-    String str = "1\n" + "atti\n" + "\\q\n";
+    String str = "1\n" + USERNAME + QUIT;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     userChatModelLayer.passControl(scanner, connection);
@@ -75,15 +78,15 @@ public class UserChatModelLayerTest {
 
   @Test
   public void run2Test() {
-    String str = "1\n" + "atti\n" + "\\q\n";
+    String str = "1\n" + USERNAME + QUIT;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
 
-    UserChat userChat = new UserChat();
-    userChat.setMsg("hello");
-    userChat.setFromUserName("atti");
+    UserChat userChat1 = new UserChat();
+    userChat1.setMsg("hello");
+    userChat1.setFromUserName("atti");
 
-    String message = mGson.toJson(userChat);
+    String message = mGson.toJson(userChat1);
     MessageJson messageJson = new MessageJson("atti",MessageType.USER_CHAT,message);
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(messageJson);

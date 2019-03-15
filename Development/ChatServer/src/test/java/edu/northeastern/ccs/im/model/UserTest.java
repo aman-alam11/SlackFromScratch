@@ -9,8 +9,8 @@ public class UserTest {
 
   @Test
   public void test() {
-    User user = new User("user", "pwd", "email123@email.com");
-    assertEquals("email123@email.com", user.getEmail());
+    User user = new User("user", "pwd", "emai123@email.com");
+    assertEquals("emai123@email.com", user.getEmail());
     assertNull(user.getFirstName());
     assertNull(user.getLastName());
     assertEquals("pwd", user.getPassword());
@@ -19,8 +19,8 @@ public class UserTest {
 
   @Test
   public void testSetMethods(){
-    User user = new User("user", "pwd", "email123@email.com");
-    assertEquals("email123@email.com", user.getEmail());
+    User user = new User("user", "pwd", "mail123@email.com");
+    assertEquals("mail123@email.com", user.getEmail());
     assertNull(user.getFirstName());
     assertNull(user.getLastName());
     assertEquals("pwd", user.getPassword());

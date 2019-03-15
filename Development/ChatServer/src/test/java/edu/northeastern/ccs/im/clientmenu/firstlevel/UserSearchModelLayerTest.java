@@ -27,6 +27,11 @@ public class UserSearchModelLayerTest {
 
   private UserSearchModelLayer userSearchModelLayer;
 
+  private static final String USERNAME = "atti\n";
+  private static final String HELLO = "hello\n";
+  private static final String WORLD = "world\n";
+
+
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
@@ -36,13 +41,13 @@ public class UserSearchModelLayerTest {
 
   @Test
   public void passControlTest() {
-    String str = "atti\n" + "hello\n";
+    String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     UserSearch userSearch = new UserSearch("atti");
     List<String> userList = new ArrayList<>();
     userList.add("hello");
-    userList.add("world");
+    userList.add(WORLD);
     userSearch.setUsersList(userList);
     String userString = mGson.toJson(userSearch);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
@@ -52,7 +57,7 @@ public class UserSearchModelLayerTest {
 
   @Test
   public void noUserNameReturnedTest() {
-    String str = "atti\n" + "hello\n";
+    String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     UserSearch userSearch = new UserSearch("atti");
@@ -67,12 +72,12 @@ public class UserSearchModelLayerTest {
 
   @Test
   public void doesNotContainUserToChatWithTest() {
-    String str = "atti\n" + "hello\n";
+    String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     UserSearch userSearch = new UserSearch("atti");
     List<String> userList = new ArrayList<>();
-    userList.add("world");
+    userList.add(WORLD);
     userSearch.setUsersList(userList);
     String userString = mGson.toJson(userSearch);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
@@ -82,12 +87,12 @@ public class UserSearchModelLayerTest {
 
   @Test
   public void listenTest() {
-    String str = "atti\n" + "hello\n" +  "wpr\n";
+    String str = USERNAME + HELLO +  "wpr\n";
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     UserSearch userSearch = new UserSearch("atti");
     List<String> userList = new ArrayList<>();
-    userList.add("world");
+    userList.add(WORLD);
     userSearch.setUsersList(userList);
     String userString = mGson.toJson(userSearch);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
@@ -98,7 +103,7 @@ public class UserSearchModelLayerTest {
 
   @Test
   public void listenEmptyUserNameListTest() {
-    String str = "atti\n" + "hello\n" +  "wpr\n";
+    String str = USERNAME + HELLO +  "wpr\n";
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     UserSearch userSearch = new UserSearch("atti");

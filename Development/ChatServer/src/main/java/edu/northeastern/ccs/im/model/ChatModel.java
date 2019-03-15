@@ -2,8 +2,6 @@ package edu.northeastern.ccs.im.model;
 
 import java.util.Date;
 
-import edu.northeastern.ccs.im.database.User;
-
 /**
  * Structure for ChatModel:
  *

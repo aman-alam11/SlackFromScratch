@@ -33,7 +33,7 @@ public class RegistrationTest {
   @Test
   public void successfulAcountCreationTest() {
 
-    String str = "atti\n" +  "fdf\n" + "fdf\n";
+    String str = "atti\n" +  "fdf\n" + "fdff\n";
 
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -44,7 +44,7 @@ public class RegistrationTest {
   @Test
   public void unSuccessfulAcountCreationTest() {
 
-    String str = "atti\n" +  "fdf\n" + "ff\n" + "\\q";
+    String str = "atti\n" +  "df\n" + "ff\n" + "\\q";
 
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -53,21 +53,21 @@ public class RegistrationTest {
 
   @Test
   public void listnerIsLoginTest() {
-    AckModel ackModel = new AckModel(true, "error msg", true);
+    AckModel ackModel = new AckModel(true, "errorf msg", true);
     String jsonAck = mGson.toJson(ackModel);
     registration.listen(jsonAck);
   }
 
   @Test
   public void listnerIsUserAuthTest() {
-    AckModel ackModel = new AckModel(true, "error msg", false);
+    AckModel ackModel = new AckModel(true, "errors msg", false);
     String jsonAck = mGson.toJson(ackModel);
     registration.listen(jsonAck);
   }
 
   @Test
   public void listnerIsUserNotAuthTest() {
-    AckModel ackModel = new AckModel(false, "error msg", false);
+    AckModel ackModel = new AckModel(false, "errorg msg", false);
     String jsonAck = mGson.toJson(ackModel);
     registration.listen(jsonAck);
   }

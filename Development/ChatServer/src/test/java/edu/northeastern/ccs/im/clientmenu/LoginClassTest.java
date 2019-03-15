@@ -17,6 +17,9 @@ import edu.northeastern.ccs.im.model.AckModel;
 public class LoginClassTest {
   private Gson mGson;
 
+  private static final String USERNAME = "atti\n";
+  private static final String PASSWORD = "pass\n";
+
   @Mock
   Connection parentModel;
   @Mock
@@ -34,7 +37,7 @@ public class LoginClassTest {
   @Test
   public void loginTest() {
 
-    String str = "atti\n" +  "pass\n";
+    String str = USERNAME +  PASSWORD;
 
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -45,7 +48,7 @@ public class LoginClassTest {
   public void listnerLoginFailed() {
     AckModel ackModel = new AckModel(false, "error msg", true);
     String jsonAck = mGson.toJson(ackModel);
-    String str = "atti\n" + "pass\n";
+    String str = USERNAME + PASSWORD;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     login.passControl(scanner, parentModel);
@@ -56,7 +59,7 @@ public class LoginClassTest {
   public void listnerLoginSuccessful() {
     AckModel ackModel = new AckModel(true, "error msg", true);
     String jsonAck = mGson.toJson(ackModel);
-    String str = "atti\n" +  "pass\n";
+    String str = USERNAME +  PASSWORD;
 
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -68,7 +71,7 @@ public class LoginClassTest {
   public void listnerNotLogin() {
     AckModel ackModel = new AckModel(false, "error msg", false);
     String jsonAck = mGson.toJson(ackModel);
-    String str = "atti\n" +  "pass\n";
+    String str = USERNAME +  PASSWORD;
 
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);

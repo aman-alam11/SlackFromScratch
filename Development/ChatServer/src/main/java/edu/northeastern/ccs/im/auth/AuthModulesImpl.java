@@ -1,10 +1,12 @@
 package edu.northeastern.ccs.im.auth;
 
-import org.jsoup.helper.StringUtil;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import edu.northeastern.ccs.im.database.JPAService;
 
+/**
+ * This is the implementation class of AuthModles.
+ */
 public class AuthModulesImpl implements AuthModules {
 
   @Override

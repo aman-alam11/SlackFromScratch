@@ -13,7 +13,7 @@ public class UserChatClientModel {
 
 
   private UserChat userChat;
-  private final static String MESSAGE = "message";
+  private static final String MESSAGE = "message";
 
   @Before
   public void init() {

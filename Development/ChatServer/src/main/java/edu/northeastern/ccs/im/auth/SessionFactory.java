@@ -64,12 +64,20 @@ public final class SessionFactory {
   }
 
 
+  /**
+   * Used to login user.
+   * @return boolean - true/false depending on success.
+   */
   public boolean login() {
     boolean loginSuccessful = mAuthModules.loginIn(mUsername, mPassword, mJpaService);
     removePreviousRef();
     return loginSuccessful;
   }
 
+  /**
+   * To create a new account.
+   * @return boolean - true/false depending on success.
+   */
   public boolean createAccount() {
     boolean createAccountSuccess = mAuthModules.createAccount(mUsername, mPassword, mJpaService);
     removePreviousRef();

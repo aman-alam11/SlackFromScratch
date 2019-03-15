@@ -2,6 +2,10 @@ package edu.northeastern.ccs.im.business.logic;
 
 import edu.northeastern.ccs.im.message.MessageType;
 
+/**
+ * MessageHandler Factory which returns new instance of MessageHandler depending on the MessageType.
+ * MessageType is an enum.
+ */
 public class JsonMessageHandlerFactory implements MessageHandlerFactory {
 
   @Override

@@ -17,6 +17,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.NetworkConnection;
 import edu.northeastern.ccs.im.business.logic.MessageHandler;
@@ -61,7 +62,7 @@ public class ClientRunnableTest {
 	}
 
 	@Test
-	public void testRun_whenMessageUnauthenticatedUser() {
+	public void testRunwhenMessageUnauthenticatedUser() {
 
 		LoginCredentials loginCredentials = new LoginCredentials("user","pass");
 		String loginCredential = mGson.toJson(loginCredentials);
@@ -79,7 +80,7 @@ public class ClientRunnableTest {
 
 
 	@Test
-	public void testRun_whenUserSendingChat() {
+	public void testRunwhenUserSendingChat() {
 
 		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
 		String loginCredential = mGson.toJson(chatModel);
@@ -101,13 +102,13 @@ public class ClientRunnableTest {
 
 
 		} catch (NoSuchFieldException | IllegalAccessException e) {
-			e.printStackTrace();
+			ChatLogger.error(e.toString());
 		}
 
 	}
 
 	@Test
-	public void testRun_timerIsBehind() {
+	public void testRuntimerIsBehind() {
 		Field timer = null;
 		try {
 			timer = clientRunnable.getClass().getDeclaredField("timer");
@@ -117,14 +118,14 @@ public class ClientRunnableTest {
 			clientRunnable.run();
 			assertNull(clientRunnable.getUserName());
 		} catch (NoSuchFieldException | IllegalAccessException e) {
-			e.printStackTrace();
+			ChatLogger.error(e.toString());
 		}
 
 	}
 
 
 	@Test
-	public void testRun_outGoingMessage() {
+	public void testRunoutGoingMessage() {
 
 		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
 		String loginCredential = mGson.toJson(chatModel);
@@ -138,25 +139,25 @@ public class ClientRunnableTest {
 
 
 	@Test
-	public void testRun_methodTests() {
+	public void testRunmethodTests() {
 		clientRunnable.setState(ClientState.LOGGED_IN);
 		assertEquals(ClientState.LOGGED_IN, clientRunnable.getState());
 	}
 
 	@Test
-	public void testRun_SignInUser() {
+	public void testRunSignInUser() {
 		clientRunnable.signInUser("user");
 		assertEquals("user", clientRunnable.getUserName());
 	}
 
 	@Test
-	public void testRun_SignInUserNullTest() {
+	public void testRunSignInUserNullTest() {
 		clientRunnable.signInUser(null);
 		assertNull(clientRunnable.getUserName());
 	}
 
 	@Test
-	public void testRun_messageIncomingFalseTest() {
+	public void testRunmessageIncomingFalseTest() {
 		clientRunnable.setState(ClientState.LOGGED_IN);
 		when(messageIterMock.hasNext()).thenReturn(false);
 		clientRunnable.run();

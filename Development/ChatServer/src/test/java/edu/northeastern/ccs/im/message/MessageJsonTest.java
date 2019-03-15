@@ -6,7 +6,11 @@ import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("all")
 public class MessageJsonTest {
+
+  private static final String HELLO = "hello";
+
 
   @Test
   public void testCreateUserTest() {
@@ -17,12 +21,12 @@ public class MessageJsonTest {
     messageJson.setMessageType(MessageType.HELLO);
     messageJson.setFromUser("atti");
     assertEquals("atti",messageJson.getFromUser());
-    messageJson.setSendToUser("hello");
-    assertEquals("hello",messageJson.getSendToUser());
+    messageJson.setSendToUser(HELLO);
+    assertEquals(HELLO,messageJson.getSendToUser());
     messageJson.setCreationTime(new Date());
     assertEquals(Date.class, messageJson.getCreationTime().getClass());
-    messageJson.setMessage("hello");
-    assertEquals("hello",messageJson.getMessage());
+    messageJson.setMessage(HELLO);
+    assertEquals(HELLO,messageJson.getMessage());
 
   }
 }

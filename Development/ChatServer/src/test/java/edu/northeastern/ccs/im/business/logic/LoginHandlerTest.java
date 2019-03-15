@@ -38,7 +38,7 @@ public class LoginHandlerTest {
     when(connection.signInUser("atti")).thenReturn(true);
 
     boolean b = loginHandler.handleMessage("user",message,connection);
-    // assertTrue(b);
+     assertFalse(b);
   }
 
   @Test
@@ -54,9 +54,6 @@ public class LoginHandlerTest {
 
   @Test
   public void handleMessageFailTest() {
-
-    LoginCredentials loginCredentials = new LoginCredentials("atti","pass");
-    String message = mGson.toJson(loginCredentials);
 
     boolean b = loginHandler.handleMessage("user",null,connection);
     assertFalse(b);

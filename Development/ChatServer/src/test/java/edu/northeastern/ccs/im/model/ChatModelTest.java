@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class ChatModelTest {
-//  public ChatModel(String from, String to, String conversation, Date time, boolean isDelivered) {
 
   @Test
   public void test() {

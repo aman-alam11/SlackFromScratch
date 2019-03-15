@@ -11,7 +11,7 @@ public class AckModelTest {
 
   @Test
   public void testTT() {
-    AckModel mAckModel = new AckModel(true, "", true);;
+    AckModel mAckModel = new AckModel(true, "", true);
     assertTrue(mAckModel.isUserAuthenticated());
 		assertTrue(mAckModel.isLogin());
 		assertEquals("", mAckModel.getErrorMessage());
@@ -20,7 +20,7 @@ public class AckModelTest {
 
   @Test
   public void testTF() {
-    AckModel mAckModel = new AckModel(true, "", false);;
+    AckModel mAckModel = new AckModel(true, "", false);
     assertTrue(mAckModel.isUserAuthenticated());
     assertFalse(mAckModel.isLogin());
     assertEquals("", mAckModel.getErrorMessage());
@@ -30,7 +30,7 @@ public class AckModelTest {
 
   @Test
   public void testFT() {
-    AckModel mAckModel = new AckModel(false, "", true);;
+    AckModel mAckModel = new AckModel(false, "", true);
     assertFalse(mAckModel.isUserAuthenticated());
     assertTrue(mAckModel.isLogin());
     assertEquals("", mAckModel.getErrorMessage());
@@ -39,7 +39,7 @@ public class AckModelTest {
 
   @Test
   public void testFF() {
-    AckModel mAckModel = new AckModel(false, "", false);;
+    AckModel mAckModel = new AckModel(false, "", false);
     assertFalse(mAckModel.isUserAuthenticated());
     assertFalse(mAckModel.isLogin());
     assertEquals("", mAckModel.getErrorMessage());

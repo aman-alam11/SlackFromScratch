@@ -12,6 +12,10 @@ import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.server.Connection;
 
+/**
+ * This is a login handler which handles login.
+ * login state true/false is returned with handleMessage method if login is successful/fail.
+ */
 public class LoginHandler implements MessageHandler {
 
   private Gson gson;

@@ -177,14 +177,14 @@ public class ClientRunnable implements Connection {
 	 */
 	public void run() {
 		if (state.equals(ClientState.LOGGED_OUT)) {
-			//handle unauthenticated message
+
 			handleUnauthIncomingMessages();
-			//handleUnauthOutgoingMessages();
+
 		} else {
 			handleIncomingMessages();
 		}
 		handleOutgoingMessages();
-		//}
+
 		// Finally, check if this client have been inactive for too long and,
 		// when they have, terminate the client.
 		if (timer.isBehind()) {

@@ -65,6 +65,7 @@ public class ClientHandlerTest {
   public void constructorNullTest() {
     try {
       ClientHandler clientHandler1 = new ClientHandler(null);
+      clientHandler1.toString();
     }
     catch (IllegalArgumentException e) {
       FrontEnd.getView().sendToView(e.toString());
