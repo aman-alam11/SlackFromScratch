@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import edu.northeastern.ccs.im.model.LoginCredentials;
@@ -37,4 +39,12 @@ public class UserSearchHandlerTest {
     assertTrue(b);
   }
 
+  @Test
+  public void handleMessageUserSearchFalseTest() {
+
+    LoginCredentials loginCredentials = new LoginCredentials("atti","pass");
+    String message = mGson.toJson(loginCredentials);
+    boolean b = userSearchHandler.handleMessage("user",message,null);
+    assertFalse(b);
+  }
 }
