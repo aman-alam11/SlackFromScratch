@@ -11,6 +11,7 @@ import java.util.Date;
 
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class JPAServiceTest {
   private SessionFactory sessionFactory;
@@ -78,7 +79,7 @@ public class JPAServiceTest {
       User alice = jpaS.findUserByName("Alice");
 //    assertEquals("a@a.com", alice.getEmail());
     } catch (Exception e) {
-      assertEquals("could not extract ResultSet",e.getMessage());
+      assertEquals("could not extract ResultSet", e.getMessage());
     }
   }
 
@@ -209,7 +210,7 @@ public class JPAServiceTest {
 //    assertEquals(false, c.getGrpMsg());
 //    assertEquals(true, c.getIsDelivered());
     } catch (Exception e) {
-      assertEquals("could not extract ResultSet", e.getMessage());
+      assertTrue(e.getMessage().contains("could not extract ResultSet"));
     }
   }
 
