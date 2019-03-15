@@ -51,6 +51,8 @@ public class ChatModelTest {
     assertEquals("hello",user.getEmail());
     user.setEmail(null);
     assertEquals("",user.getEmail());
+    user.setPassword("hel");
+    assertEquals("hel",user.getPassword());
   }
 
 }
