@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
@@ -33,12 +35,12 @@ public class LoginHandlerTest {
   @Test
   public void handleMessageLoginPassTest() {
 
-    LoginCredentials loginCredentials = new LoginCredentials("atti","pass");
+    LoginCredentials loginCredentials = new LoginCredentials("test12","test");
     String message = mGson.toJson(loginCredentials);
-    when(connection.signInUser("atti")).thenReturn(true);
+    when(connection.signInUser("test12")).thenReturn(true);
 
-    boolean b = loginHandler.handleMessage("user",message,connection);
-     assertFalse(b);
+    boolean b = loginHandler.handleMessage("test12",message,connection);
+    assertTrue(b);
   }
 
   @Test
