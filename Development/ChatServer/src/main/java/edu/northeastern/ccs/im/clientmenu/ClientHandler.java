@@ -9,8 +9,6 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
-import static edu.northeastern.ccs.im.view.FrontEnd.isWaitingForResponse;
-
 public final class ClientHandler {
 
   private Connection modelLayer;
@@ -31,12 +29,6 @@ public final class ClientHandler {
     while (scanner.hasNext()) {
       int userChoice = 0;
       String choiceString = "";
-
-      if (isWaitingForResponse) {
-        FrontEnd.getView().sendToView("Please wait, getting previous response");
-        return;
-      }
-
 
       try {
         choiceString = scanner.nextLine().trim().toLowerCase();
