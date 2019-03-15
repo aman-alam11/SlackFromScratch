@@ -63,10 +63,6 @@ public final class SessionFactory {
     mPassword = Jsoup.clean(rawPassword, Whitelist.basic());
   }
 
-  public boolean logoutUser() {
-    return false;
-  }
-
 
   public boolean login() {
     boolean loginSuccessful = mAuthModules.loginIn(mUsername, mPassword, mJpaService);
