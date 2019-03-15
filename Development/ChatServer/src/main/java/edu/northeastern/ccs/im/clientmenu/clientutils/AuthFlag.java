@@ -10,19 +10,19 @@ import edu.northeastern.ccs.im.model.AckModel;
 
 public class AuthFlag implements AsyncListener {
 
-  private static boolean IS_USER_AUTHENTICATED = false;
+  private static boolean mIsUserAuthenticated = false;
 
   public AuthFlag(boolean isUserAuthenticated) {
-    IS_USER_AUTHENTICATED = isUserAuthenticated;
+    mIsUserAuthenticated = isUserAuthenticated;
   }
 
 
   public boolean isUserAuthenticated() {
-    return IS_USER_AUTHENTICATED;
+    return mIsUserAuthenticated;
   }
 
   public void resetFlags() {
-    IS_USER_AUTHENTICATED = false;
+    mIsUserAuthenticated = false;
   }
 
 
@@ -37,6 +37,6 @@ public class AuthFlag implements AsyncListener {
   @Override
   public void listen(String message) {
     AckModel ackModel = new Gson().fromJson(message, AckModel.class);
-    IS_USER_AUTHENTICATED = ackModel.isUserAuthenticated();
+    mIsUserAuthenticated = ackModel.isUserAuthenticated();
   }
 }

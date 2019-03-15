@@ -15,7 +15,6 @@ public class GenerateLoginCredentials {
         // Default private constructor
     }
 
-    @SuppressWarnings("squid:S2296")
     public static MessageJson generateLoginCredentials(String username1, String password, MessageType messageType) {
         LoginCredentials loginCredentials = new LoginCredentials(username1, password);
         username = username1;
