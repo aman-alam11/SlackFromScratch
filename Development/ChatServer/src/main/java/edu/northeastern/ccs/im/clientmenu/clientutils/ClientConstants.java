@@ -11,4 +11,5 @@ public class ClientConstants {
   /** Private constructor to prevent anyone from creating one of these. */
   private ClientConstants() {
     /* does nothing. */
-  }}
+  }
+}

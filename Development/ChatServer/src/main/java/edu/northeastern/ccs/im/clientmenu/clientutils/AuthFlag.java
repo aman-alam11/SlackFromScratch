@@ -39,6 +39,4 @@ public class AuthFlag implements AsyncListener {
     AckModel ackModel = new Gson().fromJson(message, AckModel.class);
     IS_USER_AUTHENTICATED = ackModel.isUserAuthenticated();
   }
-
-  // TODO: Reset after logout/terminate as well just to be sure
 }
