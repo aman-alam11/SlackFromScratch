@@ -66,12 +66,4 @@ public class UserChat {
   	sb.append(": ").append(msg);
   	return sb.toString();
   }
-
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
-
-  public void setExpiry(Date expiry) {
-    this.expiry = expiry;
-  }
 }
