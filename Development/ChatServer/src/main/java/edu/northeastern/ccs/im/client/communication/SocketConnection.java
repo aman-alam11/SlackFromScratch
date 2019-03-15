@@ -72,11 +72,7 @@ public class SocketConnection implements Connection {
       while (isAlive) {
         try {
           int dataRead = channel.read(buff);
-          // Check if client in dead
-          if (dataRead < 0) {
-            messageQueue.add(new MessageJson(MessageType.LOG_OUT));
-            isAlive = false;
-          } else if (dataRead > 0) {
+          if (dataRead > 0) {
             buff.flip();
             // Create a decoder which will convert our traffic to something useful
             Charset charset = Charset.forName(CHARSET_NAME);
