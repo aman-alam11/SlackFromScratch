@@ -18,4 +18,6 @@ public interface Connection {
 
   void registerListener(AsyncListener asyncListener, MessageType messageType);
 
+  void terminate();
+
 }
