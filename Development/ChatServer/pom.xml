@@ -156,7 +156,7 @@
                     <!-- MainClass in mainfest make a executable jar -->
                     <archive>
                         <manifest>
-                            <mainClass>edu.northeastern.ccs.im.clientmenu.MainClass</mainClass>
+                            <mainClass>edu.northeastern.ccs.im.server.Prattle</mainClass>
                         </manifest>
 
                     </archive>
