@@ -43,7 +43,6 @@ public final class ClientHandler {
             return;
           }
           catch (NullPointerException ex) {
-            //ex.printStackTrace();
             FrontEnd.getView().sendToView("Quit failed");
           }
         } else {
