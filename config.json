@@ -4,7 +4,7 @@
    "DNS": "ec2-13-59-164-30.us-east-2.compute.amazonaws.com",
     "user":"ubuntu",
     "directory":"/home/ubuntu",
-    "JARNAME": "prattle-0.0.1-SNAPSHOT.jar",
+    "JARNAME": "Chatter-0.0.1-SNAPSHOT-jar-with-dependencies.jar",
     "PEM": "auth.pem"
  }
 ]

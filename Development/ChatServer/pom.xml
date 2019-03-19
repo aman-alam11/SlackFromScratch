@@ -137,7 +137,9 @@
                     </execution>
                 </executions>
                 <configuration>
-
+                    <systemPropertyVariables>
+                        <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 
