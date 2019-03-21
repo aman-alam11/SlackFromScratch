@@ -30,7 +30,7 @@ public class ChatLogger {
    * Static initializations for this class.
    */
   static {
-    setMode(HandlerType.BOTH);
+    setMode(HandlerType.FILE);
   }
   
   /**

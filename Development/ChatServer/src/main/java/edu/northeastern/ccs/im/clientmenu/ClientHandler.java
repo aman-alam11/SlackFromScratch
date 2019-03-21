@@ -4,7 +4,9 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
+import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.ClientConstants;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -35,8 +37,14 @@ public final class ClientHandler {
         userChoice = Integer.parseInt(choiceString);
       } catch (Exception e) {
         // Handle with default implementation
-        if (choiceString.equals("\\q")) {
-          return;
+        if (choiceString.equalsIgnoreCase("\\q") || choiceString.equalsIgnoreCase("logout")) {
+          try {
+            SocketConnection.getInstance(ClientConstants.URL, ClientConstants.PORT).terminate();
+            return;
+          }
+          catch (NullPointerException ex) {
+            FrontEnd.getView().sendToView("Quit failed");
+          }
         } else {
           FrontEnd.getView().sendToView("Wrong input, try again.");
         }

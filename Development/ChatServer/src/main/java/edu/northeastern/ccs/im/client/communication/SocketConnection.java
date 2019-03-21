@@ -33,6 +33,7 @@ public class SocketConnection implements Connection {
   private static StringBuilder messageBuffer;
   private static AsyncListener mAsyncListener;
   private static MessageType listenerMessageType;
+  private static Thread messageListenerFromServer;
 
   //singleton implementation
   private SocketConnection() {
@@ -63,10 +64,15 @@ public class SocketConnection implements Connection {
     listenerMessageType = messageType;
   }
 
+  @Override
+  public void terminate() {
+    messageListenerFromServer.interrupt();
+  }
+
   private static void initThread() {
 	  messageQueue = new ConcurrentLinkedQueue<>();
 	  messageBuffer = new StringBuilder();
-    Thread messageListenerFromServer = new Thread(() -> {
+     messageListenerFromServer = new Thread(() -> {
       boolean isAlive = true;
       ByteBuffer buff = ByteBuffer.allocate(BUFFER_SIZE);
       while (isAlive) {
