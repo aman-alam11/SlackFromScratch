@@ -46,7 +46,6 @@ public class Registration extends CommonOperations implements AsyncListener {
     } else {
       FrontEnd.getView().sendToView("Passwords do not match! Please try again");
     }
-
   }
 
   @Override

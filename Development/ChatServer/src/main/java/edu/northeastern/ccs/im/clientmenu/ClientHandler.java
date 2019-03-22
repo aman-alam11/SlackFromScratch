@@ -19,7 +19,8 @@ public final class ClientHandler {
   public ClientHandler(Connection model) {
     modelLayer = model;
     if (modelLayer == null) {
-      throw new IllegalArgumentException("Model can't be null");
+      FrontEnd.getView().sendToView("Server is not running");
+      //throw new IllegalArgumentException("Model can't be null");
     }
 
     // Start with 1st Level as default
