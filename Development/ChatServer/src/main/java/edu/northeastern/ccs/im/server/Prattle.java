@@ -161,8 +161,11 @@ public abstract class Prattle {
       Selector selector = SelectorProvider.provider().openSelector();
       // Register to receive any incoming connection messages.
       serverSocket.register(selector, SelectionKey.OP_ACCEPT);
+
+      //Get number of logical cores.
+      int cores = Runtime.getRuntime().availableProcessors();
       // Create our pool of threads on which we will execute.
-      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(1);
+      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(cores);
       // If we get this far than the server is initialized correctly
       isReady = true;
       // Now listen on this port as long as the server is ready
@@ -174,7 +177,7 @@ public abstract class Prattle {
           // Now iterate through all of the keys
           Iterator<SelectionKey> it = acceptKeys.iterator();
           while (it.hasNext()) {
-            // Get the next key; it had better be from a new incoming connection
+            // Get the next key, it had better be from a new incoming connection
             key = it.next();
             it.remove();
             // Assert certain things I really hope is true
@@ -206,7 +209,6 @@ public abstract class Prattle {
 
       // Accept the connection and create a new thread to handle this client.
       SocketChannel socket = serverSocket.accept();
-
       // Make sure we have a connection to work with.
       NetworkConnection connection = new NetworkConnection(socket, new JsonMessageHandlerFactory());
       ClientRunnable tt = new ClientRunnable(connection);
