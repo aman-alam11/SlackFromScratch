@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
@@ -56,7 +57,9 @@ public abstract class Prattle {
    */
   private static ConcurrentHashMap<String, Connection> authenticatedActiveUsers;
 
-  /** All of the static initialization occurs in this "method" */
+  /**
+   *  All of the static initialization occurs in this "method".
+   */
   static {
     // Create the new queue of active threads.
     unAuthenticatedActiveUsers = Collections.newSetFromMap(new ConcurrentHashMap<ClientRunnable, Boolean>());
@@ -204,9 +207,9 @@ public abstract class Prattle {
   private static void createClientThread(ServerSocketChannel serverSocket, ScheduledExecutorService threadPool) {
     try {
       if (threadPool == null) {
+        ChatLogger.error("Thread Pool is null");
         throw new Exception("Thread Pool and server socket are both null");
       }
-
       // Accept the connection and create a new thread to handle this client.
       SocketChannel socket = serverSocket.accept();
       // Make sure we have a connection to work with.

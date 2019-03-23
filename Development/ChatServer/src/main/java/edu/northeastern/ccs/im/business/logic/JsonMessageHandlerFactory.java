@@ -29,6 +29,14 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
     	handler = new UserSearchHandler();
     	break;
 
+      case CREATE_GROUP:
+        handler = new GroupCreationHandler();
+        break;
+
+      case GROUP_CHAT:
+        handler = new GroupChatHandler();
+        break;
+
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();

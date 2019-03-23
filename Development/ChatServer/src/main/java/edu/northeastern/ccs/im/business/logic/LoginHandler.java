@@ -54,7 +54,6 @@ public class LoginHandler implements MessageHandler {
             MessageType.AUTH_ACK,
             gson.toJson(responseMessage));
     sendResponse(responsePacket, conn);
-
   }
   
 

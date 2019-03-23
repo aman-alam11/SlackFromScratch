@@ -242,7 +242,7 @@ public class NetworkConnection implements Iterable<MessageJson> {
 						  isMessageDecoded = true;
 						  messages.add(extractedMessage);
 					  } catch (JsonSyntaxException e) {
-						  ChatLogger.error(e.getMessage());
+						  ChatLogger.error("DECODE ERROR:" + e.getMessage());
 					  } finally {
 						  // remove the particular message extracted
 						  messageBuffer.delete(start - 1, end + 1);
