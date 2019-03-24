@@ -10,7 +10,6 @@ public class GroupModel {
   private Date creationTime;
   private String groupCreator;
 
-
   public Date getCreationTime() {
     return creationTime;
   }

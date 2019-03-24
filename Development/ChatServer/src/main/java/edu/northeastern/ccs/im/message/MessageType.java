@@ -55,7 +55,9 @@ public enum MessageType {
    */
   LOG_OUT("LGO"),
 
-  AUTH_ACK("ACK");
+  AUTH_ACK("ACK"),
+
+  CHAT_QUIT("CHTQUIT");
 
   /**
    * Store the short name of this message type.

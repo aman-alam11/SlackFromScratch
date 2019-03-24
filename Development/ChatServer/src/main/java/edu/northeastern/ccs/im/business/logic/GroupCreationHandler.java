@@ -22,8 +22,6 @@ public class GroupCreationHandler implements MessageHandler {
     JPAService jpaService = new JPAService();
     //jpaService.createGroup();
 
-
-
     return false;
   }
 }

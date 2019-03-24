@@ -1,5 +1,7 @@
 package edu.northeastern.ccs.im.clientmenu;
 
+import com.google.gson.Gson;
+
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -8,7 +10,11 @@ import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.ClientConstants;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
+import edu.northeastern.ccs.im.clientmenu.models.UserChat;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class ClientHandler {
@@ -40,7 +46,11 @@ public final class ClientHandler {
         // Handle with default implementation
         if (choiceString.equalsIgnoreCase("\\q") || choiceString.equalsIgnoreCase("logout")) {
           try {
-            SocketConnection.getInstance(ClientConstants.URL, ClientConstants.PORT).terminate();
+            UserChat userChat = new UserChat();
+            MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.LOG_OUT,
+                    new Gson().toJson(userChat));
+            modelLayer.sendMessage(messageJson);
+            modelLayer.terminate();
             return;
           }
           catch (NullPointerException ex) {

@@ -67,7 +67,6 @@ public class UserSearchModelLayer extends CommonOperations implements AsyncListe
 
 	}
 
-
   @Override
   public void listen(String message) {
     FrontEnd.getView().showLoadingView(true);

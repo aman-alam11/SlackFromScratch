@@ -47,6 +47,10 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
 				connectionLayerModel.sendMessage(messageJson);
 			} else {
 				isAlive = false;
+				UserChat userChat = new UserChat();
+				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_QUIT,
+								new Gson().toJson(userChat));
+				connectionLayerModel.sendMessage(messageJson);
 				break;
 			}
 
@@ -76,7 +80,6 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
 					String messageToDisplay = frameChatMessageToDisplay(chat, msg.getMessageType());
 					FrontEnd.getView().sendToView(messageToDisplay);
 				}
-
 			}
 			sleepFor(100);
 		}

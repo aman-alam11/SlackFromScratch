@@ -168,7 +168,7 @@ public abstract class Prattle {
       //Get number of logical cores.
       int cores = Runtime.getRuntime().availableProcessors();
       // Create our pool of threads on which we will execute.
-      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(cores);
+      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(cores*4);
       // If we get this far than the server is initialized correctly
       isReady = true;
       // Now listen on this port as long as the server is ready
