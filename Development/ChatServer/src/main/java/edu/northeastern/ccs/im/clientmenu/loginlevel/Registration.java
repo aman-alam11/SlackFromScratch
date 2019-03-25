@@ -1,6 +1,12 @@
 package edu.northeastern.ccs.im.clientmenu.loginlevel;
 
 import com.google.gson.Gson;
+
+import org.jsoup.helper.StringUtil;
+
+import java.util.Scanner;
+
+import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
@@ -11,9 +17,8 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
-import java.util.Scanner;
-
 import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials.generateLoginCredentials;
+import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
 public class Registration extends CommonOperations implements AsyncListener {
 
@@ -40,9 +45,14 @@ public class Registration extends CommonOperations implements AsyncListener {
      */
     if (password.equals(passwordCheck)) {
       MessageJson messageJson = generateLoginCredentials(username, password, MessageType.CREATE_USER);
-      FrontEnd.getView().showLoadingView(false);
-      model.registerListener(this, MessageType.AUTH_ACK);
       model.sendMessage(messageJson);
+      // Wait for response synchronously
+      String resp = waitForResponseSocket(model);
+      if (!StringUtil.isBlank(resp)) {
+        this.listen(resp);
+      } else {
+        // TODO: Some default response
+      }
     } else {
       FrontEnd.getView().sendToView("Passwords do not match! Please try again");
     }
@@ -50,7 +60,6 @@ public class Registration extends CommonOperations implements AsyncListener {
 
   @Override
   public void listen(String message) {
-    FrontEnd.getView().showLoadingView(true);
     AckModel ackModel = new Gson().fromJson(message, AckModel.class);
     if (ackModel.isLogin()) {
       return;

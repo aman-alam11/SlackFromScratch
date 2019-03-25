@@ -1,6 +1,11 @@
 package edu.northeastern.ccs.im.clientmenu.loginlevel;
 
 import com.google.gson.Gson;
+
+import org.jsoup.helper.StringUtil;
+
+import java.util.Scanner;
+
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
@@ -11,9 +16,8 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
-import java.util.Scanner;
-
 import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials.generateLoginCredentials;
+import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
 /**
  * This is the Login class which is being used for the Login level
@@ -21,7 +25,6 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCreden
 public class Login extends CommonOperations implements AsyncListener {
 
   private Gson mGson;
-
 
   @Override
   public void passControl(Scanner scanner, Connection modelLayer) {
@@ -34,16 +37,21 @@ public class Login extends CommonOperations implements AsyncListener {
     FrontEnd.getView().sendToView("Enter password");
     String password = scanner.nextLine().trim();
 
-    // Tell the server we are trying to authenticate user
-    modelLayer.registerListener(this, MessageType.AUTH_ACK);
     MessageJson messageJson = generateLoginCredentials(username, password, MessageType.LOGIN);
     modelLayer.sendMessage(messageJson);
-    FrontEnd.getView().showLoadingView(false);
+
+    FrontEnd.getView().sendToView("\nLOADING\n");
+
+    String resp = waitForResponseSocket(modelLayer);
+    if (!StringUtil.isBlank(resp)) {
+      this.listen(resp);
+    } else {
+      // TODO: Some default response
+    }
   }
 
   @Override
   public void listen(String message) {
-    FrontEnd.getView().showLoadingView(true);
     AckModel ackModel = mGson.fromJson(message, AckModel.class);
 
     if (!ackModel.isLogin()) {
