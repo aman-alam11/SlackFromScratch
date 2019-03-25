@@ -22,6 +22,20 @@ public class JPAService {
 	 * Initialize the SessionFactory instance.
 	 */
 
+	private static JPAService instance;
+	
+	/**
+	 * This method returns the instance of JPASercice, since its a singleton object
+	 * @return {@link JPAService}
+	 */
+	
+	public static synchronized JPAService	getInstance() {
+		if (instance == null) {
+			instance = new JPAService();
+		}
+		return instance;
+	}
+	
 	private GroupDao gd;
 	// Create the SessionFactory using the ServiceRegistry
 	SessionFactory mSessionFactory = new Configuration().
@@ -35,12 +49,16 @@ public class JPAService {
 	/**
 	 * Constructor to initialize userdao object.
 	 */
-	public JPAService(){
+	private JPAService(){
 		ud = new UserDao(mSessionFactory);
 		cd = new ChatDao(mSessionFactory);
 		gd = new GroupDao(mSessionFactory);
 	}
 
+	/**
+	 * Only for testing purpose
+	 * @param sf
+	 */
 	public JPAService(SessionFactory sf){
 		mSessionFactory = sf;
 		ud = new UserDao(mSessionFactory);

@@ -27,7 +27,7 @@ public class AuthTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
-    mJpaService = new JPAService();
+    mJpaService = JPAService.getInstance();
     authModules = new AuthModulesImpl();
   }
 

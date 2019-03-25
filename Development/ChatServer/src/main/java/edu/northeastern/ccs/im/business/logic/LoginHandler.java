@@ -31,7 +31,7 @@ public class LoginHandler implements MessageHandler {
       LoginCredentials lgn = gson.fromJson(message, LoginCredentials.class);
 
       SessionFactory sessionFactory = SessionFactory.getInstance(lgn.getUserName(), lgn.getPassword(),
-              new JPAService());
+              JPAService.getInstance());
 
       boolean isAuthenticated = sessionFactory.login();
       respond(isAuthenticated, conn);
