@@ -25,7 +25,7 @@ public class JPAServiceTest {
             addAnnotatedClass(User.class).
             addAnnotatedClass(Chat.class).
             setProperty("hibernate.hbm2ddl.auto", "create-drop").
-            setProperty("hibernate.connection.url", "jdbc:mysql://ec2-13-59-164-30.us-east-2.compute.amazonaws.com:3306/jpa_test").
+            setProperty("hibernate.connection.url", "jdbc:mysql://team212instance.c1wqnkcqbuje.us-east-2.rds.amazonaws.com:3306/jpa_test").
             buildSessionFactory();
   }
 
