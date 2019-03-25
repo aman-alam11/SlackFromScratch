@@ -25,7 +25,7 @@ public class ChatHandler implements MessageHandler {
     public boolean handleMessage(String user, String message, Connection conn) {
         boolean isSuccessfull = false;
         UserChat chatModel = mGson.fromJson(message, UserChat.class);
-        JPAService jpaService = new JPAService();
+        JPAService jpaService = JPAService.getInstance();
 
         jpaService.createChatMessage(chatModel.getFromUserName(),
                 chatModel.getToUserName(),

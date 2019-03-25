@@ -5,6 +5,7 @@ import org.hibernate.cfg.Configuration;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Date;
@@ -15,10 +16,10 @@ import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("all")
 public class JPAServiceTest {
-  private SessionFactory sessionFactory;
+  private static SessionFactory sessionFactory;
 
-  @Before
-  public void before() {
+  @BeforeClass
+  public static void before() {
     // setup the session factory
     sessionFactory = new Configuration().
             configure().
@@ -329,7 +330,7 @@ public class JPAServiceTest {
   @AfterClass
   public static void close() {
     try {
-      JPAService jpaS = new JPAService();
+      JPAService jpaS = new JPAService(sessionFactory);
       jpaS.closeSessionFactory();
     } catch (Exception e) {
       assertEquals("", e.getMessage());

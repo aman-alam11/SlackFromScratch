@@ -20,7 +20,7 @@ public class UserSearchHandler implements MessageHandler{
 	
 	public UserSearchHandler() {
 		gson =  new Gson();
-		jpaService = new JPAService();
+		jpaService = JPAService.getInstance();
 	}
 
 	@Override

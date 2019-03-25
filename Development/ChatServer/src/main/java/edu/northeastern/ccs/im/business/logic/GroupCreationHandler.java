@@ -19,7 +19,7 @@ public class GroupCreationHandler implements MessageHandler {
   public boolean handleMessage(String user, String message, Connection clientConnection) {
 
     GroupModel groupModel = mGson.fromJson(message, GroupModel.class);
-    JPAService jpaService = new JPAService();
+    JPAService jpaService = JPAService.getInstance();
     //jpaService.createGroup();
 
     return false;
