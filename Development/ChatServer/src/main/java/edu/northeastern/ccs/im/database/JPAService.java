@@ -22,11 +22,14 @@ public class JPAService {
 	 * Initialize the SessionFactory instance.
 	 */
 
+	private GroupDao gd;
 	// Create the SessionFactory using the ServiceRegistry
 	SessionFactory mSessionFactory = new Configuration().
 			configure().
 			addAnnotatedClass(User.class).
 			addAnnotatedClass(Chat.class).
+			addAnnotatedClass(Group.class).
+			addAnnotatedClass(GroupMember.class).
 			buildSessionFactory();
 
 	/**
@@ -35,12 +38,14 @@ public class JPAService {
 	public JPAService(){
 		ud = new UserDao(mSessionFactory);
 		cd = new ChatDao(mSessionFactory);
+		gd = new GroupDao(mSessionFactory);
 	}
 
 	public JPAService(SessionFactory sf){
 		mSessionFactory = sf;
 		ud = new UserDao(mSessionFactory);
 		cd = new ChatDao(mSessionFactory);
+		gd = new GroupDao(mSessionFactory);
 	}
 	/**
 	 * Create a new user.
@@ -161,5 +166,22 @@ public class JPAService {
 	 */
 	public void deleteMessage(int id) {
 		cd.delete(id);
+	}
+
+	public boolean createGroup(String gName, User gCreator){
+		return gd.create(gName,gCreator);
+	}
+
+	public Group findGroupByName(String gName){
+		return gd.findGroupByName(gName);
+	}
+	public void deleteGroup(String gName){
+		Group g = findGroupByName(gName);
+		gd.delete(g.getId());
+	}
+
+	public Group findGroupByCreator(String name){
+		User user = findUserByName(name);
+		return gd.findGroupByCreator(user);
 	}
 }
