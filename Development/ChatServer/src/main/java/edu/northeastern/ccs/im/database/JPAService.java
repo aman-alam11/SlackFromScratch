@@ -199,7 +199,7 @@ public class JPAService {
 		gd.delete(g.getId());
 	}
 
-	public Group findGroupByCreator(String name){
+	public List<Group> findGroupByCreator(String name){
 		User user = findUserByName(name);
 		return gd.findGroupByCreator(user);
 	}
