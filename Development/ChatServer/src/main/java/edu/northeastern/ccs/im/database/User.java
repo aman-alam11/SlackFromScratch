@@ -70,7 +70,7 @@ public class User implements Serializable {
    *
    * @return a String username.
    */
-  protected String getName() {
+  public String getName() {
     return name;
   }
 

@@ -221,6 +221,6 @@ public class JPAService {
 	}
 
 	public void deleteAllMembersOfGroup(String gName){
-		gmd.deleteallMembersFromGroup(gName);
+		gmd.deleteAllMembersFromGroup(gName);
 	}
 }
