@@ -132,4 +132,32 @@ public class GroupMemberDao {
             session.close();
         }
     }
+
+    public boolean addMultipleUsersToGroup(List<String> users, String gName){
+        boolean isTransactionSuccessful = false;
+        // Create a session
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = mSessionFactory.openSession();
+            // Begin a transaction
+            transaction = session.beginTransaction();
+
+            for(String u: users){
+                JPAService.getInstance().addGroupMember(gName,u,false);
+            }
+            transaction.commit();
+            isTransactionSuccessful = true;
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            transaction.rollback();
+        } finally {
+            // Close the session
+            session.close();
+        }
+
+        return isTransactionSuccessful;
+    }
 }

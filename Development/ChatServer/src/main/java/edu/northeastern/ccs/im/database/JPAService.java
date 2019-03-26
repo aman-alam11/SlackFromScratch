@@ -223,4 +223,8 @@ public class JPAService {
 	public void deleteAllMembersOfGroup(String gName){
 		gmd.deleteallMembersFromGroup(gName);
 	}
+
+	public boolean addMultipleUsersToGroup(List<String> usersToAdd, String grpToAddTo){
+		return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
+	}
 }
