@@ -1,6 +1,7 @@
 package edu.northeastern.ccs.im.server.business.logic;
 
 import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
 
 /**
@@ -10,7 +11,7 @@ public interface MessageHandler {
 
   /**
    * This method is used to handle the message that is being transmitted between the users.
-   *
+   * based on {@link MessageType}
    * @param user
    * @param message
    * @param clientConnection
