@@ -33,11 +33,11 @@ public class GroupCreationHandler implements MessageHandler {
   																				 groupModel.isAuthRequired());
   		if (!isSuccessFull) {
   			//DB error while creating group
-  			ackModel.setErrorCode(ErrorCodes.DB000);
+  			ackModel.addErrorCode(ErrorCodes.DB000);
   		}
   	} else {
   		//Group name already exists
-  		ackModel.setErrorCode(ErrorCodes.G801);
+  		ackModel.addErrorCode(ErrorCodes.G801);
   		isSuccessFull = false;
   	}
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, mGson.toJson(ackModel));
