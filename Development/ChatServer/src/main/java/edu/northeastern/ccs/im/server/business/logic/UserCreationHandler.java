@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.business.logic;
+package edu.northeastern.ccs.im.server.business.logic;
 
 import com.google.gson.Gson;
 

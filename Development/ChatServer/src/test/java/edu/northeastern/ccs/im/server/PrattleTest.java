@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import edu.northeastern.ccs.im.NetworkConnection;
-import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
 
 import static junit.framework.TestCase.assertTrue;
 
