@@ -6,6 +6,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import org.hibernate.query.Query;
+
+import edu.northeastern.ccs.im.ChatLogger;
+
 import java.util.logging.Logger;
 
 public class GroupDao {
@@ -15,7 +18,7 @@ public class GroupDao {
         mSessionFactory = sf;
     }
 
-    public boolean create(String gName, User gCreator){
+    public boolean create(String gName, String gCreator, boolean isAuthRequired){
         boolean isTransactionSuccessful = false;
         // Create a session
         Session session = null;
@@ -24,7 +27,12 @@ public class GroupDao {
             session = mSessionFactory.openSession();
             // Begin a transaction
             transaction = session.beginTransaction();
-            Group grp = new Group(gName,gCreator);
+            User user = JPAService.getInstance().findUserByName(gCreator);
+            if (user == null) {
+            	ChatLogger.info(this.getClass().getName() + "User not found : " + gCreator);
+            	return false;
+            }
+            Group grp = new Group(gName, user, isAuthRequired);
 
             // Save the User
             session.save(grp);
@@ -45,7 +53,7 @@ public class GroupDao {
         return isTransactionSuccessful;
     }
 
-    public void delete(int id) {
+    public void delete(long id) {
         // Create a session
         Session session = mSessionFactory.openSession();
         Transaction transaction = null;
@@ -53,7 +61,7 @@ public class GroupDao {
             // Begin a transaction
             transaction = session.beginTransaction();
             // Get the User from the database.
-            Group grp = session.get(Group.class, Integer.valueOf(id));
+            Group grp = session.get(Group.class, id);
             // Delete the User
             session.delete(grp);
             // Commit the transaction

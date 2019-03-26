@@ -186,8 +186,9 @@ public class JPAService {
 		cd.delete(id);
 	}
 
-	public boolean createGroup(String gName, User gCreator){
-		return gd.create(gName,gCreator);
+	public boolean createGroup(String gName, String gCreator, boolean isAuthRequired) {
+		
+		return gd.create(gName, gCreator, isAuthRequired);
 	}
 
 	public Group findGroupByName(String gName){

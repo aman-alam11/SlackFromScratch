@@ -21,7 +21,7 @@ public class User implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id", unique = true)
-  private int id;
+  private long id;
 
   @Column(name = "user_name", nullable = false, unique = true)
   private String name;
@@ -52,7 +52,7 @@ public class User implements Serializable {
    *
    * @return an integer id.
    */
-  protected int getId() {
+  protected long getId() {
     return id;
   }
 
@@ -61,7 +61,7 @@ public class User implements Serializable {
    *
    * @param id Takes an integer id to set it as an id of a user.
    */
-  protected void setId(int id) {
+  protected void setId(long id) {
     this.id = id;
   }
 
