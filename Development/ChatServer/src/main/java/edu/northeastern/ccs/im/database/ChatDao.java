@@ -69,7 +69,7 @@ public class ChatDao {
     * @param receiverId
     * @return
     */
-   public List<Chat> findByReceiver(int receiverId) {
+   public List<Chat> findByReceiver(long receiverId) {
 	Session session = null;
 	Transaction transaction = null;
 	List<Chat> chat = null;
@@ -100,7 +100,7 @@ public class ChatDao {
     * Delete the chat for a particular user or a group.
     * @param receiverId
     */
-   public void deleteChatByReceiver(int receiverId) {
+   public void deleteChatByReceiver(long receiverId) {
 	   Session session = null;
        Transaction transaction = null;
        try {
@@ -129,7 +129,7 @@ public class ChatDao {
     * Delete a particular message.
     * @param id
     */
-   public void delete(int id) {
+   public void delete(long id) {
        // Create a session
        Session session = null;
        Transaction transaction = null;
