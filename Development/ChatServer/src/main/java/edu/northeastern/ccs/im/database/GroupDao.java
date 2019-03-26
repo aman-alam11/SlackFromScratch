@@ -2,6 +2,7 @@ package edu.northeastern.ccs.im.database;
 
 import org.hibernate.*;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -87,7 +88,7 @@ public class GroupDao {
             query.select(root).where(builder.equal(root.get("gName"), name));
             Query<Group> q = session.createQuery(query);
             grp = q.getSingleResult();
-        } catch (HibernateException | IllegalArgumentException ex) {
+        } catch (HibernateException | IllegalArgumentException | NoResultException ex) {
             // Print the Exception
             ChatLogger.error(ex.getMessage());
         } finally {
@@ -107,7 +108,7 @@ public class GroupDao {
             query.select(root).where(builder.equal(root.get("gCreator"), user));
             Query<Group> q = session.createQuery(query);
             grp = q.getResultList();
-        } catch (HibernateException | IllegalArgumentException ex) {
+        } catch (HibernateException | IllegalArgumentException | NoResultException ex) {
             // Print the Exception
             ChatLogger.error(ex.getMessage());
         } finally {

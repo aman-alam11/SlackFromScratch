@@ -4,34 +4,48 @@ import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.database.Group;
 import edu.northeastern.ccs.im.database.JPAService;
-import edu.northeastern.ccs.im.model.GroupModel;
+import edu.northeastern.ccs.im.message.MessageConstants;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
+import edu.northeastern.ccs.im.model.ErrorCodes;
+import edu.northeastern.ccs.im.model.GroupCreateUpdateModel;
 import edu.northeastern.ccs.im.server.Connection;
 
 public class GroupCreationHandler implements MessageHandler {
 
   private Gson mGson;
-
+  private AckModel ackModel;
   public GroupCreationHandler() {
     this.mGson = new Gson();
+    ackModel = new AckModel();
   }
 
 
   @Override
   public boolean handleMessage(String user, String message, Connection clientConnection) {
 
-    GroupModel groupModel = mGson.fromJson(message, GroupModel.class);
-    JPAService jpaService = JPAService.getInstance();
+    GroupCreateUpdateModel groupModel = mGson.fromJson(message, GroupCreateUpdateModel.class);
+    boolean isSuccessFull;
     if (validateGroupName(groupModel)) {
-  		JPAService.getInstance().createGroup(groupModel.getGroupName(), 
+  		isSuccessFull = JPAService.getInstance().createGroup(groupModel.getGroupName(), 
   																				 groupModel.getGroupCreator(), 
   																				 groupModel.isAuthRequired());
+  		if (!isSuccessFull) {
+  			//DB error while creating group
+  			ackModel.setErrorCode(ErrorCodes.DB000);
+  		}
+  	} else {
+  		//Group name already exists
+  		ackModel.setErrorCode(ErrorCodes.G801);
+  		isSuccessFull = false;
   	}
-    //jpaService.createGroup();
-
-    return false;
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, mGson.toJson(ackModel));
+    sendResponse(response, clientConnection);
+    return isSuccessFull;
   }
   
-  private boolean validateGroupName(GroupModel grp) {
+  private boolean validateGroupName(GroupCreateUpdateModel grp) {
   	String grpName = grp.getGroupName();
   	Group groupSearch = JPAService.getInstance().findGroupByName(grpName);
   	return groupSearch == null;

@@ -59,6 +59,11 @@ public enum MessageType {
    * Message whose contents are for group creation
    */
   CREATE_GROUP("CGR"),
+  
+  /**
+   * Message whose contents are for group creation
+   */
+  ADD_USER_IN_GROUP("AGR"),
 
   /**
    * Message to prompt quit
