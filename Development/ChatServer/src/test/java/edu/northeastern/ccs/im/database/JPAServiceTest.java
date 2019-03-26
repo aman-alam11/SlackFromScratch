@@ -90,7 +90,7 @@ public class JPAServiceTest {
       jpaService.createUser("Alice", "a@a.com", "alice");
       User alice = jpaService.findUserByName("Alice");
 //      assertEquals("a@a.com", alice.getEmail());
-      jpaService.updateUser(alice.getId(), alice.getName(), "alice@new.com", alice.getPassword());
+     // jpaService.updateUser(alice.getId(), alice.getName(), "alice@new.com", alice.getPassword());
       User newAlice = jpaService.findUserByName("Alice");
 //      assertEquals("alice@new.com", newAlice.getEmail());
     } catch (Exception e) {

@@ -8,6 +8,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,12 +59,18 @@ public abstract class Prattle {
   private static ConcurrentHashMap<String, Connection> authenticatedActiveUsers;
 
   /**
+   * Collection of users currently in chat window and chatting.
+   */
+  private static Set<String> chattingUsers;
+
+  /**
    *  All of the static initialization occurs in this "method".
    */
   static {
     // Create the new queue of active threads.
     unAuthenticatedActiveUsers = Collections.newSetFromMap(new ConcurrentHashMap<ClientRunnable, Boolean>());
     authenticatedActiveUsers = new ConcurrentHashMap<>();
+    chattingUsers = new HashSet<>();
   }
 
 
@@ -95,6 +102,18 @@ public abstract class Prattle {
   
   public static boolean isUserOnline(String userName) {
 	  return authenticatedActiveUsers.containsKey(userName);
+  }
+
+  public static boolean isUserChatting(String userName) {
+    return chattingUsers.contains(userName);
+  }
+
+  public static void addToChattingUsers(String userName) {
+    chattingUsers.add(userName);
+  }
+
+  public static void removeFromChattingUsers(String userName) {
+    chattingUsers.remove(userName);
   }
 
  /**

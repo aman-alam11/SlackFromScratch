@@ -192,7 +192,7 @@ public class ClientRunnable implements Connection {
 	
 
 	public boolean signInUser(String userName) {
-		setUserName(userName);
+		this.setUserName(userName);
 		boolean isSuccessful = Prattle.changeToAuthenciatedUser(this, userName);
 		if (isSuccessful) {
 			ChatLogger.info("User Logged in! " + userName + "\n");
@@ -219,13 +219,13 @@ public class ClientRunnable implements Connection {
 
 				  //To check if user is about to start chatting.
 				case USER_CHAT_START:
-					this.setState(ClientState.CHAT_IN);
+					Prattle.addToChattingUsers(this.getUserName());
 					ChatLogger.info("Chat start message received");
 					break;
 
 					//Change status back to logged when the user exit the chat.
 				case USER_CHAT_END:
-					this.setState(ClientState.LOGGED_IN);
+					Prattle.removeFromChattingUsers(this.getUserName());
 					ChatLogger.info("Chat exit message received");
 					break;
 
