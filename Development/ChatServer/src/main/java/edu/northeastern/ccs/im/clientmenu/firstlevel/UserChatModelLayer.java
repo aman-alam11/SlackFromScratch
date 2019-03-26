@@ -8,7 +8,9 @@ import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
+import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
@@ -29,7 +31,16 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
   	isAlive = true;
   	//Start a thread to read incoming messages and display them
   	new Thread(this).start();
-		FrontEnd.getView().sendToView("Enter Message, \\q to quit");
+
+		FrontEnd.getView().sendToView("Enter Message, \\q to exit chat");
+
+		//Sending the server status that user is about to start the chat.
+		UserChat userChatObject = new UserChat();
+		MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
+						new Gson().toJson(userChatObject));
+		connectionLayerModel.sendMessage(msg);
+
+
 		while (scanner.hasNext()) {
 
 			String message = scanner.nextLine().trim();
@@ -45,15 +56,17 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
 				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
 						new Gson().toJson(userChat));
 				connectionLayerModel.sendMessage(messageJson);
+
 			} else {
 				isAlive = false;
+				//Sending the server status that user has ended the chat.
 				UserChat userChat = new UserChat();
-				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_QUIT,
+				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_END,
 								new Gson().toJson(userChat));
 				connectionLayerModel.sendMessage(messageJson);
+				InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
 				break;
 			}
-
 		}
 	}
   
