@@ -21,36 +21,42 @@ public class FrontEnd {
     if (stringToDisplay == null) {
       return;
     }
-
-    System.out.println(stringToDisplay);
+    printToStream(stringToDisplay);
   }
 
 
   public void showMainMenu() {
-    System.out.println("Welcome to Chatter Application");
-    System.out.println("1. Login");
-    System.out.println("2. Registration");
-    System.out.println("Or Enter \\q to quit");
-    System.out.println("Enter From above Options: ");
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("Welcome to Chatter Application \n");
+    stringBuilder.append("1. Login \n");
+    stringBuilder.append("2. Registration \n");
+    stringBuilder.append("Or Enter \\q to quit \n");
+    stringBuilder.append("Enter From above Options: \n");
+    printToStream(stringBuilder.toString());
   }
 
 
   public void showFirstLevelOptions() {
-    System.out.println("1. Unread Messages");
-    System.out.println("2. Chat user");
-    System.out.println("Or type logout to logout user");
-    System.out.println("Enter From above Options: ");
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("1. Unread Messages \n");
+    stringBuilder.append("2. Chat user \n");
+    stringBuilder.append("Or Enter \\q to quit \n");
+    stringBuilder.append("Enter From above Options: \n");
+    printToStream(stringBuilder.toString());
   }
 
 
   public static void showLoadingView(boolean shouldStopLoading) {
-    System.out.println(shouldStopLoading ? "Loading complete" : "\nLoading" );
+    printToStream(shouldStopLoading ? "Loading complete" : "\nLoading" );
     long getStartTime = shouldStopLoading ?  System.currentTimeMillis() + 10000 : System.currentTimeMillis();
 
     while (!shouldStopLoading && (System.currentTimeMillis() - getStartTime < 200)) {
-      System.out.print(".");
+      printToStream(".");
     }
-    System.out.println("\n");
+  }
+
+  private static void printToStream(String string){
+    System.out.println(string);
   }
 
 }
