@@ -9,7 +9,7 @@ import org.hibernate.query.Query;
 
 import edu.northeastern.ccs.im.ChatLogger;
 
-import java.util.logging.Logger;
+import java.util.List;
 
 public class GroupDao {
     SessionFactory mSessionFactory;
@@ -33,16 +33,16 @@ public class GroupDao {
             	return false;
             }
             Group grp = new Group(gName, user, isAuthRequired);
-
-            // Save the User
+            // Save the Group
             session.save(grp);
-
+            GroupMember groupMember = new GroupMember(user,grp,true);
+            session.save(groupMember);
             // Commit the transaction
             transaction.commit();
             isTransactionSuccessful = true;
         } catch (HibernateException ex) {
             // Print the Exception
-            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+            ChatLogger.error(ex.getMessage());
             // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
@@ -68,7 +68,7 @@ public class GroupDao {
             transaction.commit();
         } catch (HibernateException | IllegalArgumentException ex) {
             // Print the Exception
-            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+            ChatLogger.error(ex.getMessage());
             // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
@@ -89,7 +89,7 @@ public class GroupDao {
             grp = q.getSingleResult();
         } catch (HibernateException | IllegalArgumentException ex) {
             // Print the Exception
-            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+            ChatLogger.error(ex.getMessage());
         } finally {
             // Close the session
             session.close();
@@ -97,19 +97,19 @@ public class GroupDao {
         return grp;
     }
 
-    public Group findGroupByCreator(User user){
+    public List<Group> findGroupByCreator(User user){
         Session session = mSessionFactory.openSession();
-        Group grp = null;
+        List<Group> grp = null;
         try {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<Group> query = builder.createQuery(Group.class);
             Root<Group> root = query.from(Group.class);
             query.select(root).where(builder.equal(root.get("gCreator"), user));
             Query<Group> q = session.createQuery(query);
-            grp = q.getSingleResult();
+            grp = q.getResultList();
         } catch (HibernateException | IllegalArgumentException ex) {
             // Print the Exception
-            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+            ChatLogger.error(ex.getMessage());
         } finally {
             // Close the session
             session.close();
