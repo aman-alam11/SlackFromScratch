@@ -29,7 +29,16 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
   	isAlive = true;
   	//Start a thread to read incoming messages and display them
   	new Thread(this).start();
+
 		FrontEnd.getView().sendToView("Enter Message, \\q to quit");
+
+		//Sending the server status that user is about to start the chat.
+		UserChat userChatObject = new UserChat();
+		MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
+						new Gson().toJson(userChatObject));
+		connectionLayerModel.sendMessage(msg);
+
+
 		while (scanner.hasNext()) {
 
 			String message = scanner.nextLine().trim();
@@ -45,15 +54,16 @@ public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnabl
 				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
 						new Gson().toJson(userChat));
 				connectionLayerModel.sendMessage(messageJson);
+
 			} else {
 				isAlive = false;
+				//Sending the server status that user has ended the chat.
 				UserChat userChat = new UserChat();
-				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_QUIT,
+				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_END,
 								new Gson().toJson(userChat));
 				connectionLayerModel.sendMessage(messageJson);
 				break;
 			}
-
 		}
 	}
   

@@ -31,9 +31,19 @@ public enum MessageType {
   USER_SEARCH("SRH"),
 
   /**
-   * Message whose contents are user to user chat
+   * Message whose contents are user to user chat and it is general message type.
    */
   USER_CHAT("UCT"),
+
+  /**
+   * Send this type before the starting of the chat, to let server know that user is about to start chat.
+   */
+  USER_CHAT_START("UCS"),
+
+  /**
+   * Send this after quitting the chat to let server know that client is not chatting now.
+   */
+  USER_CHAT_END("UCE"),
 
   /**
    * Message whose contents are user to group chat
@@ -55,9 +65,7 @@ public enum MessageType {
    */
   LOG_OUT("LGO"),
 
-  AUTH_ACK("ACK"),
-
-  CHAT_QUIT("CHTQUIT");
+  AUTH_ACK("ACK");
 
   /**
    * Store the short name of this message type.
