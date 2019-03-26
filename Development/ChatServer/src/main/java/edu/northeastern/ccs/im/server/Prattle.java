@@ -113,7 +113,6 @@ public abstract class Prattle {
 			} else {
 				return false;
 			}
-
 		}
   }
 

@@ -161,7 +161,7 @@ public class ClientRunnable implements Connection {
 	/**
 	 * Perform the periodic actions needed to work with this client.
 	 * 
-	 * @see java.lang.Thread#run()
+	 * @see java.lang.Thread #run()
 	 */
 	public void run() {
 		if (state.equals(ClientState.LOGGED_OUT)) {
