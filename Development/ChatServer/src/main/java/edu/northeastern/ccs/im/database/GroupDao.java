@@ -117,4 +117,22 @@ public class GroupDao {
         }
         return grp;
     }
+
+    public List<Group> searchGroupByName(String gName) {
+        List<Group> allGrps = null;
+        Session session = mSessionFactory.openSession();
+        try{
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Group> query = builder.createQuery(Group.class);
+            Root<Group> root = query.from(Group.class);
+            query.select(root).where(builder.like(root.get("gName"), "%"+gName+"%"));
+            Query<Group> q = session.createQuery(query);
+            allGrps = q.getResultList();
+        }catch (Exception ex){
+//            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+        }finally {
+            session.close();
+        }
+        return allGrps;
+    }
 }

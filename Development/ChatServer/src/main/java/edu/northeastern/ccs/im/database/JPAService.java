@@ -208,6 +208,10 @@ public class JPAService {
 		return gd.findGroupByCreator(user);
 	}
 
+	public List<Group> searchGroupByName(String name){
+		return gd.searchGroupByName(name);
+	}
+
 	public boolean addGroupMember(String gName, String uName, boolean isModerator){
 		return gmd.addMemberToGroup(gName,uName,isModerator);
 	}
