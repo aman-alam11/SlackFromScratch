@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.database.Group;
 import edu.northeastern.ccs.im.database.JPAService;
-import edu.northeastern.ccs.im.model.GroupModel;
+import edu.northeastern.ccs.im.model.GroupCreateUpdateModel;
 import edu.northeastern.ccs.im.server.Connection;
 
 public class GroupCreationHandler implements MessageHandler {
@@ -19,8 +19,7 @@ public class GroupCreationHandler implements MessageHandler {
   @Override
   public boolean handleMessage(String user, String message, Connection clientConnection) {
 
-    GroupModel groupModel = mGson.fromJson(message, GroupModel.class);
-    JPAService jpaService = JPAService.getInstance();
+    GroupCreateUpdateModel groupModel = mGson.fromJson(message, GroupCreateUpdateModel.class);
     if (validateGroupName(groupModel)) {
   		JPAService.getInstance().createGroup(groupModel.getGroupName(), 
   																				 groupModel.getGroupCreator(), 
@@ -31,7 +30,7 @@ public class GroupCreationHandler implements MessageHandler {
     return false;
   }
   
-  private boolean validateGroupName(GroupModel grp) {
+  private boolean validateGroupName(GroupCreateUpdateModel grp) {
   	String grpName = grp.getGroupName();
   	Group groupSearch = JPAService.getInstance().findGroupByName(grpName);
   	return groupSearch == null;
