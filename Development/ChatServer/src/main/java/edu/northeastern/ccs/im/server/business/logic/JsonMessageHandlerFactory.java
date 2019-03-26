@@ -37,6 +37,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
         handler = new GroupChatHandler();
         break;
 
+      case ADD_USER_IN_GROUP:
+      	handler = new AddGroupUsersHandler();
+      	break;
+      	
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();
