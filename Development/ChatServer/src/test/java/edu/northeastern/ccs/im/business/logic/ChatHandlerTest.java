@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.ChatHandler;
 
 
 public class ChatHandlerTest {

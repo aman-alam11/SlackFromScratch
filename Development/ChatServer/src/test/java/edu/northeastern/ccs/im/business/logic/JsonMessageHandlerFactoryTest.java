@@ -4,6 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.server.business.logic.ChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.server.business.logic.LoginHandler;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.UserCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.UserSearchHandler;
 
 public class JsonMessageHandlerFactoryTest {
 

@@ -20,12 +20,12 @@ import org.mockito.MockitoAnnotations;
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.NetworkConnection;
-import edu.northeastern.ccs.im.business.logic.MessageHandler;
-import edu.northeastern.ccs.im.business.logic.MessageHandlerFactory;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.LoginCredentials;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandlerFactory;
 
 public class ClientRunnableTest {
 

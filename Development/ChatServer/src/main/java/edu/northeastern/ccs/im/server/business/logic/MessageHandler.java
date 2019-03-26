@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.business.logic;
+package edu.northeastern.ccs.im.server.business.logic;
 
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.server.Connection;

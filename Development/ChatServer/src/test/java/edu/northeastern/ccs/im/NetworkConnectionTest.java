@@ -19,10 +19,10 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
 
-import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
