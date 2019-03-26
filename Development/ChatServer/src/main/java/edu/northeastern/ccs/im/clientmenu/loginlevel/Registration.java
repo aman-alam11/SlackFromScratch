@@ -20,7 +20,7 @@ public class Registration extends CommonOperations implements AsyncListener {
   @Override
   public void passControl(Scanner scanner, Connection model) {
 
-    if(model!=null) {
+    if(model != null) {
       // Take user details to register the user.
       FrontEnd.getView().sendToView("Hi, Please Enter the following details to register.");
       FrontEnd.getView().sendToView("Enter User Name");
@@ -47,14 +47,11 @@ public class Registration extends CommonOperations implements AsyncListener {
       } else {
         FrontEnd.getView().sendToView("Passwords do not match! Please try again");
       }
-
     }
 
     else {
       FrontEnd.getView().sendToView("Server is not Responding, Sorry!");
     }
-
-
   }
 
   @Override

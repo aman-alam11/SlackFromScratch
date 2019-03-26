@@ -239,13 +239,6 @@ public class ClientRunnable implements Connection {
 						messageHandler.handleMessage(userName, msg.getMessage(), this);
 						ChatLogger.info("Message received Type: " + msg.getMessageType());
 			}
-
-//			if (msg.getMessageType().equals(MessageType.LOG_OUT)) {
-//				terminate = true;
-//			} else {
-//				MessageHandler messageHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
-//				messageHandler.handleMessage(userName, msg.getMessage(), this);
-//			}
 		}
 	}
 
