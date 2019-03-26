@@ -11,7 +11,7 @@ import edu.northeastern.ccs.im.ChatLogger;
 
 import java.util.logging.Logger;
 
-public class GroupDao {
+public class s {
     SessionFactory mSessionFactory;
 
     public GroupDao(SessionFactory sf){
