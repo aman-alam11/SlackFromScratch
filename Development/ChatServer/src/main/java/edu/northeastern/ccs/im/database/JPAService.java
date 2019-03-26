@@ -18,25 +18,27 @@ public class JPAService {
 	 */
 	private ChatDao cd;
 
+	private GroupDao gd;
+
+	private GroupMemberDao gmd;
 	/**
 	 * Initialize the SessionFactory instance.
 	 */
 
 	private static JPAService instance;
-	
+
+
 	/**
 	 * This method returns the instance of JPASercice, since its a singleton object
 	 * @return {@link JPAService}
 	 */
-	
+
 	public static synchronized JPAService	getInstance() {
 		if (instance == null) {
 			instance = new JPAService();
 		}
 		return instance;
 	}
-	
-	private GroupDao gd;
 	// Create the SessionFactory using the ServiceRegistry
 	SessionFactory mSessionFactory = new Configuration().
 			configure().
@@ -53,6 +55,7 @@ public class JPAService {
 		ud = new UserDao(mSessionFactory);
 		cd = new ChatDao(mSessionFactory);
 		gd = new GroupDao(mSessionFactory);
+		gmd = new GroupMemberDao(mSessionFactory);
 	}
 
 	/**
@@ -64,6 +67,7 @@ public class JPAService {
 		ud = new UserDao(mSessionFactory);
 		cd = new ChatDao(mSessionFactory);
 		gd = new GroupDao(mSessionFactory);
+		gmd = new GroupMemberDao(mSessionFactory);
 	}
 	/**
 	 * Create a new user.
@@ -202,5 +206,17 @@ public class JPAService {
 	public List<Group> findGroupByCreator(String name){
 		User user = findUserByName(name);
 		return gd.findGroupByCreator(user);
+	}
+
+	public boolean addGroupMember(String gName, String uName, boolean isModerator){
+		return gmd.addMemberToGroup(gName,uName,isModerator);
+	}
+
+	public void deleteMemberFromGroup(String gName, String uName){
+		gmd.deleteMemberFromGroup(gName,uName);
+	}
+
+	public void deleteAllMembersOfGroup(String gName){
+		gmd.deleteallMembersFromGroup(gName);
 	}
 }

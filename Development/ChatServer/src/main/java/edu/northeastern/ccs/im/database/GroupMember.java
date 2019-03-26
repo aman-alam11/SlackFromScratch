@@ -2,6 +2,7 @@ package edu.northeastern.ccs.im.database;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "group_member")
@@ -19,12 +20,16 @@ public class GroupMember implements Serializable {
 
     private boolean isModerator;
 
+    @Column(name="creation_date", nullable=false)
+    private Date creationDate;
+
     public GroupMember(){}
 
     public GroupMember(User groupUser, Group groupId, boolean isModerator) {
         this.groupUser = groupUser;
         this.groupId = groupId;
         this.isModerator = isModerator;
+        this.creationDate = new Date();
     }
 
     public User getGroupUser() {
@@ -49,5 +54,13 @@ public class GroupMember implements Serializable {
 
     public void setModerator(boolean moderator) {
         isModerator = moderator;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }
