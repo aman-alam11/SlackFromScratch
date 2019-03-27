@@ -40,6 +40,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
       case ADD_USER_IN_GROUP:
       	handler = new AddGroupUsersHandler();
       	break;
+        
+      case UNREAD_MSG:
+        handler = new UnreadMessageHandler();
+        break;
       	
       default:
         // Send to Login Page as default for safety
