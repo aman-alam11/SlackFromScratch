@@ -65,6 +65,15 @@ public class GroupDao {
             Group grp = session.get(Group.class, id);
             // Delete the User
             session.delete(grp);
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
+            Root<GroupMember> root = query.from(GroupMember.class);
+            query.select(root).where(builder.equal(root.get("groupId"), grp));
+            Query<GroupMember> q = session.createQuery(query);
+            List<GroupMember> gMembers = q.getResultList();
+            for(GroupMember gm: gMembers){
+                session.delete(gm);
+            }
             // Commit the transaction
             transaction.commit();
         } catch (HibernateException | IllegalArgumentException ex) {
@@ -129,7 +138,7 @@ public class GroupDao {
             Query<Group> q = session.createQuery(query);
             allGrps = q.getResultList();
         }catch (Exception ex){
-//            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+            ChatLogger.error(ex.getMessage());
         }finally {
             session.close();
         }
