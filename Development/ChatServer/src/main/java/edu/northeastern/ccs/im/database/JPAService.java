@@ -228,14 +228,6 @@ public class JPAService {
 	public boolean addMultipleUsersToGroup(List<String> usersToAdd, String grpToAddTo){
 		return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
 	}
-
-	public int getUserIdByUserName(String name) {
-		return ud.getUserIdFromUserName(name);
-	}
-
-	protected List getUnreadMessages(int userId) {
-		return ud.getUnreadMessages(userId);
-	}
 	
 		public List<Chat> getUnreadMessages(String username) {
 
