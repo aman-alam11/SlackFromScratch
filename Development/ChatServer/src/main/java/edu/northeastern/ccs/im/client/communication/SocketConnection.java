@@ -31,8 +31,6 @@ public class SocketConnection implements Connection {
   private static Gson gson;
 
   private static StringBuilder messageBuffer;
-  private static AsyncListener mAsyncListener;
-  private static MessageType listenerMessageType;
   private static Thread messageListenerFromServer;
   private static boolean isAlive;
 
@@ -57,12 +55,6 @@ public class SocketConnection implements Connection {
       }
     }
     return instance;
-  }
-
-  @Override
-  public void registerListener(AsyncListener asyncListener, MessageType messageType) {
-    mAsyncListener = asyncListener;
-    listenerMessageType = messageType;
   }
 
   @Override
@@ -114,11 +106,6 @@ public class SocketConnection implements Connection {
           isMessageDecoded = true;
           messageQueue.add(extractedMessage);
 
-          // Remove async listener as the controller is synchronous
-
-          if (extractedMessage.getMessageType().equals(listenerMessageType)) {
-            mAsyncListener.listen(extractedMessage.getMessage());
-          }
           messageBuffer.delete(start - 1, end + 1);
         } catch (JsonSyntaxException e) {
           ChatLogger.error(e.getMessage());

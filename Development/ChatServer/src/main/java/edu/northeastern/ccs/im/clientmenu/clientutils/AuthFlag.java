@@ -29,7 +29,8 @@ public class AuthFlag implements AsyncListener {
   public void reAuthenticateWithHandshake(MessageJson messageJson, Connection serverConnection) {
     if (messageJson.getMessageType().equals(MessageType.LOGIN)
             || messageJson.getMessageType().equals(MessageType.CREATE_USER)) {
-      serverConnection.registerListener(this, MessageType.AUTH_ACK);
+      // TODO: Modify timestamp 26 March
+//      serverConnection.registerListener(this, MessageType.AUTH_ACK);
       serverConnection.sendMessage(messageJson);
     }
   }

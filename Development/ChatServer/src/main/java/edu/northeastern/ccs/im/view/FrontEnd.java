@@ -36,24 +36,13 @@ public class FrontEnd {
   }
 
 
-  public void showFirstLevelOptions() {
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("1. Unread Messages \n");
-    stringBuilder.append("2. Chat user \n");
-    stringBuilder.append("Or Enter \\q to quit \n");
-    stringBuilder.append("Enter From above Options: \n");
-    printToStream(stringBuilder.toString());
+  public void showUserLevelOptions() {
+    System.out.println("1. Unread Messages");
+    System.out.println("2. Chat user");
+    System.out.println("Or type logout to logout user");
+    System.out.println("Enter From above Options: ");
   }
 
-
-  public static void showLoadingView(boolean shouldStopLoading) {
-    printToStream(shouldStopLoading ? "Loading complete" : "\nLoading" );
-    long getStartTime = shouldStopLoading ?  System.currentTimeMillis() + 10000 : System.currentTimeMillis();
-
-    while (!shouldStopLoading && (System.currentTimeMillis() - getStartTime < 200)) {
-      printToStream(".");
-    }
-  }
 
   private static void printToStream(String string){
     System.out.println(string);

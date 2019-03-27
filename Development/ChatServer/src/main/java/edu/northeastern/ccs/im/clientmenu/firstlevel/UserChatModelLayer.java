@@ -5,113 +5,106 @@ import com.google.gson.Gson;
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.ChatLogger;
-import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
-import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
-public class UserChatModelLayer implements CoreOperation, AsyncListener, Runnable {
+public class UserChatModelLayer implements CoreOperation {
 
-  private String userToChatWith;
   private static final String QUIT = "\\q";
-  private boolean isAlive;
   private Connection connLocal;
   private Gson gson;
+  private UserChat userChat;
+  private boolean shouldListenForMessages = true;
+
 
   @Override
-	public void passControl(Scanner scanner, Connection connectionLayerModel) {
-  	connLocal = connectionLayerModel;
-  	gson = new Gson();
-  	isAlive = true;
-  	//Start a thread to read incoming messages and display them
-  	new Thread(this).start();
+  public void passControl(Scanner scanner, Connection connectionLayerModel) {
+    connLocal = connectionLayerModel;
+    gson = new Gson();
+    FrontEnd.getView().sendToView("Conversation initiated.");
+    FrontEnd.getView().sendToView("Enter Message or enter \\q to quit");
+    initReaderThread();
+    while (scanner.hasNext()) {
 
-		FrontEnd.getView().sendToView("Enter Message, \\q to exit chat");
+      String message = scanner.nextLine().trim();
 
-		//Sending the server status that user is about to start the chat.
-		UserChat userChatObject = new UserChat();
-		MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
-						new Gson().toJson(userChatObject));
-		connectionLayerModel.sendMessage(msg);
+      if (!message.equals(QUIT)) {
+
+        userChat.setMsg(message);
+        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
+                new Gson().toJson(userChat));
+        connectionLayerModel.sendMessage(messageJson);
+        initReaderThread();
+      } else {
+        shouldListenForMessages = false;
+        FrontEnd.getView().sendToView("Ending conversation.");
+        breakFromConversation(connectionLayerModel);
+        FrontEnd.getView().showUserLevelOptions();
+        break;
+      }
+    }
+  }
+
+  private void initReaderThread() {
+    if(connLocal == null){
+      return;
+    }
+
+    new Thread(() -> {
+      while (shouldListenForMessages) {
+        try {
+          Thread.sleep(500);
+          if(connLocal.hasNext()){
+            // TODO: Check if it is of response type
+            displayResponse(connLocal.next());
+          }
+        } catch (Exception e) {
+          ChatLogger.error("Unable to make the Thread sleep");
+        }
+      }
+    }).start();
+
+  }
 
 
-		while (scanner.hasNext()) {
+  private void breakFromConversation(Connection connectionLayerModel) {
+    userChat = new UserChat();
+    MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
+            MessageType.USER_CHAT_END, new Gson().toJson(userChat));
+    connectionLayerModel.sendMessage(messageJson);
+  }
 
-			String message = scanner.nextLine().trim();
 
-			if (!message.equals(QUIT)) {
-				// Create Object
-				UserChat userChat = new UserChat();
-				userChat.setFromUserName(GenerateLoginCredentials.getUsername());
-				userChat.setToUserName(userToChatWith);
-				userChat.setMsg(message);
-
-				// Send Object
-				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
-						new Gson().toJson(userChat));
-				connectionLayerModel.sendMessage(messageJson);
-
-			} else {
-				isAlive = false;
-				//Sending the server status that user has ended the chat.
-				UserChat userChat = new UserChat();
-				MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_END,
-								new Gson().toJson(userChat));
-				connectionLayerModel.sendMessage(messageJson);
-				InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
-				break;
-			}
-		}
-	}
-  
   public UserChatModelLayer(String userToChat) {
-    this.userToChatWith = userToChat;
+    // Create Object
+    userChat = new UserChat();
+    userChat.setFromUserName(GenerateLoginCredentials.getUsername());
+    userChat.setToUserName(userToChat);
+
   }
-  
-  @Override
-  public void listen(String message) {
-    FrontEnd.getView().showLoadingView(true);
-  }
+
 
   /**
    * This method runs in a loop when thread starts till messgage quit comes
    */
-	@Override
-	public void run() {
-		while (isAlive) {
-			if (connLocal.hasNext()) {
-				MessageJson msg = connLocal.next();
-				if (msg.getMessageType().equals(MessageType.USER_CHAT) || msg.getMessageType().equals(MessageType.GROUP_CHAT)) {
+  public void displayResponse(MessageJson response) {
+    if (response == null) {
+      FrontEnd.getView().sendToView("Uh Oh! Something went wrong. Please try again");
+      return;
+    }
 
-					UserChat chat = gson.fromJson(msg.getMessage(), UserChat.class);
-					String messageToDisplay = frameChatMessageToDisplay(chat, msg.getMessageType());
-					FrontEnd.getView().sendToView(messageToDisplay);
-				}
-			}
-			sleepFor(100);
-		}
-	}
+    if (response.getMessageType().equals(MessageType.USER_CHAT) ||
+            response.getMessageType().equals(MessageType.GROUP_CHAT)) {
 
-	private void sleepFor(int milliSecs) {
-		try {
-			Thread.sleep(milliSecs);
-		} catch (InterruptedException e) {
-			ChatLogger.error(e.getMessage());
-			Thread.currentThread().interrupt();
-		}
-	}
-	
-	public String frameChatMessageToDisplay(UserChat chat, MessageType msgType) {
-		StringBuilder sb = new StringBuilder(msgType.name());
-		sb.append("-")
-			.append(chat.toString());
-		return sb.toString();							
-		
-	}
+      UserChat chat = gson.fromJson(response.getMessage(), UserChat.class);
+      String messageToDisplay = response.getMessageType().name() + "-" + chat.toString();
+      FrontEnd.getView().sendToView(messageToDisplay);
+    }
+  }
+
 }

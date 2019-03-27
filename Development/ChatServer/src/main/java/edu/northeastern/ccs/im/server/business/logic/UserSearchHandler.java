@@ -32,9 +32,7 @@ public class UserSearchHandler implements MessageHandler{
 			
 			UserSearch results = new UserSearch(userSearch.getUsername());
 			results.setUsersList(listUser);
-			for (String databaseUser: queryRes) {
-				listUser.add(databaseUser);
-			}
+			listUser.addAll(queryRes);
 			MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
 		            MessageType.USER_SEARCH, gson.toJson(results));
 		    sendResponse(responsePacket, clientConnection);

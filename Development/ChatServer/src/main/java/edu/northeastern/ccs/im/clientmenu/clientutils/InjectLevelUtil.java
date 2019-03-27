@@ -71,7 +71,7 @@ public final class InjectLevelUtil {
   }
 
   private void injectFirstLevel() {
-    FrontEnd.getView().showFirstLevelOptions();
+    FrontEnd.getView().showUserLevelOptions();
     mClientOptionsMap.put(1, scanner -> new UnreadMessages());
     mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
   }

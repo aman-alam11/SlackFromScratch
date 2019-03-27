@@ -164,8 +164,9 @@ public class SocketConnectionTest {
   
   @Test
   public void testListener() throws NoSuchMethodException {
-    socketConnection.registerListener(message -> {
-    }, MessageType.HELLO);
+    // TODO: Modify timestamp 26 March
+//    socketConnection.registerListener(message -> {
+//    }, MessageType.HELLO);
     Method decodeMessageMethod = SocketConnection.class.getDeclaredMethod("decodeMessage");
     decodeMessageMethod.setAccessible(true);
     try {
