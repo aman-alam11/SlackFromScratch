@@ -235,4 +235,8 @@ public class JPAService {
 	public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus){
 		gmd.updateModeratorStatus(uName,gName,moderatorStatus);
 	}
+
+	public List<User> findNonMembers(List<String> names, String gName){
+		return gmd.findNonMembers(names,gName);
+	}
 }

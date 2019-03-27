@@ -235,4 +235,44 @@ public class GroupMemberDao {
         }
         return user;
     }
+
+    public List<User> findNonMembers(List<String> names, String gName){
+        List<User> nonMembers = new ArrayList<>();
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            List<User> tempUserList = new ArrayList<>();
+            session = mSessionFactory.openSession();
+            // Begin a transaction
+            transaction = session.beginTransaction();
+            Group grp = getGroup(gName);
+            for(String name: names){
+                tempUserList.add(getUser(name));
+            }
+
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
+            Root<GroupMember> root = query.from(GroupMember.class);
+
+            for(User u: tempUserList){
+                query.select(root).where(builder.and(builder.equal(root.get(GROUP_ID), grp)),
+                        (builder.equal(root.get("groupUser"), u)));
+                Query<GroupMember> q = session.createQuery(query);
+                if(q.getResultList().size() == 0){
+                    nonMembers.add(u);
+                }
+            }
+            // Commit the transaction
+            transaction.commit();
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            transaction.rollback();
+        } finally {
+            // Close the session
+            session.close();
+        }
+        return nonMembers;
+    }
 }
