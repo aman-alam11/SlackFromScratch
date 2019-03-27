@@ -204,4 +204,43 @@ public class UserDao {
     }
     return "";
   }
+
+
+  public int getUserIdFromUserName(String username) {
+    Session session = mSessionFactory.openSession();
+
+    try {
+      String sql = "SELECT users.user_id FROM users WHERE users.user_name = ?";
+
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, username);
+      return (int) query.getSingleResult();
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return -1;
+  }
+
+  public List getUnreadMessages(int userId) {
+    Session session = mSessionFactory.openSession();
+
+    try {
+      String sql = "SELECT test_hibernate.chat.* FROM chat WHERE chat.To_id =?";
+      // TODO: Update isDelivered
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, userId);
+      return  query.getResultList();
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return null;
+  }
 }

@@ -119,6 +119,7 @@ public class JPAService {
     	return ud.findUserByName(name);
     }
 
+
 	public List<String> searchUserbyUserName(String userName) {
 		return ud.searchUserByName(userName);
 	}
@@ -226,5 +227,13 @@ public class JPAService {
 
 	public boolean addMultipleUsersToGroup(List<String> usersToAdd, String grpToAddTo){
 		return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
+	}
+
+	public int getUserIdByUserName(String name) {
+		return ud.getUserIdFromUserName(name);
+	}
+
+	protected List getUnreadMessages(int userId) {
+		return ud.getUnreadMessages(userId);
 	}
 }

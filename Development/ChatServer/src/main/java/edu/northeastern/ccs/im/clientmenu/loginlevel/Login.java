@@ -6,7 +6,6 @@ import org.jsoup.helper.StringUtil;
 
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
@@ -22,7 +21,7 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
 /**
  * This is the Login class which is being used for the Login level.
  */
-public class Login extends CommonOperations implements AsyncListener {
+public class Login extends CommonOperations {
 
   private Gson mGson;
 
@@ -52,7 +51,6 @@ public class Login extends CommonOperations implements AsyncListener {
     }
   }
 
-  @Override
   public void listen(String message) {
     AckModel ackModel = mGson.fromJson(message, AckModel.class);
 

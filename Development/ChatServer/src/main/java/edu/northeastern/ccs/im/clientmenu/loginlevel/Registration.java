@@ -6,8 +6,6 @@ import org.jsoup.helper.StringUtil;
 
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.ChatLogger;
-import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
@@ -20,7 +18,7 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials.generateLoginCredentials;
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
-public class Registration extends CommonOperations implements AsyncListener {
+public class Registration extends CommonOperations {
 
   @Override
   public void passControl(Scanner scanner, Connection model) {
@@ -60,7 +58,6 @@ public class Registration extends CommonOperations implements AsyncListener {
     }
   }
 
-  @Override
   public void listen(String message) {
     AckModel ackModel = new Gson().fromJson(message, AckModel.class);
     if (ackModel.isLogin()) {
