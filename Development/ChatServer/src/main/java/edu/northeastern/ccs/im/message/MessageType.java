@@ -70,7 +70,7 @@ public enum MessageType {
    */
   LOG_OUT("LGO"),
 
-  AUTH_ACK("ACK");
+  AUTH_ACK("ACK"),
   
    /**
    * Unread Messages.
