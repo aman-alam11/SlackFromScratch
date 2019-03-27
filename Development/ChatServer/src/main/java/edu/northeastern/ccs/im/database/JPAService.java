@@ -236,4 +236,38 @@ public class JPAService {
 	protected List getUnreadMessages(int userId) {
 		return ud.getUnreadMessages(userId);
 	}
+	
+		public List<Chat> getUnreadMessages(String username) {
+
+		Session session = null;
+		Transaction transaction = null;
+		List<Chat> listRows = null;
+		try {
+			session = mSessionFactory.openSession();
+			// Begin a transaction
+			transaction = session.beginTransaction();
+
+			// Get the userId for the user for which we need the username
+			int userId = ud.getUserIdFromUserName(username);
+			if (userId <= 0) {
+				ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+				return listRows;
+			}
+
+			listRows = ud.getUnreadMessages(userId);
+
+			// Commit the transaction
+			transaction.commit();
+		} catch (HibernateException ex) {
+			// Print the Exception
+			ChatLogger.error(ex.getMessage());
+			// If there are any exceptions, roll back the changes
+			transaction.rollback();
+		} finally {
+			// Close the session
+			session.close();
+		}
+
+		return listRows;
+	}
 }
