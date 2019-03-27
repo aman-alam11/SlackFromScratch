@@ -160,4 +160,40 @@ public class GroupMemberDao {
 
         return isTransactionSuccessful;
     }
+
+    public List<User> findAllMembersOfGroup(String gName){
+        List<User> allMembers = new ArrayList<>();
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = mSessionFactory.openSession();
+            // Begin a transaction
+            transaction = session.beginTransaction();
+            Group grp = JPAService.getInstance().findGroupByName(gName);
+            if(grp == null){
+                ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
+                throw new HibernateException("group not found");
+            }
+
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
+            Root<GroupMember> root = query.from(GroupMember.class);
+            query.select(root).where(builder.equal(root.get("groupId"), grp));
+            Query<GroupMember> q = session.createQuery(query);
+            List<GroupMember> gMembers = q.getResultList();
+            for(GroupMember gm: gMembers){
+                allMembers.add(session.get(User.class,gm.getGroupUser()));
+            }
+            transaction.commit();
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            transaction.rollback();
+        } finally {
+            // Close the session
+            session.close();
+        }
+        return allMembers;
+    }
 }

@@ -227,4 +227,8 @@ public class JPAService {
 	public boolean addMultipleUsersToGroup(List<String> usersToAdd, String grpToAddTo){
 		return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
 	}
+
+	public List<User> findAllMembersOfGroup(String gName){
+		return gmd.findAllMembersOfGroup(gName);
+	}
 }
