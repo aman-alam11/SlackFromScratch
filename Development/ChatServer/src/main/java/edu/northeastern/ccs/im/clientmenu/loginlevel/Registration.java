@@ -6,7 +6,6 @@ import org.jsoup.helper.StringUtil;
 
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
@@ -74,7 +73,7 @@ public class Registration extends CommonOperations implements AsyncListener {
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
     } else {
       FrontEnd.getView().sendToView("SUCCESS: Account Created Successfully!");
-      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
     }
   }
 }

@@ -58,11 +58,15 @@ public final class InjectLevelUtil {
 
   private static void initializeBackMenuOptions() {
     levelMap.put(CurrentLevel.LOGIN_LEVEL,CurrentLevel.LOGIN_LEVEL);
-    levelMap.put(CurrentLevel.LEVEL1,CurrentLevel.LEVEL1);
-    levelMap.put(CurrentLevel.GROUP_LEVEL,CurrentLevel.LEVEL1);
+    levelMap.put(CurrentLevel.USER_LEVEL,CurrentLevel.USER_LEVEL);
+    levelMap.put(CurrentLevel.GROUP_LEVEL,CurrentLevel.USER_LEVEL);
     levelMap.put(CurrentLevel.GROUP_USERS_CRUD_LEVEL,CurrentLevel.GROUP_LEVEL);
   }
 
+  /**
+   * To keep track of the current level for go back function.
+   * @return Current level of the interface.
+   */
   public CurrentLevel getCurrentLevel() {
     return currentLevel;
   }
@@ -74,7 +78,6 @@ public final class InjectLevelUtil {
 
   public void injectLevel(CurrentLevel currentLevel) {
     clearMap();
-
     // Update HashMap based on the levels
 
     switch (currentLevel) {
@@ -83,9 +86,9 @@ public final class InjectLevelUtil {
         injectLoginLevel();
         break;
 
-      case LEVEL1:
-        setCurrentLevel(CurrentLevel.LEVEL1);
-        injectFirstLevel();
+      case USER_LEVEL:
+        setCurrentLevel(CurrentLevel.USER_LEVEL);
+        injectUserLevel();
         break;
 
       case GROUP_LEVEL:
@@ -119,7 +122,7 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(2, scanner -> moduleFactory.getModelFromFactory(CurrentLevel.REGISTRATION));
   }
 
-  private void injectFirstLevel() {
+  private void injectUserLevel() {
     FrontEnd.getView().showUserLevelOptions();
     mClientOptionsMap.put(1, scanner -> new UnreadMessages());
     mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());

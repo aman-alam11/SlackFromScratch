@@ -70,7 +70,7 @@ public class Login extends CommonOperations implements AsyncListener {
 
       // User is authenticated by server
       // Send user forward
-      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
     }
   }
 }

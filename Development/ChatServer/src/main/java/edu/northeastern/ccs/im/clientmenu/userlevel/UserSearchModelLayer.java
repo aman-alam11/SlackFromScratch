@@ -62,7 +62,7 @@ public class UserSearchModelLayer extends CommonOperations {
       new UserChatModelLayer(userToChatWith).passControl(scanner, model);
     } else {
       FrontEnd.getView().sendToView("ERROR: Invalid username");
-      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
     }
 
   }

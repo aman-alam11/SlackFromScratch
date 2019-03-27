@@ -69,7 +69,7 @@ public final class ClientHandler {
         else if(choiceString.equalsIgnoreCase(BACK)) {
           Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();
           CurrentLevel currentLevel = InjectLevelUtil.getInstance().getCurrentLevel();
-          if(currentLevel != CurrentLevel.LOGIN_LEVEL || currentLevel != CurrentLevel.LEVEL1) {
+          if(currentLevel != CurrentLevel.LOGIN_LEVEL || currentLevel != CurrentLevel.USER_LEVEL) {
             CurrentLevel level = map.get(currentLevel);
             InjectLevelUtil.getInstance().injectLevel(level);
           }
