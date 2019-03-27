@@ -29,12 +29,12 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public int create(User fromId, User toId, String msg, int replyTo, Date expiry,
+    public long create(User fromId, User toId, String msg, int replyTo, Date expiry,
 			Boolean grpMsg, Boolean isDelivered) {
 		// Create a session
 		Session session = mSessionFactory.openSession();
 		Transaction transaction = null;
-		int id = 0;
+		long returnId = 0;
 		try {
 			// Begin a transaction
 			transaction = session.beginTransaction();
@@ -48,7 +48,9 @@ public class ChatDao {
 			chat.setGrpMsg(grpMsg);
 			chat.setIsDelivered(isDelivered);
 			// Save the User
-			id = (int) session.save(chat);
+      session.save(chat);
+			returnId = chat.getId();
+
 			// Commit the transaction
 			// Commit the transaction
 			transaction.commit();
@@ -61,7 +63,7 @@ public class ChatDao {
 			// Close the session
 			session.close();
 		}
-		return id;
+		return returnId;
 	}
    
    /**
@@ -154,18 +156,20 @@ public class ChatDao {
        }
    }
 
-	public void updateDeliveryStatus(int id, boolean status) {
+	public boolean updateDeliveryStatus(long id, boolean status) {
 
 		Transaction tx = null;
 		try (Session session = mSessionFactory.openSession()) {
 			tx = session.beginTransaction();
 			Chat chat = (Chat) session.get(Chat.class, id);
 			chat.setIsDelivered(status);
-			session.update(chat);
+			 session.update(chat);
 			tx.commit();
+      return true;
 		} catch (Exception e) {
             Logger.getLogger(this.getClass().getSimpleName()).info(e.getMessage());
             tx.rollback();
+            return false;
 		}
 	}
 }
