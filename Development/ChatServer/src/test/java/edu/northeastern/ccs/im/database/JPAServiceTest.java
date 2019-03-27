@@ -325,16 +325,6 @@ public class JPAServiceTest {
     }
   }
 
-  @Test
-  public void testUnreadMessageService() {
-    UnreadMessageService unreadMessageService
-             = new UnreadMessageService(sessionFactory);
-
-    System.out.println(unreadMessageService.getUnreadMessges("kumar2"));
-  }
-
-
-
   @AfterClass
   public static void close() {
     try {
