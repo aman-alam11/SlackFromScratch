@@ -8,6 +8,10 @@ import java.util.function.Function;
 
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.CreateGroup;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupChat;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroup;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -50,6 +54,10 @@ public final class InjectLevelUtil {
         injectFirstLevel();
         break;
 
+      case GROUP_LEVEL:
+        injectGroupLevel();
+        break;
+
       default:
         injectLoginLevel();
     }
@@ -74,6 +82,15 @@ public final class InjectLevelUtil {
     FrontEnd.getView().showUserLevelOptions();
     mClientOptionsMap.put(1, scanner -> new UnreadMessages());
     mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
+    mClientOptionsMap.put(3, scanner -> new GroupLayer());
+  }
+
+  private void injectGroupLevel() {
+    FrontEnd.getView().showGroupLevelOptions();
+    mClientOptionsMap.put(1, scanner -> new CreateGroup());
+    mClientOptionsMap.put(2, scanner -> new UpdateGroup());
+    mClientOptionsMap.put(3, scanner -> new GroupChat());
+
   }
 
 }

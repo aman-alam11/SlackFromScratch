@@ -75,7 +75,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 		boolean isValid = false;
 		for (String userName : users) {
 			
-			if ((user =JPAService.getInstance().findUserByName(userName)) == null) {
+			if ((user = JPAService.getInstance().findUserByName(userName)) == null) {
 				inValidUsers.add(userName);
 			} else {
 				validUsers.add(user);

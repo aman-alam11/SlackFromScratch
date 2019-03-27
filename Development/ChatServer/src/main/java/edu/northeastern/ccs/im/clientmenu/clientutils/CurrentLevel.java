@@ -2,5 +2,5 @@ package edu.northeastern.ccs.im.clientmenu.clientutils;
 
 public enum CurrentLevel {
 
-  LOGIN_LEVEL, LEVEL1, LEVEL2, LEVEL3, REGISTRATION
+  LOGIN_LEVEL, LEVEL1, LEVEL2, GROUP_LEVEL, REGISTRATION
 }

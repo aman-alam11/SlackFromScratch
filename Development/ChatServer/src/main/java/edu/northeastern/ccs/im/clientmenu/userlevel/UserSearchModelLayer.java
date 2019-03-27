@@ -23,8 +23,7 @@ public class UserSearchModelLayer extends CommonOperations {
 
   @Override
   public void passControl(Scanner scanner, Connection model) {
-    Scanner mScanner = scanner;
-    Connection mConnection = model;
+
     Gson mGson = new Gson();
 
     FrontEnd.getView().sendToView("Enter Username of user you want to chat");
@@ -57,10 +56,10 @@ public class UserSearchModelLayer extends CommonOperations {
     }
 
     FrontEnd.getView().sendToView("Choose one of the user names from above\n");
-    String userToChatWith = mScanner.nextLine();
+    String userToChatWith = scanner.nextLine();
 
     if (usernames!= null && usernames.contains(userToChatWith)) {
-      new UserChatModelLayer(userToChatWith).passControl(mScanner, mConnection);
+      new UserChatModelLayer(userToChatWith).passControl(scanner, model);
     } else {
       FrontEnd.getView().sendToView("Invalid username");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
