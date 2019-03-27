@@ -3,6 +3,7 @@ package edu.northeastern.ccs.im.clientmenu;
 import com.google.gson.Gson;
 
 import java.util.Deque;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -42,12 +43,14 @@ public final class ClientHandler {
     while (scanner.hasNext()) {
       int userChoice = 0;
       String choiceString = "";
+      boolean inputValidate = true;
 
       try {
         choiceString = scanner.nextLine().trim().toLowerCase();
         userChoice = Integer.parseInt(choiceString);
       } catch (Exception e) {
         // Handle with default implementation
+        inputValidate = false;
         if (choiceString.equalsIgnoreCase(QUIT)) {
           try {
             UserChat userChat = new UserChat();
@@ -63,39 +66,35 @@ public final class ClientHandler {
           }
         }
 
-//        else if(choiceString.equalsIgnoreCase(BACK)) {
-//          Deque<CurrentLevel> stack = InjectLevelUtil.getInstance().getLevelStack();
-//          for (CurrentLevel c: stack) {
-//            System.out.println(c);
-//          }
-//          if (stack.size() > 1) {
-//            stack.pop();
-//            CurrentLevel currentLevel = stack.pop();
-//            if(currentLevel != CurrentLevel.LOGIN_LEVEL) {
-//              InjectLevelUtil.getInstance().injectLevel(currentLevel);
-//            }
-//          }
-//
-//        }
+        else if(choiceString.equalsIgnoreCase(BACK)) {
+          Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();
+          CurrentLevel currentLevel = InjectLevelUtil.getInstance().getCurrentLevel();
+          if(currentLevel != CurrentLevel.LOGIN_LEVEL || currentLevel != CurrentLevel.LEVEL1) {
+            CurrentLevel level = map.get(currentLevel);
+            InjectLevelUtil.getInstance().injectLevel(level);
+          }
+        }
 
         else {
-          FrontEnd.getView().sendToView("Wrong input, try again.");
+          FrontEnd.getView().sendToView("ERROR: Wrong Input.");
         }
       }
 
-      CoreOperation initialCoreOperation;
-      Function<Scanner, CoreOperation> mTransformationFunction =
-              InjectLevelUtil
-                      .getOptionsMap()
-                      .getOrDefault(userChoice, null);
+      if (inputValidate) {
+        CoreOperation initialCoreOperation;
+        Function<Scanner, CoreOperation> mTransformationFunction =
+                InjectLevelUtil
+                        .getOptionsMap()
+                        .getOrDefault(userChoice, null);
 
-      if (mTransformationFunction == null) {
-        // Handle with some default operation
-        new DefaultOperation().passControl(scanner, modelLayer);
-      } else {
-        // Apply Transformation
-        initialCoreOperation = mTransformationFunction.apply(scanner);
-        initialCoreOperation.passControl(scanner, modelLayer);
+        if (mTransformationFunction == null) {
+          // Handle with some default operation
+          new DefaultOperation().passControl(scanner, modelLayer);
+        } else {
+          // Apply Transformation
+          initialCoreOperation = mTransformationFunction.apply(scanner);
+          initialCoreOperation.passControl(scanner, modelLayer);
+        }
       }
     }
   }

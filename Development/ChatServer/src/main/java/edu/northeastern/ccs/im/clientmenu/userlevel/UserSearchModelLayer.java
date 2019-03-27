@@ -26,13 +26,13 @@ public class UserSearchModelLayer extends CommonOperations {
 
     Gson mGson = new Gson();
 
-    FrontEnd.getView().sendToView("Enter Username of user you want to chat");
+    FrontEnd.getView().sendToView("SEARCH: Enter Username of user you want to chat");
     String chatUserOtherEnd = scanner.nextLine().toLowerCase().trim();
 
     String myUsername = GenerateLoginCredentials.getUsername();
     UserSearch userSearch = new UserSearch(chatUserOtherEnd);
 
-    String userSearchJsonString = new Gson().toJson(userSearch);
+    String userSearchJsonString = mGson.toJson(userSearch);
     MessageJson messageJson = new MessageJson(myUsername, MessageType.USER_SEARCH, userSearchJsonString);
     model.sendMessage(messageJson);
 
@@ -44,7 +44,7 @@ public class UserSearchModelLayer extends CommonOperations {
       usernames = userSearchResults.getListUserString();
 
       if (usernames.isEmpty()) {
-        FrontEnd.getView().sendToView("No users with that name found");
+        FrontEnd.getView().sendToView("ERROR: No users with that name found");
       } else {
         for (String username : usernames) {
           FrontEnd.getView().sendToView(username);
@@ -55,13 +55,13 @@ public class UserSearchModelLayer extends CommonOperations {
       // TODO: Some default response
     }
 
-    FrontEnd.getView().sendToView("Choose one of the user names from above\n");
+    FrontEnd.getView().sendToView("INPUT: Choose one of the user names from above\n");
     String userToChatWith = scanner.nextLine();
 
     if (usernames!= null && usernames.contains(userToChatWith)) {
       new UserChatModelLayer(userToChatWith).passControl(scanner, model);
     } else {
-      FrontEnd.getView().sendToView("Invalid username");
+      FrontEnd.getView().sendToView("ERROR: Invalid username");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
     }
 

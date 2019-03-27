@@ -32,10 +32,10 @@ public class CreateGroup implements CoreOperation {
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
     this.scanner = scanner;
     this.gson = new Gson();
-    FrontEnd.getView().sendToView("Enter Group name you want to create: ");
+    FrontEnd.getView().sendToView("INPUT: Enter Group name you want to create: ");
     String groupName = scanner.nextLine();
 
-    FrontEnd.getView().sendToView("Press Y/N if you want moderators");
+    FrontEnd.getView().sendToView("INPUT: Press Y/N if you want moderators");
     boolean yesNoModerator = false;
 
     switch (scanner.nextLine().trim().toLowerCase()) {
@@ -46,7 +46,7 @@ public class CreateGroup implements CoreOperation {
           break;
         default:
 
-          FrontEnd.getView().sendToView("Invalid Option!");
+          FrontEnd.getView().sendToView("ERROR: Invalid Option!");
           break;
       }
 
@@ -69,12 +69,12 @@ public class CreateGroup implements CoreOperation {
 
       if (errorCodes.isEmpty()) {
         CurrentGroupName.setGroupName(groupName);
-        FrontEnd.getView().sendToView("Group Added: " + CurrentGroupName.getGroupName());
+        FrontEnd.getView().sendToView("SUCCESS: Group Added: " + CurrentGroupName.getGroupName());
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_USERS_CRUD_LEVEL);
 
       } else {
         for (ErrorCodes error: errorCodes) {
-          FrontEnd.getView().sendToView("ERROR! " + error.getErrorMessage() + "!");
+          FrontEnd.getView().sendToView("ERROR: " + error.getErrorMessage() + "!");
           FrontEnd.getView().showGroupLevelOptions();
         }
       }

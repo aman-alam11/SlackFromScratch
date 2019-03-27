@@ -12,6 +12,6 @@ public class DefaultOperation implements CoreOperation {
 
     @Override
     public void passControl(Scanner scanner, Connection model) {
-        FrontEnd.getView().sendToView("Invalid Input, please try again");
+        FrontEnd.getView().sendToView("ERROR: Invalid Input, try again!");
     }
 }

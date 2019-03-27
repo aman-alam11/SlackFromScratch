@@ -1,8 +1,11 @@
 package edu.northeastern.ccs.im.clientmenu.clientutils;
 
+import org.omg.CORBA.MARSHAL;
+
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -26,7 +29,9 @@ public final class InjectLevelUtil {
   private static InjectLevelUtil mInjectUtil;
   private static Map<Integer, Function<Scanner, CoreOperation>> mClientOptionsMap;
   private ModuleFactory moduleFactory;
-  private static Deque<CurrentLevel> levelStack;
+  private static Map<CurrentLevel,CurrentLevel> levelMap;
+  private static CurrentLevel currentLevel;
+
 
   public static Map<Integer, Function<Scanner, CoreOperation>> getOptionsMap() {
     return Collections.unmodifiableMap(mClientOptionsMap);
@@ -40,14 +45,30 @@ public final class InjectLevelUtil {
     if (mInjectUtil == null) {
       mInjectUtil = new InjectLevelUtil();
       mClientOptionsMap = new HashMap<>();
-      levelStack = new ArrayDeque<>();
+      levelMap = new EnumMap<>(CurrentLevel.class);
+      initializeBackMenuOptions();
     }
 
     return mInjectUtil;
   }
 
-  public Deque<CurrentLevel> getLevelStack() {
-    return levelStack;
+  public  Map<CurrentLevel, CurrentLevel> getLevelMap() {
+    return levelMap;
+  }
+
+  private static void initializeBackMenuOptions() {
+    levelMap.put(CurrentLevel.LOGIN_LEVEL,CurrentLevel.LOGIN_LEVEL);
+    levelMap.put(CurrentLevel.LEVEL1,CurrentLevel.LEVEL1);
+    levelMap.put(CurrentLevel.GROUP_LEVEL,CurrentLevel.LEVEL1);
+    levelMap.put(CurrentLevel.GROUP_USERS_CRUD_LEVEL,CurrentLevel.GROUP_LEVEL);
+  }
+
+  public CurrentLevel getCurrentLevel() {
+    return currentLevel;
+  }
+
+  private static void setCurrentLevel(CurrentLevel current) {
+    currentLevel = current;
   }
 
 
@@ -58,26 +79,27 @@ public final class InjectLevelUtil {
 
     switch (currentLevel) {
       case LOGIN_LEVEL:
-        levelStack.push(CurrentLevel.LOGIN_LEVEL);
+        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
         break;
 
       case LEVEL1:
-        levelStack.push(CurrentLevel.LEVEL1);
+        setCurrentLevel(CurrentLevel.LEVEL1);
         injectFirstLevel();
         break;
 
       case GROUP_LEVEL:
-        levelStack.push(CurrentLevel.GROUP_LEVEL);
+        setCurrentLevel(CurrentLevel.GROUP_LEVEL);
         injectGroupLevel();
         break;
 
       case GROUP_USERS_CRUD_LEVEL:
-        levelStack.push(CurrentLevel.GROUP_USERS_CRUD_LEVEL);
+        setCurrentLevel(CurrentLevel.GROUP_USERS_CRUD_LEVEL);
         injectGroupUsersCrudLevel();
         break;
 
       default:
+        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
     }
     // Feed the appropriate options

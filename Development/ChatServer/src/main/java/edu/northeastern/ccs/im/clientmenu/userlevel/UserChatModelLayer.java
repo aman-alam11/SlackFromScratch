@@ -26,14 +26,14 @@ public class UserChatModelLayer implements CoreOperation {
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
     connLocal = connectionLayerModel;
     gson = new Gson();
-    FrontEnd.getView().sendToView("Conversation initiated.");
-    FrontEnd.getView().sendToView("Enter Message or enter \\q to quit");
+    FrontEnd.getView().sendToView("MESSAGE: Chat initiated.");
+    FrontEnd.getView().sendToView("INPUT: Enter Message or enter \\q to quit");
     initReaderThread();
 
     //Sending the server status that user is about to start the chat.
     UserChat userChatObject = new UserChat();
     MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
-            new Gson().toJson(userChatObject));
+            gson.toJson(userChatObject));
     connectionLayerModel.sendMessage(msg);
 
     while (scanner.hasNext()) {
@@ -44,12 +44,12 @@ public class UserChatModelLayer implements CoreOperation {
 
         userChat.setMsg(message);
         MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
-                new Gson().toJson(userChat));
+                gson.toJson(userChat));
         connectionLayerModel.sendMessage(messageJson);
         initReaderThread();
       } else {
         shouldListenForMessages = false;
-        FrontEnd.getView().sendToView("Ending conversation.");
+        FrontEnd.getView().sendToView("MESSAGE: Ending Chat.");
         breakFromConversation(connectionLayerModel);
         FrontEnd.getView().showUserLevelOptions();
         break;
@@ -82,7 +82,7 @@ public class UserChatModelLayer implements CoreOperation {
   private void breakFromConversation(Connection connectionLayerModel) {
     userChat = new UserChat();
     MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
-            MessageType.USER_CHAT_END, new Gson().toJson(userChat));
+            MessageType.USER_CHAT_END, gson.toJson(userChat));
     connectionLayerModel.sendMessage(messageJson);
   }
 
@@ -101,7 +101,7 @@ public class UserChatModelLayer implements CoreOperation {
    */
   public void displayResponse(MessageJson response) {
     if (response == null) {
-      FrontEnd.getView().sendToView("Uh Oh! Something went wrong. Please try again");
+      FrontEnd.getView().sendToView("ERROR: Uh Oh! Something went wrong. Please try again");
       return;
     }
 
