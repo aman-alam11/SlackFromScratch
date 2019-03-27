@@ -55,7 +55,6 @@ public class FrontEnd {
   public void showGroupUsersCrudLevelOptions() {
     System.out.println("1. Add Users");
     System.out.println("2. Delete Users");
-    System.out.println("3. Group Chat");
     System.out.println("Or Enter \\b to go back");
     System.out.println("Enter From above Options: ");
   }

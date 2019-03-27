@@ -116,7 +116,6 @@ public final class InjectLevelUtil {
     FrontEnd.getView().showGroupUsersCrudLevelOptions();
     mClientOptionsMap.put(1, scanner -> new AddUserToGroup());
     mClientOptionsMap.put(2, scanner -> new DeleteUsersFromGroup());
-    mClientOptionsMap.put(3, scanner -> new GroupChat());
   }
 
 }
