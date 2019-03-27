@@ -20,7 +20,7 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCreden
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
 /**
- * This is the Login class which is being used for the Login level
+ * This is the Login class which is being used for the Login level.
  */
 public class Login extends CommonOperations implements AsyncListener {
 

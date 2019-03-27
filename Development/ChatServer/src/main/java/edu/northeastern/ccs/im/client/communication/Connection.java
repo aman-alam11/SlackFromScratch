@@ -16,8 +16,6 @@ public interface Connection {
 
   boolean sendMessage(MessageJson message);
 
-  void registerListener(AsyncListener asyncListener, MessageType messageType);
-
   void terminate();
 
 }

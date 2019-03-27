@@ -22,15 +22,11 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
 
 public class UserSearchModelLayer extends CommonOperations {
 
-  private Scanner mScanner;
-  private Gson mGson;
-  private Connection mConnection;
-
   @Override
   public void passControl(Scanner scanner, Connection model) {
-    this.mScanner = scanner;
-    this.mConnection = model;
-    mGson = new Gson();
+    Scanner mScanner = scanner;
+    Connection mConnection = model;
+    Gson mGson = new Gson();
 
     FrontEnd.getView().sendToView("Enter Username of user you want to chat");
     String chatUserOtherEnd = scanner.nextLine().toLowerCase().trim();
@@ -65,7 +61,7 @@ public class UserSearchModelLayer extends CommonOperations {
     String userToChatWith = mScanner.nextLine();
 
     if (usernames!= null && usernames.contains(userToChatWith)) {
-      new UserChatModelLayer(userToChatWith).passControl(mScanner, this.mConnection);
+      new UserChatModelLayer(userToChatWith).passControl(mScanner, mConnection);
     } else {
       FrontEnd.getView().sendToView("Invalid username");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
