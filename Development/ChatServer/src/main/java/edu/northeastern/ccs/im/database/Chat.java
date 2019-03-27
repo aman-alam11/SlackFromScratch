@@ -12,7 +12,7 @@ public class Chat implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "Id", unique = true)
-    private int id;
+    private long id;
 
   @ManyToOne
 	@JoinColumn(name="From_user_id", nullable=false)
@@ -26,7 +26,7 @@ public class Chat implements Serializable{
 	private String msg;
 	
 	@Column(name="ReplyTo", nullable=true)
-	private int replyTo;
+	private long replyTo;
 	
 	@Column(name="Creation_date", nullable=false)
 	private Date created;
@@ -40,11 +40,11 @@ public class Chat implements Serializable{
 	@Column(name="isDelivered", nullable=false)
 	private Boolean isDelivered;
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -72,11 +72,11 @@ public class Chat implements Serializable{
 		this.msg = msg;
 	}
 
-	public int getReplyTo() {
+	public long getReplyTo() {
 		return replyTo;
 	}
 
-	public void setReplyTo(int replyTo) {
+	public void setReplyTo(long replyTo) {
 		this.replyTo = replyTo;
 	}
 

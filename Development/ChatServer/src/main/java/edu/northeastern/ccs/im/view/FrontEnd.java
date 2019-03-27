@@ -21,17 +21,18 @@ public class FrontEnd {
     if (stringToDisplay == null) {
       return;
     }
-
-    System.out.println(stringToDisplay);
+    printToStream(stringToDisplay);
   }
 
 
   public void showMainMenu() {
-    System.out.println("Welcome to Chatter Application");
-    System.out.println("1. Login");
-    System.out.println("2. Registration");
-    System.out.println("Or Enter \\q to quit");
-    System.out.println("Enter From above Options: ");
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("Welcome to Chatter Application \n");
+    stringBuilder.append("1. Login \n");
+    stringBuilder.append("2. Registration \n");
+    stringBuilder.append("Or Enter \\q to quit \n");
+    stringBuilder.append("Enter From above Options: \n");
+    printToStream(stringBuilder.toString());
   }
 
 
@@ -40,6 +41,11 @@ public class FrontEnd {
     System.out.println("2. Chat user");
     System.out.println("Or type logout to logout user");
     System.out.println("Enter From above Options: ");
+  }
+
+
+  private static void printToStream(String string){
+    System.out.println(string);
   }
 
 }

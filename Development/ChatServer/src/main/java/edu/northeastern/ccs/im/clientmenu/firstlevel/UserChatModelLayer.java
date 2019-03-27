@@ -19,7 +19,7 @@ public class UserChatModelLayer implements CoreOperation {
   private Connection connLocal;
   private Gson gson;
   private UserChat userChat;
-  boolean shouldListenForMessages = true;
+  private boolean shouldListenForMessages = true;
 
 
   @Override
@@ -74,8 +74,8 @@ public class UserChatModelLayer implements CoreOperation {
 
   private void breakFromConversation(Connection connectionLayerModel) {
     userChat = new UserChat();
-    MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_QUIT,
-            new Gson().toJson(userChat));
+    MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
+            MessageType.USER_CHAT_END, new Gson().toJson(userChat));
     connectionLayerModel.sendMessage(messageJson);
   }
 

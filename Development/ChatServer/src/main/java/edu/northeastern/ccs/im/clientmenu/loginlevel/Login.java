@@ -29,24 +29,26 @@ public class Login extends CommonOperations implements AsyncListener {
   @Override
   public void passControl(Scanner scanner, Connection modelLayer) {
 
-    mGson = new Gson();
+    if (modelLayer != null) {
+      mGson = new Gson();
 
-    FrontEnd.getView().sendToView("Enter User Name");
-    String username = scanner.nextLine().toLowerCase().trim();
+      FrontEnd.getView().sendToView("Enter User Name");
+      String username = scanner.nextLine().toLowerCase().trim();
 
-    FrontEnd.getView().sendToView("Enter password");
-    String password = scanner.nextLine().trim();
+      FrontEnd.getView().sendToView("Enter password");
+      String password = scanner.nextLine().trim();
 
-    MessageJson messageJson = generateLoginCredentials(username, password, MessageType.LOGIN);
-    modelLayer.sendMessage(messageJson);
+      MessageJson messageJson = generateLoginCredentials(username, password, MessageType.LOGIN);
+      modelLayer.sendMessage(messageJson);
 
-    FrontEnd.getView().sendToView("\nLOADING\n");
+      FrontEnd.getView().sendToView("\nLOADING\n");
 
-    String resp = waitForResponseSocket(modelLayer);
-    if (!StringUtil.isBlank(resp)) {
-      this.listen(resp);
-    } else {
-      // TODO: Some default response
+      String resp = waitForResponseSocket(modelLayer);
+      if (!StringUtil.isBlank(resp)) {
+        this.listen(resp);
+      } else {
+        // TODO: Some default response
+      }
     }
   }
 

@@ -18,29 +18,56 @@ public class JPAService {
 	 */
 	private ChatDao cd;
 
+	private GroupDao gd;
+
+	private GroupMemberDao gmd;
 	/**
 	 * Initialize the SessionFactory instance.
 	 */
 
+	private static JPAService instance;
+
+
+	/**
+	 * This method returns the instance of JPASercice, since its a singleton object
+	 * @return {@link JPAService}
+	 */
+
+	public static synchronized JPAService	getInstance() {
+		if (instance == null) {
+			instance = new JPAService();
+		}
+		return instance;
+	}
 	// Create the SessionFactory using the ServiceRegistry
 	SessionFactory mSessionFactory = new Configuration().
 			configure().
 			addAnnotatedClass(User.class).
 			addAnnotatedClass(Chat.class).
+			addAnnotatedClass(Group.class).
+			addAnnotatedClass(GroupMember.class).
 			buildSessionFactory();
 
 	/**
 	 * Constructor to initialize userdao object.
 	 */
-	public JPAService(){
+	private JPAService(){
 		ud = new UserDao(mSessionFactory);
 		cd = new ChatDao(mSessionFactory);
+		gd = new GroupDao(mSessionFactory);
+		gmd = new GroupMemberDao(mSessionFactory);
 	}
 
+	/**
+	 * Only for testing purpose
+	 * @param sf
+	 */
 	public JPAService(SessionFactory sf){
 		mSessionFactory = sf;
 		ud = new UserDao(mSessionFactory);
 		cd = new ChatDao(mSessionFactory);
+		gd = new GroupDao(mSessionFactory);
+		gmd = new GroupMemberDao(mSessionFactory);
 	}
 	/**
 	 * Create a new user.
@@ -119,7 +146,7 @@ public class JPAService {
 	 *
 	 * @return A boolean representing if the transaction was successful or not.
 	 */
-	public int createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
+	public long createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
 									 Date expiry, Boolean grpMsg, Boolean isDelivered) {
 		User fromUser = findUserByName(fromUserName);
 		User toUser = findUserByName(toUserName);
@@ -142,8 +169,8 @@ public class JPAService {
 	 * @param chatId
 	 * @param status
 	 */
-	public void updateChatStatus(int chatId, boolean status) {
-		cd.updateDeliveryStatus(chatId, status);
+	public boolean updateChatStatus(long chatId, boolean status) {
+		return cd.updateDeliveryStatus(chatId, status);
 	}
 
 	/**
@@ -161,5 +188,43 @@ public class JPAService {
 	 */
 	public void deleteMessage(int id) {
 		cd.delete(id);
+	}
+
+	public boolean createGroup(String gName, String gCreator, boolean isAuthRequired) {
+		
+		return gd.create(gName, gCreator, isAuthRequired);
+	}
+
+	public Group findGroupByName(String gName){
+		return gd.findGroupByName(gName);
+	}
+	public void deleteGroup(String gName){
+		Group g = findGroupByName(gName);
+		gd.delete(g.getId());
+	}
+
+	public List<Group> findGroupByCreator(String name){
+		User user = findUserByName(name);
+		return gd.findGroupByCreator(user);
+	}
+
+	public List<Group> searchGroupByName(String name){
+		return gd.searchGroupByName(name);
+	}
+
+	public boolean addGroupMember(String gName, String uName, boolean isModerator){
+		return gmd.addMemberToGroup(gName,uName,isModerator);
+	}
+
+	public void deleteMemberFromGroup(String gName, String uName){
+		gmd.deleteMemberFromGroup(gName,uName);
+	}
+
+	public void deleteAllMembersOfGroup(String gName){
+		gmd.deleteAllMembersFromGroup(gName);
+	}
+
+	public boolean addMultipleUsersToGroup(List<String> usersToAdd, String grpToAddTo){
+		return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
 	}
 }

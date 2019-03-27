@@ -32,6 +32,7 @@ public class SocketConnection implements Connection {
 
   private static StringBuilder messageBuffer;
   private static Thread messageListenerFromServer;
+  private static boolean isAlive;
 
   //singleton implementation
   private SocketConnection() {
@@ -58,14 +59,14 @@ public class SocketConnection implements Connection {
 
   @Override
   public void terminate() {
-    messageListenerFromServer.interrupt();
+    isAlive = false;
   }
 
   private static void initThread() {
 	  messageQueue = new ConcurrentLinkedQueue<>();
 	  messageBuffer = new StringBuilder();
      messageListenerFromServer = new Thread(() -> {
-      boolean isAlive = true;
+       isAlive = true;
       ByteBuffer buff = ByteBuffer.allocate(BUFFER_SIZE);
       while (isAlive) {
         try {

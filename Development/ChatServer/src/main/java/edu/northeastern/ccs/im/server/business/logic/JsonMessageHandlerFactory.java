@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.business.logic;
+package edu.northeastern.ccs.im.server.business.logic;
 
 import edu.northeastern.ccs.im.message.MessageType;
 
@@ -37,6 +37,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
         handler = new GroupChatHandler();
         break;
 
+      case ADD_USER_IN_GROUP:
+      	handler = new AddGroupUsersHandler();
+      	break;
+      	
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();

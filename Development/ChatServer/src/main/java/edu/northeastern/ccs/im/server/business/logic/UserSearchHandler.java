@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.business.logic;
+package edu.northeastern.ccs.im.server.business.logic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class UserSearchHandler implements MessageHandler{
 	
 	public UserSearchHandler() {
 		gson =  new Gson();
-		jpaService = new JPAService();
+		jpaService = JPAService.getInstance();
 	}
 
 	@Override

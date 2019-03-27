@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.business.logic;
+package edu.northeastern.ccs.im.server.business.logic;
 
 import com.google.gson.Gson;
 
@@ -26,7 +26,7 @@ public class UserCreationHandler implements MessageHandler {
     LoginCredentials loginCredentials = gson.fromJson(message, LoginCredentials.class);
 
     SessionFactory sessionFactory = SessionFactory.getInstance(loginCredentials.getUserName(),
-            loginCredentials.getPassword(), new JPAService());
+            loginCredentials.getPassword(), JPAService.getInstance());
 
     boolean isSuccessful = sessionFactory.createAccount();
     if (isSuccessful) {

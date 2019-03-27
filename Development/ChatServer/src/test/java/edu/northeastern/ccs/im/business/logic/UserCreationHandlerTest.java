@@ -10,6 +10,7 @@ import static org.junit.Assert.assertFalse;
 
 import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.UserCreationHandler;
 
 
 public class UserCreationHandlerTest {

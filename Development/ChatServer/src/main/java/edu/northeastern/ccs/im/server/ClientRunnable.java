@@ -7,11 +7,9 @@ import java.util.concurrent.ScheduledFuture;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
-import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
-import edu.northeastern.ccs.im.business.logic.MessageHandler;
 import edu.northeastern.ccs.im.message.MessageJson;
-import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 /**
  * Instances of this class handle all of the incoming communication from a
@@ -160,7 +158,7 @@ public class ClientRunnable implements Connection {
 	/**
 	 * Perform the periodic actions needed to work with this client.
 	 * 
-	 * @see java.lang.Thread#run()
+	 * @see java.lang.Thread #run()
 	 */
 	public void run() {
 		if (state.equals(ClientState.LOGGED_OUT)) {
@@ -194,7 +192,7 @@ public class ClientRunnable implements Connection {
 	
 
 	public boolean signInUser(String userName) {
-		setUserName(userName);
+		this.setUserName(userName);
 		boolean isSuccessful = Prattle.changeToAuthenciatedUser(this, userName);
 		if (isSuccessful) {
 			ChatLogger.info("User Logged in! " + userName + "\n");
@@ -210,11 +208,33 @@ public class ClientRunnable implements Connection {
 		// Client has already been logged in
 		if (messageIter.hasNext()) {
 			MessageJson msg = messageIter.next();
-			if (msg.getMessageType().equals(MessageType.LOG_OUT)) {
-				terminate = true;
-			} else {
-				MessageHandler messageHandler = connection.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
-				messageHandler.handleMessage(userName, msg.getMessage(), this);
+
+			switch (msg.getMessageType()) {
+
+				  //handle when user sends logout message and we terminate the this thread.
+				case LOG_OUT:
+					terminate = true;
+					ChatLogger.info("Logout message received");
+					break;
+
+				  //To check if user is about to start chatting.
+				case USER_CHAT_START:
+					Prattle.addToChattingUsers(this.getUserName());
+					ChatLogger.info("Chat start message received");
+					break;
+
+					//Change status back to logged when the user exit the chat.
+				case USER_CHAT_END:
+					Prattle.removeFromChattingUsers(this.getUserName());
+					ChatLogger.info("Chat exit message received");
+					break;
+
+					//in case of all other messages call the required factory.
+					default:
+						MessageHandler messageHandler = connection
+										.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
+						messageHandler.handleMessage(userName, msg.getMessage(), this);
+						ChatLogger.info("Message received Type: " + msg.getMessageType());
 			}
 		}
 	}

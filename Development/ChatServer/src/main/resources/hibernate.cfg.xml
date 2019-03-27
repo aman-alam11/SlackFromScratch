@@ -11,7 +11,7 @@
         <!-- Indicate the database to generate suitable SQL -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
         <!-- The JDBC URL to the database instance -->
-        <property name="hibernate.connection.url">jdbc:mysql://team212instance.c1wqnkcqbuje.us-east-2.rds.amazonaws.com:3306/test_hibernate</property>
+        <property name="hibernate.connection.url">jdbc:mysql://team212instance.c1wqnkcqbuje.us-east-2.rds.amazonaws.com:3306/new_test_hibernate</property>
         <!-- The database username -->
         <property name="hibernate.connection.username">team212</property>
         <!-- The database password -->
@@ -22,5 +22,7 @@
         <!-- Mapping class -->
         <mapping class="edu.northeastern.ccs.im.database.User"/>
         <mapping class="edu.northeastern.ccs.im.database.Chat"/>
+        <mapping class="edu.northeastern.ccs.im.database.Group"/>
+        <mapping class="edu.northeastern.ccs.im.database.GroupMember"/>
     </session-factory>
 </hibernate-configuration>

@@ -20,12 +20,13 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 public final class ClientHandler {
 
   private Connection modelLayer;
+  private static final String QUIT = "\\q";
 
 
   public ClientHandler(Connection model) {
     modelLayer = model;
     if (modelLayer == null) {
-      FrontEnd.getView().sendToView("Server is not running");
+      FrontEnd.getView().sendToView("Server is not Responding, Try After Some time.");
       return;
     }
 
@@ -44,7 +45,7 @@ public final class ClientHandler {
         userChoice = Integer.parseInt(choiceString);
       } catch (Exception e) {
         // Handle with default implementation
-        if (choiceString.equalsIgnoreCase("\\q") || choiceString.equalsIgnoreCase("logout")) {
+        if (choiceString.equalsIgnoreCase(QUIT)) {
           try {
             UserChat userChat = new UserChat();
             MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.LOG_OUT,
@@ -54,7 +55,8 @@ public final class ClientHandler {
             return;
           }
           catch (NullPointerException ex) {
-            FrontEnd.getView().sendToView("Quit failed");
+            FrontEnd.getView().sendToView("Bye!!");
+            return;
           }
         } else {
           FrontEnd.getView().sendToView("Wrong input, try again.");

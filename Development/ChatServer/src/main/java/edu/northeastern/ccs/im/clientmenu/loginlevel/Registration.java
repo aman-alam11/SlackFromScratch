@@ -25,36 +25,38 @@ public class Registration extends CommonOperations implements AsyncListener {
   @Override
   public void passControl(Scanner scanner, Connection model) {
 
-    // Take user details to register the user.
-    FrontEnd.getView().sendToView("Hi, Please Enter the following details to register.");
-    FrontEnd.getView().sendToView("Enter User Name");
-    String username = scanner.nextLine().toLowerCase().trim();
+    if (model != null) {
+      // Take user details to register the user.
+      FrontEnd.getView().sendToView("Hi, Please Enter the following details to register.");
+      FrontEnd.getView().sendToView("Enter User Name");
+      String username = scanner.nextLine().toLowerCase().trim();
 
-    // Take password and confirm password.
-    FrontEnd.getView().sendToView("Enter Password");
-    String password = scanner.nextLine().trim();
+      // Take password and confirm password.
+      FrontEnd.getView().sendToView("Enter Password");
+      String password = scanner.nextLine().trim();
 
-    FrontEnd.getView().sendToView("Enter Password Again");
-    String passwordCheck = scanner.nextLine().trim();
+      FrontEnd.getView().sendToView("Enter Password Again");
+      String passwordCheck = scanner.nextLine().trim();
 
-    /**
-     * Check if the password and confirm password are same,
-     * then create a message json including the username, password
-     * and a message type.
-     * If the passwords don't match then return the message to user.
-     */
-    if (password.equals(passwordCheck)) {
-      MessageJson messageJson = generateLoginCredentials(username, password, MessageType.CREATE_USER);
-      model.sendMessage(messageJson);
-      // Wait for response synchronously
-      String resp = waitForResponseSocket(model);
-      if (!StringUtil.isBlank(resp)) {
-        this.listen(resp);
+      /**
+       * Check if the password and confirm password are same,
+       * then create a message json including the username, password
+       * and a message type.
+       * If the passwords don't match then return the message to user.
+       */
+      if (password.equals(passwordCheck)) {
+        MessageJson messageJson = generateLoginCredentials(username, password, MessageType.CREATE_USER);
+        model.sendMessage(messageJson);
+        // Wait for response synchronously
+        String resp = waitForResponseSocket(model);
+        if (!StringUtil.isBlank(resp)) {
+          this.listen(resp);
+        } else {
+          // TODO: Some default response
+        }
       } else {
-        // TODO: Some default response
+        FrontEnd.getView().sendToView("Passwords do not match! Please try again");
       }
-    } else {
-      FrontEnd.getView().sendToView("Passwords do not match! Please try again");
     }
   }
 

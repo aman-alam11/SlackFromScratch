@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.LoginHandler;
 
 
 public class LoginHandlerTest {

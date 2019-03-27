@@ -16,10 +16,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import edu.northeastern.ccs.im.business.logic.MessageHandlerFactory;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandlerFactory;
 
 /**
  * This class is similar to the java.io.PrintWriter class, but this class's
