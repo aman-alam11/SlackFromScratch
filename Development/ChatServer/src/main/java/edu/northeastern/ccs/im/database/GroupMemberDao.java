@@ -199,4 +199,44 @@ public class GroupMemberDao {
         }
         return allMembers;
     }
+
+    public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = mSessionFactory.openSession();
+            // Begin a transaction
+            transaction = session.beginTransaction();
+            User user = JPAService.getInstance().findUserByName(uName);
+            if (user == null) {
+                ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
+                throw new HibernateException("user not found");
+            }
+
+            Group grp = JPAService.getInstance().findGroupByName(gName);
+            if (grp == null) {
+                ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
+                throw new HibernateException("group not found");
+            }
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
+            Root<GroupMember> root = query.from(GroupMember.class);
+            query.select(root).where(builder.and(builder.equal(root.get("groupId"), grp)),
+                    (builder.equal(root.get("groupUser"), user)));
+            Query<GroupMember> q = session.createQuery(query);
+            GroupMember gMemberToUpdate = q.getSingleResult();
+            gMemberToUpdate.setModerator(moderatorStatus);
+            session.update(gMemberToUpdate);
+            // Commit the transaction
+            transaction.commit();
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            transaction.rollback();
+        } finally {
+            // Close the session
+            session.close();
+        }
+    }
 }
