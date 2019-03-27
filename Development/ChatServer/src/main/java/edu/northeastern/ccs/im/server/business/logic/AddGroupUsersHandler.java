@@ -26,7 +26,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 		gson = new Gson();
 		ackModel = new AckModel();
 		inValidUsers = new ArrayList<>();
-		validUsers = new ArrayList<>();;
+		validUsers = new ArrayList<>();
 	}
 
 	/**{@inheritDoc}

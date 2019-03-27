@@ -2,7 +2,6 @@ package edu.northeastern.ccs.im.clientmenu.clientutils;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class WaitForResponse {

@@ -2,6 +2,7 @@ package edu.northeastern.ccs.im.clientmenu;
 
 import com.google.gson.Gson;
 
+import java.util.Deque;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -21,12 +22,14 @@ public final class ClientHandler {
 
   private Connection modelLayer;
   private static final String QUIT = "\\q";
+  private static final String BACK = "\\b";
 
 
   public ClientHandler(Connection model) {
     modelLayer = model;
     if (modelLayer == null) {
-      FrontEnd.getView().sendToView("Server is not Responding, Try After Some time.");
+      FrontEnd.getView().sendToView("Server is not Running, Exiting.");
+      FrontEnd.getView().sendToView("Bye!!");
       return;
     }
 
@@ -52,13 +55,30 @@ public final class ClientHandler {
                     new Gson().toJson(userChat));
             modelLayer.sendMessage(messageJson);
             modelLayer.terminate();
-            return;
-          }
-          catch (NullPointerException ex) {
             FrontEnd.getView().sendToView("Bye!!");
             return;
           }
-        } else {
+          catch (NullPointerException ex) {
+            return;
+          }
+        }
+
+//        else if(choiceString.equalsIgnoreCase(BACK)) {
+//          Deque<CurrentLevel> stack = InjectLevelUtil.getInstance().getLevelStack();
+//          for (CurrentLevel c: stack) {
+//            System.out.println(c);
+//          }
+//          if (stack.size() > 1) {
+//            stack.pop();
+//            CurrentLevel currentLevel = stack.pop();
+//            if(currentLevel != CurrentLevel.LOGIN_LEVEL) {
+//              InjectLevelUtil.getInstance().injectLevel(currentLevel);
+//            }
+//          }
+//
+//        }
+
+        else {
           FrontEnd.getView().sendToView("Wrong input, try again.");
         }
       }

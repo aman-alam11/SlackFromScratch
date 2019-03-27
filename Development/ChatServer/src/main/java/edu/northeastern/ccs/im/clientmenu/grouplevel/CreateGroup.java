@@ -9,7 +9,10 @@ import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
+import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.clientmenu.models.UserSearch;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
@@ -54,26 +57,30 @@ public class CreateGroup implements CoreOperation {
             MessageType.CREATE_GROUP, gson.toJson(groupCreateUpdateModel));
 
     connectionLayerModel.sendMessage(messageJson);
+    checkResponse(connectionLayerModel, groupName);
+  }
 
 
+  private void checkResponse(Connection connectionLayerModel, String groupName) {
     String responseSocket = waitForResponseSocket(connectionLayerModel);
     if (!StringUtil.isBlank(responseSocket)) {
       AckModel ackModel = gson.fromJson(responseSocket, AckModel.class);
       List<ErrorCodes> errorCodes = ackModel.getErrorCodeList();
 
       if (errorCodes.isEmpty()) {
-        FrontEnd.getView().sendToView("Group Added: " + groupName);
+        CurrentGroupName.setGroupName(groupName);
+        FrontEnd.getView().sendToView("Group Added: " + CurrentGroupName.getGroupName());
+        InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_USERS_CRUD_LEVEL);
+
       } else {
         for (ErrorCodes error: errorCodes) {
           FrontEnd.getView().sendToView("ERROR! " + error.getErrorMessage() + "!");
+          FrontEnd.getView().showGroupLevelOptions();
         }
       }
     } else {
       // TODO: Some default response
     }
-
-
-
-
   }
+
 }
