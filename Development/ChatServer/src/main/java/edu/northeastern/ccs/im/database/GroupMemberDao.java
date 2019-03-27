@@ -7,7 +7,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -16,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupMemberDao {
+
+    public static final String GROUP_ID = "groupId";
+
     SessionFactory mSessionFactory;
 
     public GroupMemberDao(SessionFactory sf){
@@ -68,21 +70,13 @@ public class GroupMemberDao {
             session = mSessionFactory.openSession();
             // Begin a transaction
             transaction = session.beginTransaction();
-            User user = JPAService.getInstance().findUserByName(uName);
-            if (user == null) {
-                ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
-                throw new HibernateException("user not found");
-            }
+            User user = getUser(uName);
 
-            Group grp = JPAService.getInstance().findGroupByName(gName);
-            if (grp == null) {
-                ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
-                throw new HibernateException("group not found");
-            }
+            Group grp = getGroup(gName);
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
-            query.select(root).where(builder.and(builder.equal(root.get("groupId"), grp)),
+            query.select(root).where(builder.and(builder.equal(root.get(GROUP_ID), grp)),
                     (builder.equal(root.get("groupUser"), user)));
             Query<GroupMember> q = session.createQuery(query);
             GroupMember gMemberToDelete = q.getSingleResult();
@@ -100,6 +94,15 @@ public class GroupMemberDao {
         }
     }
 
+    private Group getGroup(String gName) {
+        Group grp = JPAService.getInstance().findGroupByName(gName);
+        if (grp == null) {
+            ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
+            throw new HibernateException("group not found");
+        }
+        return grp;
+    }
+
     public void deleteAllMembersFromGroup(String gName){
         Session session = null;
         Transaction transaction = null;
@@ -108,16 +111,12 @@ public class GroupMemberDao {
             // Begin a transaction
             transaction = session.beginTransaction();
 
-            Group grp = JPAService.getInstance().findGroupByName(gName);
-            if (grp == null) {
-                ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
-                throw new HibernateException("group not found");
-            }
+            Group grp = getGroup(gName);
 
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
-            query.select(root).where(builder.equal(root.get("groupId"), grp));
+            query.select(root).where(builder.equal(root.get(GROUP_ID), grp));
             Query<GroupMember> q = session.createQuery(query);
             List<GroupMember> gMembers = q.getResultList();
             for(GroupMember gm: gMembers){
@@ -172,16 +171,12 @@ public class GroupMemberDao {
             session = mSessionFactory.openSession();
             // Begin a transaction
             transaction = session.beginTransaction();
-            Group grp = JPAService.getInstance().findGroupByName(gName);
-            if(grp == null){
-                ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
-                throw new HibernateException("group not found");
-            }
+            Group grp = getGroup(gName);
 
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
-            query.select(root).where(builder.equal(root.get("groupId"), grp));
+            query.select(root).where(builder.equal(root.get(GROUP_ID), grp));
             Query<GroupMember> q = session.createQuery(query);
             List<GroupMember> gMembers = q.getResultList();
             for(GroupMember gm: gMembers){
@@ -207,21 +202,13 @@ public class GroupMemberDao {
             session = mSessionFactory.openSession();
             // Begin a transaction
             transaction = session.beginTransaction();
-            User user = JPAService.getInstance().findUserByName(uName);
-            if (user == null) {
-                ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
-                throw new HibernateException("user not found");
-            }
+            User user = getUser(uName);
 
-            Group grp = JPAService.getInstance().findGroupByName(gName);
-            if (grp == null) {
-                ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
-                throw new HibernateException("group not found");
-            }
+            Group grp = getGroup(gName);
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
-            query.select(root).where(builder.and(builder.equal(root.get("groupId"), grp)),
+            query.select(root).where(builder.and(builder.equal(root.get(GROUP_ID), grp)),
                     (builder.equal(root.get("groupUser"), user)));
             Query<GroupMember> q = session.createQuery(query);
             GroupMember gMemberToUpdate = q.getSingleResult();
@@ -238,5 +225,14 @@ public class GroupMemberDao {
             // Close the session
             session.close();
         }
+    }
+
+    private User getUser(String uName) {
+        User user = JPAService.getInstance().findUserByName(uName);
+        if (user == null) {
+            ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
+            throw new HibernateException("user not found");
+        }
+        return user;
     }
 }
