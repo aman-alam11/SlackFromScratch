@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.clientmenu.firstlevel;
+package edu.northeastern.ccs.im.clientmenu.userlevel;
 
 import com.google.gson.Gson;
 
@@ -7,7 +7,6 @@ import org.jsoup.helper.StringUtil;
 import java.util.List;
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.client.communication.AsyncListener;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;

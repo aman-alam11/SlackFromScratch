@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.clientmenu.firstlevel;
+package edu.northeastern.ccs.im.clientmenu.userlevel;
 
 import com.google.gson.Gson;
 

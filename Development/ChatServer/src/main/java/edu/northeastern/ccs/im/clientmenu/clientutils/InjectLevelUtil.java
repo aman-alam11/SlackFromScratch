@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
-import edu.northeastern.ccs.im.clientmenu.firstlevel.UnreadMessages;
-import edu.northeastern.ccs.im.clientmenu.firstlevel.UserSearchModelLayer;
+import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
+import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class InjectLevelUtil {
