@@ -17,6 +17,7 @@ import java.util.List;
 public class GroupMemberDao {
 
     public static final String GROUP_ID = "groupId";
+    public static final String GROUP_USER = "groupUser";
 
     SessionFactory mSessionFactory;
 
@@ -77,7 +78,7 @@ public class GroupMemberDao {
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
             query.select(root).where(builder.and(builder.equal(root.get(GROUP_ID), grp)),
-                    (builder.equal(root.get("groupUser"), user)));
+                    (builder.equal(root.get(GROUP_USER), user)));
             Query<GroupMember> q = session.createQuery(query);
             GroupMember gMemberToDelete = q.getSingleResult();
             session.delete(gMemberToDelete);
@@ -209,7 +210,7 @@ public class GroupMemberDao {
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
             query.select(root).where(builder.and(builder.equal(root.get(GROUP_ID), grp)),
-                    (builder.equal(root.get("groupUser"), user)));
+                    (builder.equal(root.get(GROUP_USER), user)));
             Query<GroupMember> q = session.createQuery(query);
             GroupMember gMemberToUpdate = q.getSingleResult();
             gMemberToUpdate.setModerator(moderatorStatus);
@@ -256,9 +257,9 @@ public class GroupMemberDao {
 
             for(User u: tempUserList){
                 query.select(root).where(builder.and(builder.equal(root.get(GROUP_ID), grp)),
-                        (builder.equal(root.get("groupUser"), u)));
+                        (builder.equal(root.get(GROUP_USER), u)));
                 Query<GroupMember> q = session.createQuery(query);
-                if(q.getResultList().size() == 0){
+                if(q.getResultList().isEmpty()){
                     nonMembers.add(u);
                 }
             }
