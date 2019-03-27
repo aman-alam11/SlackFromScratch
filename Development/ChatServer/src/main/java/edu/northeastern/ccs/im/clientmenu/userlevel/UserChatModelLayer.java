@@ -29,6 +29,13 @@ public class UserChatModelLayer implements CoreOperation {
     FrontEnd.getView().sendToView("Conversation initiated.");
     FrontEnd.getView().sendToView("Enter Message or enter \\q to quit");
     initReaderThread();
+
+    //Sending the server status that user is about to start the chat.
+    UserChat userChatObject = new UserChat();
+    MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
+            new Gson().toJson(userChatObject));
+    connectionLayerModel.sendMessage(msg);
+
     while (scanner.hasNext()) {
 
       String message = scanner.nextLine().trim();
