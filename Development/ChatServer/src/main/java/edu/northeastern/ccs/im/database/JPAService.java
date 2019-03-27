@@ -231,4 +231,8 @@ public class JPAService {
 	public List<User> findAllMembersOfGroup(String gName){
 		return gmd.findAllMembersOfGroup(gName);
 	}
+
+	public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus){
+		gmd.updateModeratorStatus(uName,gName,moderatorStatus);
+	}
 }
