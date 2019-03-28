@@ -52,7 +52,6 @@ public final class ClientHandler {
         // Handle with default implementation
         inputValidate = false;
         if (choiceString.equalsIgnoreCase(QUIT)) {
-          try {
             UserChat userChat = new UserChat();
             MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.LOG_OUT,
                     new Gson().toJson(userChat));
@@ -61,10 +60,6 @@ public final class ClientHandler {
             FrontEnd.getView().sendToView("Bye!!");
             return;
           }
-          catch (NullPointerException ex) {
-            return;
-          }
-        }
 
         else if(choiceString.equalsIgnoreCase(BACK)) {
           Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();

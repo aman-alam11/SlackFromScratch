@@ -55,7 +55,6 @@ public class AddGroupUsersHandler implements MessageHandler {
 	}
 	
 	private boolean validate(AddDeleteGroupUsers users) {
-		
 		return validateGroup(users.getGroupName()) && validateUsers(users.getUsersList());
 	}
 	
