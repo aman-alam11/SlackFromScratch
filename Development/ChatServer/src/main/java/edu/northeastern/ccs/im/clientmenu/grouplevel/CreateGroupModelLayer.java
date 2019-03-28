@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import org.jsoup.helper.StringUtil;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,62 +16,68 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
-import edu.northeastern.ccs.im.model.AddDeleteGroupUsers;
 import edu.northeastern.ccs.im.model.ErrorCodes;
+import edu.northeastern.ccs.im.model.GroupCreateUpdateModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
+public class CreateGroupModelLayer implements CoreOperation {
 
-// TODO: Only Moderators can add/delete new Users
-// TODO: Add people as moderators, delete moderators, change moderators
-public class AddUserToGroup implements CoreOperation {
-
-  private Gson mGson;
+  private Gson gson;
   private Scanner scanner;
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
-    this.mGson = new Gson();
     this.scanner = scanner;
+    this.gson = new Gson();
+    FrontEnd.getView().sendToView("INPUT: Enter Group name you want to create: ");
+    String groupName = scanner.nextLine();
 
-    FrontEnd.getView().sendToView("INPUT: Enter name of users to be added split by \",\"");
-    String scr = scanner.nextLine().trim();
-    String[] users = scr.split(",");
+    FrontEnd.getView().sendToView("INPUT: Press Y/N if you want moderators");
+    boolean yesNoModerator = false;
 
-    AddDeleteGroupUsers addDeleteGroupUsers = new AddDeleteGroupUsers();
-    addDeleteGroupUsers.setGroupName(CurrentGroupName.getGroupName());
-    addDeleteGroupUsers.setUsersList(Arrays.asList(users));
+    switch (scanner.nextLine().trim().toLowerCase()) {
+        case "y":
+          yesNoModerator = true;
+          break;
+        case "n":
+          break;
+        default:
+          FrontEnd.getView().sendToView("ERROR: Invalid Option!");
+          break;
+      }
+
+    GroupCreateUpdateModel groupCreateUpdateModel = new GroupCreateUpdateModel(groupName,
+            GenerateLoginCredentials.getUsername(),yesNoModerator);
 
     MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
-            MessageType.ADD_USER_IN_GROUP, mGson.toJson(addDeleteGroupUsers));
+            MessageType.CREATE_GROUP, gson.toJson(groupCreateUpdateModel));
 
     connectionLayerModel.sendMessage(messageJson);
+    checkResponse(connectionLayerModel, groupName);
+  }
 
 
+  private void checkResponse(Connection connectionLayerModel, String groupName) {
     String responseSocket = waitForResponseSocket(connectionLayerModel);
     if (!StringUtil.isBlank(responseSocket)) {
-      AckModel ackModel = mGson.fromJson(responseSocket, AckModel.class);
+      AckModel ackModel = gson.fromJson(responseSocket, AckModel.class);
       List<ErrorCodes> errorCodes = ackModel.getErrorCodeList();
 
       if (errorCodes.isEmpty()) {
-        FrontEnd.getView().sendToView("SUCCESS: Users Added: " + ackModel.getErrorMessage());
-        FrontEnd.getView().showGroupUsersCrudLevelOptions();
+        CurrentGroupName.setGroupName(groupName);
+        FrontEnd.getView().sendToView("SUCCESS: Group Added: " + CurrentGroupName.getGroupName());
+        InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_USERS_CRUD_LEVEL);
+
       } else {
         for (ErrorCodes error: errorCodes) {
           FrontEnd.getView().sendToView("ERROR: " + error.getErrorMessage() + "!");
+          FrontEnd.getView().showGroupLevelOptions();
         }
-        if (!ackModel.getErrorMessage().isEmpty()) {
-          FrontEnd.getView().sendToView("ERROR: " + ackModel.getErrorMessage() + "!");
-        }
-        FrontEnd.getView().showGroupUsersCrudLevelOptions();
       }
     } else {
       // TODO: Some default response
     }
-
-
-
-
-
   }
+
 }
