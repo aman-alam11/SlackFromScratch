@@ -41,8 +41,6 @@ public class Login extends CommonOperations {
       MessageJson messageJson = generateLoginCredentials(username, password, MessageType.LOGIN);
       modelLayer.sendMessage(messageJson);
 
-      FrontEnd.getView().sendToView("\nLOADING\n");
-
       String resp = waitForResponseSocket(modelLayer);
       if (!StringUtil.isBlank(resp)) {
         this.listen(resp);

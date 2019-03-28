@@ -24,6 +24,13 @@ public class FrontEnd {
     printToStream(stringToDisplay);
   }
 
+  public void sendToViewSameLine(String stringToDisplay) {
+    if (stringToDisplay == null) {
+      return;
+    }
+    System.out.print(stringToDisplay);
+  }
+
 
   public void showMainMenu() {
     StringBuilder stringBuilder = new StringBuilder();
