@@ -14,7 +14,6 @@ public class WaitForResponse {
   private static final String THREAD_SLEEP_ERROR = "Unable to make the Thread sleep";
 
   public static String waitForResponseSocket(Connection modelLayer) {
-
     waitForResponseSync(modelLayer);
     FrontEnd.getView().sendToView("\n"+ LOADING_COMPLETE_MESSAGE);
 
@@ -27,9 +26,9 @@ public class WaitForResponse {
 
 
   private static void waitForResponseSync(Connection modelLayer) {
-    long startTime = System.currentTimeMillis();
     int count = 0;
-    while (!modelLayer.hasNext() || (startTime + TIMEOUT_MILLISECONDS > System.currentTimeMillis())) {
+    long startTime = System.currentTimeMillis();
+    while (!modelLayer.hasNext() && (startTime + TIMEOUT_MILLISECONDS > System.currentTimeMillis())) {
       // Wait
       try {
         if (count == 0) {

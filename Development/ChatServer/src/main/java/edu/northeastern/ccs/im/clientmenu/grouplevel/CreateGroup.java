@@ -36,6 +36,9 @@ public class CreateGroup implements CoreOperation {
     FrontEnd.getView().sendToView("INPUT: Press Y/N if you want moderators");
     boolean yesNoModerator = false;
 
+    // This is the first time user is creating the group.
+    // Hence s/he is automatically the admin/moderator and can add members.
+    // For updating a group, we go to update group.
     switch (scanner.nextLine().trim().toLowerCase()) {
         case "y":
           yesNoModerator = true;
