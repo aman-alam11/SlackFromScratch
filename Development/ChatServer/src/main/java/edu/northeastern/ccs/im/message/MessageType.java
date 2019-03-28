@@ -70,7 +70,12 @@ public enum MessageType {
    */
   LOG_OUT("LGO"),
 
-  AUTH_ACK("ACK");
+  AUTH_ACK("ACK"),
+  
+   /**
+   * Unread Messages.
+   */
+  UNREAD_MSG("UNM");
 
   /**
    * Store the short name of this message type.
