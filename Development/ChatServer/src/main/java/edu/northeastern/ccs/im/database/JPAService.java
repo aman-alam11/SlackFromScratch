@@ -148,10 +148,7 @@ public class JPAService {
         User fromUser = findUserByName(chatModel.getFromUserName());
         User toUser = findUserByName(chatModel.getToUserName());
         Group grp = null;
-        if (chatModel.getGroupName() != null) {
-            grp = findGroupByName(chatModel.getGroupName());
-        }
-        return cd.create(fromUser, toUser, grp, chatModel);
+        return cd.create(fromUser, toUser, chatModel);
     }
 
     /**
