@@ -33,7 +33,7 @@ public class ChatModelTest {
     assertEquals(Date.class, chat.getCreated().getClass());
     chat.setExpiry(new Date());
     assertEquals(Date.class, chat.getExpiry().getClass());
-    chat.setGrpMsg(true);
+    chat.isGrpMsg(true);
     assertTrue(chat.getGrpMsg());
     chat.setIsDelivered(true);
     assertTrue(chat.getIsDelivered());

@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
-import edu.northeastern.ccs.im.model.UserChat;
+import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.Prattle;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -25,16 +25,11 @@ public class ChatHandler implements MessageHandler {
     @Override
     public boolean handleMessage(String user, String message, Connection conn) {
         boolean isSuccessfull = false;
-        UserChat chatModel = mGson.fromJson(message, UserChat.class);
+        ChatModel chatModel = mGson.fromJson(message, ChatModel.class);
+        chatModel.setDelivered(false);
         JPAService jpaService = JPAService.getInstance();
 
-        long id = jpaService.createChatMessage(chatModel.getFromUserName(),
-                chatModel.getToUserName(),
-                chatModel.getMsg(),
-                0,
-                chatModel.getExpiry(),
-                false,
-                false);
+        long id = jpaService.createChatMessage(chatModel);
 
         if (id > 0) {
             isSuccessfull = true;
@@ -46,8 +41,12 @@ public class ChatHandler implements MessageHandler {
          * mark that message as delivered.
          */
         if (Prattle.isUserChatting(chatModel.getToUserName())) {
-
-            MessageJson msg = new MessageJson(chatModel.getFromUserName(), MessageType.USER_CHAT, message);
+        	
+        		MessageType msgType = MessageType.USER_CHAT;
+        		if (chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0) {
+        			msgType = MessageType.GROUP_CHAT;
+        		}
+            MessageJson msg = new MessageJson(chatModel.getFromUserName(), msgType, message);
             msg.setSendToUser(chatModel.getToUserName());
             if (Prattle.sendMessageTo(chatModel.getToUserName(), msg)) {
                 isSuccessfull = jpaService.updateChatStatus(id, true);

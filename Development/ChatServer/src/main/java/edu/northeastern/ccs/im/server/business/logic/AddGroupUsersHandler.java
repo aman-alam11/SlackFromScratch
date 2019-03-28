@@ -1,6 +1,7 @@
 package edu.northeastern.ccs.im.server.business.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,15 +22,12 @@ public class AddGroupUsersHandler implements MessageHandler {
 	
 	private Gson gson;
 	private AckModel ackModel;
-	private List<String> inValidUsers;
-	private List<User> validUsers;
-	Group groupDBObject;
-	
+	private List<User> validUsersToAdd;
+
 	public AddGroupUsersHandler() {
 		gson = new Gson();
 		ackModel = new AckModel();
-		inValidUsers = new ArrayList<>();
-		validUsers = new ArrayList<>();
+		validUsersToAdd = new ArrayList<>();
 	}
 
 	/**{@inheritDoc}
@@ -40,49 +38,54 @@ public class AddGroupUsersHandler implements MessageHandler {
 		
 		AddDeleteGroupUsers usersModel = gson.fromJson(message, AddDeleteGroupUsers.class);
 		
-		//validate 
-		if(validate(usersModel)) {
-			
+		if(validate(usersModel, user) && !validUsersToAdd.isEmpty()) {
+			List<String> userNameToAdd = validUsersToAdd.stream()
+																									 .map(u -> u.getName())
+																									 .collect(Collectors.toList());
+			JPAService.getInstance().addMultipleUsersToGroup(userNameToAdd, usersModel.getGroupName());
 		}
 		
-		//add users in group
-		
-		//send ack
 		MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(ackModel));
 		sendResponse(response, clientConnection);
-		
 		return false;
 	}
 	
-	private boolean validate(AddDeleteGroupUsers users) {
-		return validateGroup(users.getGroupName()) && validateUsers(users.getUsersList());
+	private boolean validate(AddDeleteGroupUsers users, String requester) {
+		return validateGroupAndRequestor(users.getGroupName(), requester) && 
+						validateUsers(users.getUsersList(),users.getGroupName());
 	}
 	
 	/**
-	 * Checks if the group exists
+	 * Checks if the group exists and the requester is in group
 	 * @param grpName
-	 * @return true if grp exists else false
+	 * @return true if group exists else false
 	 */
-	private boolean validateGroup(String grpName) {
-		
-		groupDBObject = JPAService.getInstance().findGroupByName(grpName);
-		boolean isValid = groupDBObject != null;
-		if (!isValid) {
+	private boolean validateGroupAndRequestor(String grpName, String requester) {
+		boolean isValid = true;
+		Group groupDBObject = JPAService.getInstance().findGroupByName(grpName);
+		if (groupDBObject == null) {
 			ackModel.addErrorCode(ErrorCodes.G803);
 			ackModel.appendErrorMessage(" \n GroupName: " + grpName);
+			isValid = false;
+		} else {
+			List<User> user = JPAService.getInstance().findNonMembers(Arrays.asList(requester), grpName);
+			if (!user.isEmpty()) {
+				ackModel.addErrorCode(ErrorCodes.G809);
+				ackModel.appendErrorMessage(" \n Requester is not a member of Group " + grpName);
+			}
 		}
 		return isValid;
 	}
 	
-	private boolean validateUsers(List<String> users) {
-		User user = null;
+	private boolean validateUsers(List<String> users, String groupName) {
 		boolean isValid = false;
+		List<String> validUsers = new ArrayList<>();
+		List<String> inValidUsers  = new ArrayList<>();
 		for (String userName : users) {
-			
-			if ((user = JPAService.getInstance().findUserByName(userName)) == null) {
+			if (JPAService.getInstance().findUserByName(userName) == null) {
 				inValidUsers.add(userName);
 			} else {
-				validUsers.add(user);
+				validUsers.add(userName);
 			}
 		}
 		
@@ -94,27 +97,35 @@ public class AddGroupUsersHandler implements MessageHandler {
 			// if all users provided does not exists
 			ackModel.addErrorCode(ErrorCodes.G808);
 			
-		} else if (!validUsers.isEmpty()) {
-			// if some of the users exists
-			List<User> validUsersToAddToGrp = checkUsersNotInGroup(validUsers);
-			isValid = true;
-			ackModel.addErrorCode(ErrorCodes.G806);
-			ackModel.appendErrorMessage(" \n Only Following Users were added in group :" 
-					+ " : " + gson.toJson(validUsersToAddToGrp.stream().map(u -> u.getName()).collect(Collectors.toList())));
-			// users that can be added to group
-			validUsers = validUsersToAddToGrp;
+		} else if(!inValidUsers.isEmpty()) {
+			//if some users are invalid not all
+			ackModel.addErrorCode(ErrorCodes.G805);
+			ackModel.appendErrorMessage("\n Following users are invalid : " + gson.toJson(inValidUsers));
+		}
 			
+		if (!validUsers.isEmpty()) {
+			isValid = checkUsersNotInGroup(validUsers, groupName);
+			if (isValid && validUsersToAdd.size() != validUsers.size()) {
+				ackModel.addErrorCode(ErrorCodes.G806);
+				ackModel.appendErrorMessage(" \n Only Following Users were added in group :" + " : "
+						+ gson.toJson(validUsersToAdd.stream().map(u -> u.getName()).collect(Collectors.toList())));
+			}
 		}
 		return isValid;
 	}
 	
-	private List<User> checkUsersNotInGroup(List<User> usersList) {
-		List<User> notInGroupUsers = new ArrayList<>();
-		for (User user : usersList) {
-			//get all users which does not exixts in group
+	private boolean checkUsersNotInGroup(List<String> usersList, String groupName) {
+		boolean isValid = false;
+		// if some of the users exists
+		List<User> validUsersToAddToGrp = JPAService.getInstance().findNonMembers(usersList, groupName);
+		if (!validUsersToAddToGrp.isEmpty()) {
+			isValid = true;
+			
+			// users that can be added to group
+			validUsersToAdd = validUsersToAddToGrp;
+		} else {
+			ackModel.addErrorCode(ErrorCodes.G807);
 		}
-		
-		return notInGroupUsers;
+		return isValid;
 	}
-
 }

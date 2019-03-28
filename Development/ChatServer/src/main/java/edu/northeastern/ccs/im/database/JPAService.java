@@ -12,7 +12,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.transaction.Transactional;
+
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
 public class JPAService {
@@ -141,11 +144,14 @@ public class JPAService {
    *
    * @return A boolean representing if the transaction was successful or not.
    */
-  public long createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
-                                Date expiry, Boolean grpMsg, Boolean isDelivered) {
-    User fromUser = findUserByName(fromUserName);
-    User toUser = findUserByName(toUserName);
-    return cd.create(fromUser, toUser, msg, replyTo, expiry, grpMsg, isDelivered);
+  public long createChatMessage(ChatModel chatModel) {
+    User fromUser = findUserByName(chatModel.getFromUserName());
+    User toUser = findUserByName(chatModel.getToUserName());
+    User replyTo = null;
+    if (chatModel.getReplyTo() != null) {
+    	replyTo = findUserByName(chatModel.getReplyTo());
+    }
+    return cd.create(fromUser, toUser, replyTo, chatModel);
   }
 
   /**
@@ -241,7 +247,7 @@ public class JPAService {
         String fromPersonName = listRow.getFromId().getName();
         Date timestamp = listRow.getCreated();
         String message = listRow.getMsg();
-        unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getGrpMsg()));
+        unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
       }
 
       // Commit the transaction
@@ -254,6 +260,39 @@ public class JPAService {
     }
 
     return unreadMessageModels;
+  }
+
+
+  public boolean setDeliveredUnreadMessages(String username) {
+
+    Session session = null;
+    Transaction transaction = null;
+    boolean result = false;
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+      int userId = userIdBigInt.intValue();
+      if (userId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        return false;
+      }
+
+      result = ud.setDeliverAllUnreadMessages(userId);
+
+      // Commit the transaction
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return result;
   }
 
 

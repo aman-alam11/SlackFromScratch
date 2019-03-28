@@ -75,7 +75,12 @@ public enum MessageType {
    /**
    * Unread Messages.
    */
-  UNREAD_MSG("UNM");
+  UNREAD_MSG("UNM"),
+
+  /**
+   * To set all undelivered messages as delivered
+   */
+  DELIVER_UNREAD_MSG("DUR");
 
   /**
    * Store the short name of this message type.

@@ -15,8 +15,10 @@ import static org.mockito.Mockito.when;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.models.UserSearch;
+import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
 
 public class UserSearchModelLayerTest {
 
@@ -51,12 +53,15 @@ public class UserSearchModelLayerTest {
     userSearch.setUsersList(userList);
     String userString = mGson.toJson(userSearch);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
+
+    when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(messageJson);
     userSearchModelLayer.passControl(scanner, connection);
   }
 
+
   @Test
-  public void noUserNameReturnedTest() {
+  public void noUsersReturnedTest() {
     String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -65,57 +70,46 @@ public class UserSearchModelLayerTest {
     userSearch.setUsersList(userList);
     String userString = mGson.toJson(userSearch);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
+
+    when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(messageJson);
     userSearchModelLayer.passControl(scanner, connection);
   }
 
 
   @Test
-  public void doesNotContainUserToChatWithTest() {
-    String str = USERNAME + HELLO;
+  public void wrongUserEnteredTest() {
+    String str = "atti\n" + "pass\n" + "lol\n";
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
     UserSearch userSearch = new UserSearch("atti");
     List<String> userList = new ArrayList<>();
-    userList.add(WORLD);
+    userList.add("hello");
     userSearch.setUsersList(userList);
     String userString = mGson.toJson(userSearch);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
+
+    when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(messageJson);
     userSearchModelLayer.passControl(scanner, connection);
   }
 
   @Test
-  public void listenTest() {
-    String str = USERNAME + HELLO +  "wpr\n";
+  public void blankResponseUserSearchTest() {
+    String str = "atti\n" + "pass\n" + "lol\n";
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
-    UserSearch userSearch = new UserSearch("atti");
-    List<String> userList = new ArrayList<>();
-    userList.add(WORLD);
-    userSearch.setUsersList(userList);
-    String userString = mGson.toJson(userSearch);
-    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
-    when(connection.next()).thenReturn(messageJson);
+
+    when(connection.hasNext()).thenReturn(true);
+    MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.AUTH_ACK,
+            "");
+
+    when(connection.next()).thenReturn(responsePacket);
+
     userSearchModelLayer.passControl(scanner, connection);
-    // TODO: Fix
-//    userSearchModelLayer.listen(userString);
+
   }
 
-  @Test
-  public void listenEmptyUserNameListTest() {
-    String str = USERNAME + HELLO +  "wpr\n";
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-    UserSearch userSearch = new UserSearch("atti");
-    List<String> userList = new ArrayList<>();
-    userSearch.setUsersList(userList);
-    String userString = mGson.toJson(userSearch);
-    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
-    when(connection.next()).thenReturn(messageJson);
-    userSearchModelLayer.passControl(scanner, connection);
-    // TODO: Fix
-//    userSearchModelLayer.listen(userString);
-  }
 
 }

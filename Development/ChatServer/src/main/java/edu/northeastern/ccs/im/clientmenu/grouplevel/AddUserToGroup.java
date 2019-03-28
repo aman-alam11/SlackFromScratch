@@ -56,14 +56,16 @@ public class AddUserToGroup implements CoreOperation {
       List<ErrorCodes> errorCodes = ackModel.getErrorCodeList();
 
       if (errorCodes.isEmpty()) {
-        FrontEnd.getView().sendToView("SUCCESS: Users Added: ");
-        InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_USERS_CRUD_LEVEL);
-
+        FrontEnd.getView().sendToView("SUCCESS: Users Added: " + ackModel.getErrorMessage());
+        FrontEnd.getView().showGroupUsersCrudLevelOptions();
       } else {
         for (ErrorCodes error: errorCodes) {
           FrontEnd.getView().sendToView("ERROR: " + error.getErrorMessage() + "!");
-          FrontEnd.getView().showGroupLevelOptions();
         }
+        if (!ackModel.getErrorMessage().isEmpty()) {
+          FrontEnd.getView().sendToView("ERROR: " + ackModel.getErrorMessage() + "!");
+        }
+        FrontEnd.getView().showGroupUsersCrudLevelOptions();
       }
     } else {
       // TODO: Some default response
