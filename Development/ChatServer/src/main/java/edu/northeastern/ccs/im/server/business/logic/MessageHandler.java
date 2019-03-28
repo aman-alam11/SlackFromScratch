@@ -1,5 +1,6 @@
 package edu.northeastern.ccs.im.server.business.logic;
 
+import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
@@ -21,6 +22,8 @@ public interface MessageHandler {
 
   default void sendResponse(MessageJson msg, Connection clientConnection) {
     clientConnection.enqueueMessage(msg);
+    ChatLogger.info(this.getClass().getName() + "Respose:");
+    ChatLogger.info(msg.toString());
   }
 
 
