@@ -24,13 +24,12 @@ public class LoginClassTest {
   private Gson mGson;
 
   private static final String USERNAME = "atti\n";
-  private static final String PASSWORD = "pass\n";
+  private static final String PASSWORD = "atti\n";
 
   @Mock
   Connection parentModel;
   @Mock
   Login login;
-
 
   @Before
   public void init() {
@@ -108,19 +107,19 @@ public class LoginClassTest {
   }
 
   @Test
-  public void blankResponseTest() {
-//    String str = USERNAME +  PASSWORD;
-//    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-//    Scanner scanner = new Scanner(in);
-//
-//    when(parentModel.hasNext()).thenReturn(true);
-//    AckModel responseMessage = new AckModel(true, MessageConstants.LOGIN_SUCCESS, false);
-//    MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
-//            MessageType.AUTH_ACK,
-//            mGson.toJson(responseMessage));
-//    when(parentModel.next()).thenReturn();
-//
-//    login.passControl(scanner, parentModel);
+  public void blankResponseLoginTest() {
+    String str = USERNAME +  PASSWORD;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+    when(parentModel.hasNext()).thenReturn(true);
+    MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.AUTH_ACK,
+            "");
+
+    when(parentModel.next()).thenReturn(responsePacket);
+
+    login.passControl(scanner, parentModel);
 
   }
 }

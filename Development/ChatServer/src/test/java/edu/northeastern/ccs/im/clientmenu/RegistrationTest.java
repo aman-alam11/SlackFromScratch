@@ -107,4 +107,21 @@ public class RegistrationTest {
     registration.passControl(scanner, parentModel);
   }
 
+  @Test
+  public void blankResponseRegistrationTest() {
+    String str = "atti\n" +  "ff\n" + "ff\n" + "\\q";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+    when(parentModel.hasNext()).thenReturn(true);
+    MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.AUTH_ACK,
+            "");
+
+    when(parentModel.next()).thenReturn(responsePacket);
+
+    registration.passControl(scanner, parentModel);
+
+  }
+
 }
