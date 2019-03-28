@@ -63,7 +63,7 @@ public enum MessageType {
   /**
    * Message whose contents are for group creation
    */
-  GROUP_SERACH("GSC"),
+  GROUP_SEARCH("GSC"),
   
   /**
    * Message whose contents are for group creation
@@ -85,7 +85,23 @@ public enum MessageType {
   /**
    * To set all undelivered messages as delivered
    */
-  DELIVER_UNREAD_MSG("DUR");
+  DELIVER_UNREAD_MSG("DUR"),
+
+  /**
+   * Get all groups for a user and the moderators.
+   */
+  GET_ALL_GROUPS_MOD("MOD"),
+
+  /**
+   * Get all users for a particular group.
+   */
+  GET_ALL_USERS_FOR_GRP("UGP"),
+
+
+  /**
+   * Toggle Moderator rights.
+   */
+  TOGGLE_MODERATOR("TGM");
 
   /**
    * Store the short name of this message type.

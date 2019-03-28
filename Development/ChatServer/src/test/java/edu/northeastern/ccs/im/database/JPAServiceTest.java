@@ -200,8 +200,9 @@ public class JPAServiceTest {
       c.setGroupId(null);
       c.setExpiry(toSave);
       c.setCreated(toSave);
+//      c.isGrpMsg(false);
      // c.isGrpMsg(false);
-      c.setIsDelivered(true);
+//      c.setIsDelivered(true);
 
 //    assertEquals(1, c.getId());
 //    assertEquals(1, c.getFromId().getId());

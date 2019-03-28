@@ -32,7 +32,7 @@ public class GroupSearchModelLayer implements CoreOperation {
     GroupSearchModel search = new GroupSearchModel(chatOtherGroup);
 
     String groupSearchJsonString = mGson.toJson(search);
-    MessageJson messageJson = new MessageJson(myUsername, MessageType.GROUP_SERACH, groupSearchJsonString);
+    MessageJson messageJson = new MessageJson(myUsername, MessageType.GROUP_SEARCH, groupSearchJsonString);
     connectionLayerModel.sendMessage(messageJson);
 
     List<String> groupNames = null;

@@ -231,6 +231,12 @@ public class UserDao {
     return userId;
   }
 
+  /**
+   * Retrieves all unread messages for the user with the passed user id.
+   *
+   * @param userId The userId for which we need to get all the unread messages for.
+   * @return A List of complete chat rows from which information will be extracted based on use case.
+   */
   public List<Chat> getUnreadMessages(int userId) {
     Session session = mSessionFactory.openSession();
     List<Chat> listUnreadChatRows = new ArrayList<>();

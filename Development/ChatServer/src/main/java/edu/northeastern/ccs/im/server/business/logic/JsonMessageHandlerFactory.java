@@ -44,11 +44,23 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
       case UNREAD_MSG:
         handler = new UnreadMessageHandler();
         break;
-        
-      case GROUP_SERACH:
+
+      case GET_ALL_GROUPS_MOD:
+        handler = new GetAllGroupsModHandler();
+        break;
+
+      case GET_ALL_USERS_FOR_GRP:
+        handler = new GetAllUsersForGroup();
+        break;
+
+      case TOGGLE_MODERATOR:
+        handler = new ToggleModeratorRightsHandler();
+        break;
+
+      case GROUP_SEARCH:
       	handler = new GroupSearchHandler();
       	break;
-      	
+
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();
