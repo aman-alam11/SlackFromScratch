@@ -251,11 +251,20 @@ public class UserDao {
     return listUnreadChatRows;
   }
 
-  public boolean setDeliverAllUnreadMessages(int userId) {
-    Session session = mSessionFactory.openSession();
-    Transaction transaction = session.beginTransaction();
+  public boolean setDeliverAllUnreadMessages(String username) {
+
+    Session session = null;
     boolean result = false;
     try {
+      session = mSessionFactory.openSession();
+      Transaction transaction = session.beginTransaction();
+
+      BigInteger userIdBigInt = this.getUserIdFromUserName(username);
+      int userId = userIdBigInt.intValue();
+      if (userId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        return false;
+      }
       String sql = "UPDATE chat SET chat.isDelivered = true WHERE chat.To_id =?";
       Query query = session.createNativeQuery(sql);
       query.setParameter(1, userId);
@@ -263,7 +272,6 @@ public class UserDao {
       ChatLogger.info("Rows Affected: " + res);
       result = true;
       transaction.commit();
-
     } catch (Exception ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());

@@ -260,35 +260,14 @@ public class JPAService {
     }
 
 
+    /**
+     * Set all the messages to deliver by specific username.
+     * @param username - user name of the user you want to set delivery true;
+     * @return - True or false according to the result.
+     */
     public boolean setDeliveredUnreadMessages(String username) {
 
-        Session session = null;
-        Transaction transaction = null;
-        boolean result = false;
-
-        try {
-            session = mSessionFactory.openSession();
-            transaction = session.beginTransaction();
-
-            // Get the userId for the user for which we need the username
-            BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-            int userId = userIdBigInt.intValue();
-            if (userId <= 0) {
-                ChatLogger.info(this.getClass().getName() + "User not found : " + username);
-                return false;
-            }
-
-            result = ud.setDeliverAllUnreadMessages(userId);
-
-            // Commit the transaction
-            transaction.commit();
-        } catch (HibernateException ex) {
-            ChatLogger.error(ex.getMessage());
-            Objects.requireNonNull(transaction).rollback();
-        } finally {
-            Objects.requireNonNull(session).close();
-        }
-        return result;
+        return ud.setDeliverAllUnreadMessages(username);
     }
 
 

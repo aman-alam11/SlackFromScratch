@@ -25,7 +25,7 @@ public class Registration extends CommonOperations {
 
     if (model != null) {
       // Take user details to register the user.
-      FrontEnd.getView().sendToView("MESSAGE:  Hi, Please Enter the following details to register.");
+      FrontEnd.getView().sendToView("INFO:  Hi, Please Enter the following details to register.");
       FrontEnd.getView().sendToView("INPUT: Enter User Name");
       String username = scanner.nextLine().toLowerCase().trim();
 

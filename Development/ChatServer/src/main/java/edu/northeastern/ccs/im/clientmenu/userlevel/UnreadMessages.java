@@ -42,21 +42,29 @@ public class UnreadMessages implements CoreOperation {
         }.getType();
         List<UnreadMessageModel> listUnreadMessagesAll = new Gson().fromJson(resp, chatModelList);
 
-        FrontEnd.getView().sendToView("Unread Group Messages:");
-        for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
-            // Check if it is a group message
-            if (eachChat.isGroupMessage()) {
-                FrontEnd.getView().sendToView(eachChat.toString());
+
+        if(!listUnreadMessagesAll.isEmpty())  {
+            FrontEnd.getView().sendToView("INFO: Unread Group Messages:");
+            for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
+                // Check if it is a group message
+                if (eachChat.isGroupMessage()) {
+                    FrontEnd.getView().sendToView(eachChat.toString());
+                }
             }
+
+            FrontEnd.getView().sendToView("INFO: Unread Chat Messages:");
+            for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
+                // Check if it is a group message
+                if (!eachChat.isGroupMessage()) {
+                    FrontEnd.getView().sendToView(eachChat.toString());
+                }
+            }
+        }
+        else {
+            FrontEnd.getView().sendToView("INFO: No new Unread messages");
         }
 
-        FrontEnd.getView().sendToView("Unread Chat Messages:");
-        for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
-            // Check if it is a group message
-            if (!eachChat.isGroupMessage()) {
-                FrontEnd.getView().sendToView(eachChat.toString());
-            }
-        }
+
         FrontEnd.getView().showUserLevelOptions();
     }
 }

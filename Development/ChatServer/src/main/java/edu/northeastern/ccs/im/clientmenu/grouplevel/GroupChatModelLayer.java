@@ -8,7 +8,6 @@ import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
@@ -27,7 +26,7 @@ public class GroupChatModelLayer implements CoreOperation {
     connLocal = connectionLayerModel;
     gson = new Gson();
 
-    FrontEnd.getView().sendToView("MESSAGE: Chat initiated.");
+    FrontEnd.getView().sendToView("INFO: Chat initiated.");
     FrontEnd.getView().sendToView("INPUT: Enter Message or enter \\q to quit");
     initReaderThread();
 
@@ -50,14 +49,13 @@ public class GroupChatModelLayer implements CoreOperation {
         initReaderThread();
       } else {
         shouldListenForMessages = false;
-        FrontEnd.getView().sendToView("MESSAGE: Ending Chat.");
+        FrontEnd.getView().sendToView("INFO: Ending Chat.");
         breakFromConversation(connectionLayerModel);
         FrontEnd.getView().showUserLevelOptions();
         break;
       }
     }
   }
-
 
   private void initReaderThread() {
     if(connLocal == null){
