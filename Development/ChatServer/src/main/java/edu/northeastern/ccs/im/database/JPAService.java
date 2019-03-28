@@ -139,18 +139,19 @@ public class JPAService {
 	 * @param fromUserName
 	 * @param toUserName
 	 * @param msg
-	 * @param replyTo
+	 * @param groupName
 	 * @param expiry
 	 * @param grpMsg
 	 * @param isDelivered
 	 *
 	 * @return A boolean representing if the transaction was successful or not.
 	 */
-	public long createChatMessage(String fromUserName, String toUserName, String msg, int replyTo,
+	public long createChatMessage(String fromUserName, String toUserName, String msg, String groupName,
 									 Date expiry, Boolean grpMsg, Boolean isDelivered) {
 		User fromUser = findUserByName(fromUserName);
 		User toUser = findUserByName(toUserName);
-		return cd.create(fromUser, toUser, msg, replyTo, expiry, grpMsg, isDelivered);
+		Group grp = findGroupByName(groupName);
+		return cd.create(fromUser, toUser, msg, grp, expiry, grpMsg, isDelivered);
 	}
 
 	/**

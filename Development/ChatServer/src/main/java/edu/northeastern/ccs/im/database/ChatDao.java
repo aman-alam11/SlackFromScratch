@@ -29,7 +29,7 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public long create(User fromId, User toId, String msg, int replyTo, Date expiry,
+    public long create(User fromId, User toId, String msg, Group groupId, Date expiry,
 			Boolean grpMsg, Boolean isDelivered) {
 		// Create a session
 		Session session = mSessionFactory.openSession();
@@ -42,7 +42,7 @@ public class ChatDao {
 			chat.setFromId(fromId);
 			chat.setToId(toId);
 			chat.setMsg(msg);
-			chat.setReplyTo(replyTo);
+            chat.setGroupId(groupId);
 			chat.setCreated(new Date());
 			chat.setExpiry(expiry);
 			chat.setGrpMsg(grpMsg);

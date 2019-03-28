@@ -31,7 +31,7 @@ public class ChatHandler implements MessageHandler {
         long id = jpaService.createChatMessage(chatModel.getFromUserName(),
                 chatModel.getToUserName(),
                 chatModel.getMsg(),
-                0,
+                "",
                 chatModel.getExpiry(),
                 false,
                 false);

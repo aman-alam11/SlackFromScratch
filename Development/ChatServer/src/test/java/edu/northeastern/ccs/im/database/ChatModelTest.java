@@ -39,9 +39,8 @@ public class ChatModelTest {
     assertTrue(chat.getIsDelivered());
     chat.setMsg(HELLO);
     assertEquals(HELLO,chat.getMsg());
-    chat.setReplyTo(1);
-    assertEquals(1,chat.getReplyTo());
-
+//    chat.setGroupId(null);
+//    assertEquals(1,chat.getGroupId());
   }
 
   @Test
