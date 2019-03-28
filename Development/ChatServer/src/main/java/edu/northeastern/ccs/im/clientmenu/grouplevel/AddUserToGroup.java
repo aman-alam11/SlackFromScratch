@@ -23,8 +23,6 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
-// TODO: Only Moderators can delete new Users
-// TODO: Add people as moderators, delete moderators, change moderators
 public class AddUserToGroup implements CoreOperation {
 
   private Gson mGson;
@@ -34,7 +32,6 @@ public class AddUserToGroup implements CoreOperation {
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
     this.mGson = new Gson();
     this.scanner = scanner;
-// TODO: Only Moderators can add/delete new Users : Check if moderator
 
     FrontEnd.getView().sendToView("INPUT: Enter name of users to be added split by \",\"");
     String scr = scanner.nextLine().trim();

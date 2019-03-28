@@ -1,5 +1,6 @@
 package edu.northeastern.ccs.im.clientmenu.clientutils;
 
+import edu.northeastern.ccs.im.clientmenu.grouplevel.*;
 import org.omg.CORBA.MARSHAL;
 
 import java.util.ArrayDeque;
@@ -14,12 +15,6 @@ import java.util.function.Function;
 
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.AddUserToGroup;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.CreateGroup;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupChat;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroup;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -101,6 +96,12 @@ public final class InjectLevelUtil {
         injectGroupUsersCrudLevel();
         break;
 
+
+      case GROUP_USERS_MODERATOR_OPERATIONS:
+        setCurrentLevel(CurrentLevel.GROUP_USERS_MODERATOR_OPERATIONS);
+        injectUpdateModeratorsLevel();
+        break;
+
       default:
         setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
@@ -141,6 +142,12 @@ public final class InjectLevelUtil {
     FrontEnd.getView().showGroupUsersCrudLevelOptions();
     mClientOptionsMap.put(1, scanner -> new AddUserToGroup());
     mClientOptionsMap.put(2, scanner -> new DeleteUsersFromGroup());
+  }
+
+  private void injectUpdateModeratorsLevel() {
+    FrontEnd.getView().showModeratorsOptions();
+    mClientOptionsMap.put(1, scanner -> new AddModeratorGroup());
+    mClientOptionsMap.put(2, scanner -> new DeleteModeratorGroup());
   }
 
 }

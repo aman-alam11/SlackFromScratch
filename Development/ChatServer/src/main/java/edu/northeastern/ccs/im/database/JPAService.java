@@ -1,5 +1,6 @@
 package edu.northeastern.ccs.im.database;
 
+import javafx.util.Pair;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -7,12 +8,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import javax.transaction.Transactional;
+import java.util.*;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.ChatModel;
@@ -224,6 +220,12 @@ public class JPAService {
     return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
   }
 
+  /**
+   * Retrieves all unread messages for the user.
+   *
+   * @param username The username for which we need to get all unread messages for.
+   * @return A list of all unread messages which includes User-User Chat Messages and Group Chat Messages.
+   */
   public List<UnreadMessageModel> getUnreadMessages(String username) {
 
     Session session = null;
@@ -307,4 +309,74 @@ public class JPAService {
   public List<User> findNonMembers(List<String> names, String gName) {
     return gmd.findNonMembers(names, gName);
   }
+
+  /**
+   * Get all the groups for a particular user that s/he is in.
+   *
+   * @param username The username of the user for which we want to extract all the groups for.
+   * @return A List of Pair where the key is the group name and the value is a boolean that represents
+   * whether s/he is a moderator in that particular group or not.
+   */
+  public List<Pair<String, Boolean>> getAllGroupsForUser(String username) {
+    Session session = null;
+    Transaction transaction = null;
+    List<Pair<String, Boolean>> allGroupsForUser = new ArrayList<>();
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+      int userId = userIdBigInt.intValue();
+      if (userId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        return allGroupsForUser;
+      }
+
+      allGroupsForUser = gmd.getAllGroupsForUser(userId);
+
+      // Commit the transaction
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return allGroupsForUser;
+  }
+
+
+  public Map<String, Boolean> getAllUsersForGroup(String groupName) {
+    Session session = null;
+    Transaction transaction = null;
+    Map<String, Boolean> usernameModeratorMap = new HashMap<>();
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      long groupId = gd.findGroupByName(groupName).getId();
+
+      if (groupId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "Group not found : " + groupName);
+        return usernameModeratorMap;
+      }
+
+      usernameModeratorMap = gmd.findAllMembersOfGroupAsMap(groupId);
+
+      // Commit the transaction
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return usernameModeratorMap;
+  }
+
 }

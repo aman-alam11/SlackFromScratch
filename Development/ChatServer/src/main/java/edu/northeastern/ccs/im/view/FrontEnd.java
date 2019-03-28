@@ -71,4 +71,8 @@ public class FrontEnd {
     System.out.println(string);
   }
 
+    public void showModeratorsOptions() {
+        System.out.println("1. Add Moderators.");
+        System.out.println("2. Delete Moderators.");
+    }
 }
