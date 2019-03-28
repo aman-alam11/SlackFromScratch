@@ -197,7 +197,7 @@ public class JPAServiceTest {
       c.setFromId(alice);
       c.setToId(bob);
       c.setMsg("Hi");
-      c.setReplyTo(0);
+      c.setGroupId(null);
       c.setExpiry(toSave);
       c.setCreated(toSave);
      // c.isGrpMsg(false);
@@ -209,7 +209,7 @@ public class JPAServiceTest {
 //    assertEquals(toSave, c.getCreated());
 //    assertEquals(toSave, c.getExpiry());
 //    assertEquals("Hi", c.getMsg());
-//    assertEquals(0, c.getReplyTo());
+//    assertEquals(0, c.getGroupId());
 //    assertEquals(false, c.getGrpMsg());
 //    assertEquals(true, c.getIsDelivered());
     } catch (Exception e) {

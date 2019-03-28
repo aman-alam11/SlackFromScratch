@@ -147,9 +147,9 @@ public class JPAService {
   public long createChatMessage(ChatModel chatModel) {
     User fromUser = findUserByName(chatModel.getFromUserName());
     User toUser = findUserByName(chatModel.getToUserName());
-    User replyTo = null;
-    if (chatModel.getReplyTo() != null) {
-    	replyTo = findUserByName(chatModel.getReplyTo());
+    Group grp = null;
+    if (chatModel.getGroupName() != null) {
+    	grp = findGroupByName(chatModel.getGroupName());
     }
     return cd.create(fromUser, toUser, replyTo, chatModel);
   }
@@ -291,7 +291,6 @@ public class JPAService {
     } finally {
       Objects.requireNonNull(session).close();
     }
-
     return result;
   }
 
@@ -307,4 +306,3 @@ public class JPAService {
   public List<User> findNonMembers(List<String> names, String gName) {
     return gmd.findNonMembers(names, gName);
   }
-}
