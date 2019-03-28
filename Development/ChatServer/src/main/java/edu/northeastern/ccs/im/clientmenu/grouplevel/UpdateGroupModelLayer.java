@@ -1,11 +1,14 @@
 package edu.northeastern.ccs.im.clientmenu.grouplevel;
 
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Scanner;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.jsoup.helper.StringUtil;
+
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Scanner;
+
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
@@ -14,10 +17,7 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
-import edu.northeastern.ccs.im.model.UnreadMessageModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
-import javafx.util.Pair;
-import org.jsoup.helper.StringUtil;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
@@ -48,9 +48,9 @@ public class UpdateGroupModelLayer implements CoreOperation {
 
 
     private void parseResponse(String response) {
-        Type modList = new TypeToken<List<Pair<String, Boolean>>>() {
-        }.getType();
-        List<Pair<String, Boolean>> listGroupMod = new Gson().fromJson(response, modList);
+        Type modList = new TypeToken<Map<String, Boolean>>() {}.getType();
+
+        Map<String, Boolean> listGroupMod = new Gson().fromJson(response, modList);
         if(listGroupMod.size() <= 0){
             FrontEnd.getView().sendToView("You are part of no groups. Sending you back.\n");
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
@@ -59,7 +59,7 @@ public class UpdateGroupModelLayer implements CoreOperation {
 
         FrontEnd.getView().sendToView("You are part of following groups: ");
 
-        for (Pair<String, Boolean> eachGroupAndModPair : listGroupMod) {
+        for (Map.Entry<String, Boolean> eachGroupAndModPair : listGroupMod.entrySet()) {
             String canModify = eachGroupAndModPair.getValue() ? "YES" : "NO";
             FrontEnd.getView().sendToView("GROUP NAME:\t" + eachGroupAndModPair.getKey()
                     + " CAN MODIFY THIS: \t" + canModify);
@@ -69,12 +69,12 @@ public class UpdateGroupModelLayer implements CoreOperation {
 
     }
 
-    private void modifyGroup(List<Pair<String, Boolean>> listGroupMod) {
+    private void modifyGroup(Map<String, Boolean> listGroupMod) {
         FrontEnd.getView().sendToView("Enter name of the group you want to modify from above:");
         String groupName = mScanner.nextLine().trim();
         boolean noGroupMatched = true;
 
-        for (Pair<String, Boolean> eachGroupAndModPair : listGroupMod) {
+        for (Map.Entry<String, Boolean> eachGroupAndModPair : listGroupMod.entrySet()) {
             if(eachGroupAndModPair.getKey().equals(groupName)){
                 noGroupMatched = false;
                 // If current user is moderator

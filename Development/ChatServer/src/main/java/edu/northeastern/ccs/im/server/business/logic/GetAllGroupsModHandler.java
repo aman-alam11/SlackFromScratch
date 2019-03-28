@@ -12,6 +12,7 @@ import javafx.util.Pair;
 import org.jsoup.helper.StringUtil;
 
 import java.util.List;
+import java.util.Map;
 
 public class GetAllGroupsModHandler implements MessageHandler {
 
@@ -35,7 +36,7 @@ public class GetAllGroupsModHandler implements MessageHandler {
             MessageJson messageJson = gson.fromJson(message, MessageJson.class);
             if (messageJson.getMessageType().equals(MessageType.GET_ALL_GROUPS_MOD)) {
 
-                List<Pair<String, Boolean>> listAllGroupsForUser = mJpaService.getAllGroupsForUser(user);
+                Map<String, Boolean> listAllGroupsForUser = mJpaService.getAllGroupsForUser(user);
 
                 MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
                         MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));

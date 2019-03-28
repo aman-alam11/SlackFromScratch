@@ -296,10 +296,10 @@ public class JPAService {
    * @return A List of Pair where the key is the group name and the value is a boolean that represents
    * whether s/he is a moderator in that particular group or not.
    */
-  public List<Pair<String, Boolean>> getAllGroupsForUser(String username) {
+  public Map<String, Boolean> getAllGroupsForUser(String username) {
     Session session = null;
     Transaction transaction = null;
-    List<Pair<String, Boolean>> allGroupsForUser = new ArrayList<>();
+    Map<String, Boolean> allGroupsForUser = new HashMap<>();
     try {
       session = mSessionFactory.openSession();
       transaction = session.beginTransaction();
