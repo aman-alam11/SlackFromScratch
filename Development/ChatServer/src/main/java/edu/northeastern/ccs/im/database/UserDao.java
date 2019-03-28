@@ -7,6 +7,9 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -206,15 +209,15 @@ public class UserDao {
   }
 
 
-  public int getUserIdFromUserName(String username) {
+  public BigInteger getUserIdFromUserName(String username) {
     Session session = mSessionFactory.openSession();
-
+    BigInteger userId = new BigInteger("-1");
     try {
-      String sql = "SELECT users.user_id FROM users WHERE users.user_name = ?";
+      String sql = "SELECT users.user_id FROM new_test_hibernate.users WHERE new_test_hibernate.users.user_name =?";
 
       Query query = session.createNativeQuery(sql);
       query.setParameter(1, username);
-      return (int) query.getSingleResult();
+      userId = (BigInteger) query.getSingleResult();
     } catch (Exception ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
@@ -222,18 +225,19 @@ public class UserDao {
       // Close the session
       session.close();
     }
-    return -1;
+    return userId;
   }
 
-  public List getUnreadMessages(int userId) {
+  public List<Chat> getUnreadMessages(int userId) {
     Session session = mSessionFactory.openSession();
+    List<Chat> listUnreadChatRows = new ArrayList<>();
 
     try {
-      String sql = "SELECT test_hibernate.chat.* FROM chat WHERE chat.To_id =?";
+      String sql = "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered";
       // TODO: Update isDelivered
-      Query query = session.createNativeQuery(sql);
+      Query query = session.createNativeQuery(sql, Chat.class);
       query.setParameter(1, userId);
-      return  query.getResultList();
+      listUnreadChatRows.addAll(query.getResultList());
     } catch (Exception ex) {
       // If there are any exceptions, roll back the changes
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
@@ -241,6 +245,7 @@ public class UserDao {
       // Close the session
       session.close();
     }
-    return null;
+    return listUnreadChatRows;
   }
+
 }

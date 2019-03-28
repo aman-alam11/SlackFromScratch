@@ -8,6 +8,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
+
+import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
@@ -323,6 +326,14 @@ public class JPAServiceTest {
     } catch (Exception e) {
       assertTrue(e.getMessage().contains("could not extract ResultSet"));
     }
+  }
+
+  @Test
+  public void testUnreadMessage(){
+    List<UnreadMessageModel> listUnreadMessages = JPAService.getInstance()
+            .getUnreadMessages("kumar");
+
+    assertTrue(listUnreadMessages.size() >= 0);
   }
 
   @AfterClass
