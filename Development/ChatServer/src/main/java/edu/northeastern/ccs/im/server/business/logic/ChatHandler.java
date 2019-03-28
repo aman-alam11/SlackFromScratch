@@ -41,8 +41,12 @@ public class ChatHandler implements MessageHandler {
          * mark that message as delivered.
          */
         if (Prattle.isUserChatting(chatModel.getToUserName())) {
-
-            MessageJson msg = new MessageJson(chatModel.getFromUserName(), MessageType.USER_CHAT, message);
+        	
+        		MessageType msgType = MessageType.USER_CHAT;
+        		if (chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0) {
+        			msgType = MessageType.GROUP_CHAT;
+        		}
+            MessageJson msg = new MessageJson(chatModel.getFromUserName(), msgType, message);
             msg.setSendToUser(chatModel.getToUserName());
             if (Prattle.sendMessageTo(chatModel.getToUserName(), msg)) {
                 isSuccessfull = jpaService.updateChatStatus(id, true);
