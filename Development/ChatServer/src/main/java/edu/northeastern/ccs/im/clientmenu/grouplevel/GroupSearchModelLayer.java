@@ -62,7 +62,7 @@ public class GroupSearchModelLayer implements CoreOperation {
       new GroupChatModelLayer(groupToChatWith).passControl(scanner, connectionLayerModel);
     } else {
       FrontEnd.getView().sendToView("ERROR: Invalid Group name");
-      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
     }
 
   }
