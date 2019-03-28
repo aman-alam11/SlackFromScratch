@@ -56,3 +56,9 @@ sonarqube/
 # Prattle Server Code
 
 CS5500-PrattleServer/
+
+
+# Log files
+
+edu.northeastern.ccs.im.ChatLogger.*
+
