@@ -97,7 +97,13 @@ public class AddGroupUsersHandler implements MessageHandler {
 			// if all users provided does not exists
 			ackModel.addErrorCode(ErrorCodes.G808);
 			
-		} else if (!validUsers.isEmpty()) {
+		} else if(!inValidUsers.isEmpty()) {
+			//if some users are invalid not all
+			ackModel.addErrorCode(ErrorCodes.G805);
+			ackModel.appendErrorMessage("\n Following users are invalid : " + gson.toJson(inValidUsers));
+		}
+			
+		if (!validUsers.isEmpty()) {
 			isValid = checkUsersNotInGroup(validUsers, groupName);
 			if (isValid && validUsersToAdd.size() != validUsers.size()) {
 				ackModel.addErrorCode(ErrorCodes.G806);
