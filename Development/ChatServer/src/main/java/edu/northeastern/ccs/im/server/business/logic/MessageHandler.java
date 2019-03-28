@@ -22,8 +22,7 @@ public interface MessageHandler {
 
   default void sendResponse(MessageJson msg, Connection clientConnection) {
     clientConnection.enqueueMessage(msg);
-    ChatLogger.info(this.getClass().getName() + "Respose:");
-    ChatLogger.info(msg.toString());
+    ChatLogger.info(clientConnection.getUserName() + " : " + msg.toString());
   }
 
 
