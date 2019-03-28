@@ -54,7 +54,7 @@ public class GroupSearchModelLayer implements CoreOperation {
       // TODO: Some default response
     }
 
-    FrontEnd.getView().sendToView("INPUT: Choose one of the Group names from above\n");
+    FrontEnd.getView().sendToView("INPUT: Enter one of the Group names from above\n");
     String groupToChatWith = scanner.nextLine();
 
     if (groupNames!= null && groupNames.contains(groupToChatWith)) {
