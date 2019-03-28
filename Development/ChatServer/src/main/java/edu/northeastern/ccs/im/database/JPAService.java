@@ -229,7 +229,7 @@ public class JPAService {
       transaction = session.beginTransaction();
 
       // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt =  ud.getUserIdFromUserName(username);
+      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
       int userId = userIdBigInt.intValue();
       if (userId <= 0) {
         ChatLogger.info(this.getClass().getName() + "User not found : " + username);
@@ -256,4 +256,16 @@ public class JPAService {
     return unreadMessageModels;
   }
 
+
+  public List<User> findAllMembersOfGroup(String gName) {
+    return gmd.findAllMembersOfGroup(gName);
+  }
+
+  public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus) {
+    gmd.updateModeratorStatus(uName, gName, moderatorStatus);
+  }
+
+  public List<User> findNonMembers(List<String> names, String gName) {
+    return gmd.findNonMembers(names, gName);
+  }
 }

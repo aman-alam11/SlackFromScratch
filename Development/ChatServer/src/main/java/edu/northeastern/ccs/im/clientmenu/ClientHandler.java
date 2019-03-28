@@ -2,6 +2,8 @@ package edu.northeastern.ccs.im.clientmenu;
 
 import com.google.gson.Gson;
 
+import java.util.Deque;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -21,12 +23,14 @@ public final class ClientHandler {
 
   private Connection modelLayer;
   private static final String QUIT = "\\q";
+  private static final String BACK = "\\b";
 
 
   public ClientHandler(Connection model) {
     modelLayer = model;
     if (modelLayer == null) {
-      FrontEnd.getView().sendToView("Server is not Responding, Try After Some time.");
+      FrontEnd.getView().sendToView("Server is not Running, Exiting.");
+      FrontEnd.getView().sendToView("Bye!!");
       return;
     }
 
@@ -39,12 +43,14 @@ public final class ClientHandler {
     while (scanner.hasNext()) {
       int userChoice = 0;
       String choiceString = "";
+      boolean inputValidate = true;
 
       try {
         choiceString = scanner.nextLine().trim().toLowerCase();
         userChoice = Integer.parseInt(choiceString);
       } catch (Exception e) {
         // Handle with default implementation
+        inputValidate = false;
         if (choiceString.equalsIgnoreCase(QUIT)) {
           try {
             UserChat userChat = new UserChat();
@@ -52,30 +58,43 @@ public final class ClientHandler {
                     new Gson().toJson(userChat));
             modelLayer.sendMessage(messageJson);
             modelLayer.terminate();
-            return;
-          }
-          catch (NullPointerException ex) {
             FrontEnd.getView().sendToView("Bye!!");
             return;
           }
-        } else {
-          FrontEnd.getView().sendToView("Wrong input, try again.");
+          catch (NullPointerException ex) {
+            return;
+          }
+        }
+
+        else if(choiceString.equalsIgnoreCase(BACK)) {
+          Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();
+          CurrentLevel currentLevel = InjectLevelUtil.getInstance().getCurrentLevel();
+          if(currentLevel != CurrentLevel.LOGIN_LEVEL || currentLevel != CurrentLevel.USER_LEVEL) {
+            CurrentLevel level = map.get(currentLevel);
+            InjectLevelUtil.getInstance().injectLevel(level);
+          }
+        }
+
+        else {
+          FrontEnd.getView().sendToView("ERROR: Wrong Input.");
         }
       }
 
-      CoreOperation initialCoreOperation;
-      Function<Scanner, CoreOperation> mTransformationFunction =
-              InjectLevelUtil
-                      .getOptionsMap()
-                      .getOrDefault(userChoice, null);
+      if (inputValidate) {
+        CoreOperation initialCoreOperation;
+        Function<Scanner, CoreOperation> mTransformationFunction =
+                InjectLevelUtil
+                        .getOptionsMap()
+                        .getOrDefault(userChoice, null);
 
-      if (mTransformationFunction == null) {
-        // Handle with some default operation
-        new DefaultOperation().passControl(scanner, modelLayer);
-      } else {
-        // Apply Transformation
-        initialCoreOperation = mTransformationFunction.apply(scanner);
-        initialCoreOperation.passControl(scanner, modelLayer);
+        if (mTransformationFunction == null) {
+          // Handle with some default operation
+          new DefaultOperation().passControl(scanner, modelLayer);
+        } else {
+          // Apply Transformation
+          initialCoreOperation = mTransformationFunction.apply(scanner);
+          initialCoreOperation.passControl(scanner, modelLayer);
+        }
       }
     }
   }

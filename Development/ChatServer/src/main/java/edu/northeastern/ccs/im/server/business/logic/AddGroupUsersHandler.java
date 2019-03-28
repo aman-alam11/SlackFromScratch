@@ -9,6 +9,9 @@ import com.google.gson.Gson;
 import edu.northeastern.ccs.im.database.Group;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.database.User;
+import edu.northeastern.ccs.im.message.MessageConstants;
+import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.AddDeleteGroupUsers;
 import edu.northeastern.ccs.im.model.ErrorCodes;
@@ -26,7 +29,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 		gson = new Gson();
 		ackModel = new AckModel();
 		inValidUsers = new ArrayList<>();
-		validUsers = new ArrayList<>();;
+		validUsers = new ArrayList<>();
 	}
 
 	/**{@inheritDoc}
@@ -45,6 +48,8 @@ public class AddGroupUsersHandler implements MessageHandler {
 		//add users in group
 		
 		//send ack
+		MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(ackModel));
+		sendResponse(response, clientConnection);
 		
 		return false;
 	}
@@ -75,7 +80,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 		boolean isValid = false;
 		for (String userName : users) {
 			
-			if ((user =JPAService.getInstance().findUserByName(userName)) == null) {
+			if ((user = JPAService.getInstance().findUserByName(userName)) == null) {
 				inValidUsers.add(userName);
 			} else {
 				validUsers.add(user);

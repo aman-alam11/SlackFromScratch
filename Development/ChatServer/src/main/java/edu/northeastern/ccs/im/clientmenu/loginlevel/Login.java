@@ -9,6 +9,7 @@ import java.util.Scanner;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
@@ -31,10 +32,10 @@ public class Login extends CommonOperations {
     if (modelLayer != null) {
       mGson = new Gson();
 
-      FrontEnd.getView().sendToView("Enter User Name");
+      FrontEnd.getView().sendToView("INPUT: Enter User Name");
       String username = scanner.nextLine().toLowerCase().trim();
 
-      FrontEnd.getView().sendToView("Enter password");
+      FrontEnd.getView().sendToView("INPUT: Enter password");
       String password = scanner.nextLine().trim();
 
       MessageJson messageJson = generateLoginCredentials(username, password, MessageType.LOGIN);
@@ -59,15 +60,15 @@ public class Login extends CommonOperations {
     }
 
     if (!ackModel.isUserAuthenticated()) {
-      FrontEnd.getView().sendToView("Login Failed, " + ackModel.getErrorMessage());
+      FrontEnd.getView().sendToView("ERROR: Login Failed, " + ackModel.getErrorMessage());
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
     } else {
 
-      FrontEnd.getView().sendToView("Welcome ");
+      FrontEnd.getView().sendToView("WELCOME: " + GenerateLoginCredentials.getUsername());
 
       // User is authenticated by server
       // Send user forward
-      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LEVEL1);
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
     }
   }
 }
