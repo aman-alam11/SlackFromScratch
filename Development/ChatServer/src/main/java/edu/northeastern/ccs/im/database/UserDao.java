@@ -7,11 +7,14 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import edu.northeastern.ccs.im.ChatLogger;
 
 @SuppressWarnings("all")
 public class UserDao {
@@ -246,6 +249,31 @@ public class UserDao {
       session.close();
     }
     return listUnreadChatRows;
+  }
+
+  public boolean setDeliverAllUnreadMessages(int userId) {
+    Session session = mSessionFactory.openSession();
+    Transaction transaction = session.beginTransaction();
+    boolean result = false;
+    try {
+      String sql = "UPDATE chat SET chat.isDelivered = true WHERE chat.To_id =?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, userId);
+      int res = query.executeUpdate();
+      ChatLogger.info("Rows Affected: " + res);
+      result = true;
+      transaction.commit();
+
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+      result = false;
+
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return result;
   }
 
 }

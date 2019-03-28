@@ -24,7 +24,9 @@ public class UnreadMessages implements CoreOperation {
     @Override
     public void passControl(Scanner scanner, Connection connectionModelLayer) {
 
-        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
+        MessageJson messageJsonState = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
+
+        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, new Gson().toJson(messageJsonState));
         connectionModelLayer.sendMessage(messageJson);
 
         FrontEnd.getView().sendToView("\nLOADING\n");
@@ -34,6 +36,11 @@ public class UnreadMessages implements CoreOperation {
         } else {
             // TODO: Some default response
         }
+
+        MessageJson messageJsonStateDeliverd = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.DELIVER_UNREAD_MSG, "90890");
+
+        MessageJson messageJ = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, new Gson().toJson(messageJsonStateDeliverd));
+        connectionModelLayer.sendMessage(messageJ);
     }
 
     private void displayResponse(String resp) {
@@ -49,7 +56,6 @@ public class UnreadMessages implements CoreOperation {
             }
         }
 
-
         FrontEnd.getView().sendToView("Unread Chat Messages:");
         for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
             // Check if it is a group message
@@ -57,5 +63,6 @@ public class UnreadMessages implements CoreOperation {
                 FrontEnd.getView().sendToView(eachChat.toString());
             }
         }
+        FrontEnd.getView().showUserLevelOptions();
     }
 }
