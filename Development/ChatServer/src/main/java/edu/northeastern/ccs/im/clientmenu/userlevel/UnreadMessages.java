@@ -24,9 +24,8 @@ public class UnreadMessages implements CoreOperation {
     @Override
     public void passControl(Scanner scanner, Connection connectionModelLayer) {
 
-        MessageJson messageJsonState = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
 
-        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, new Gson().toJson(messageJsonState));
+        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
         connectionModelLayer.sendMessage(messageJson);
 
         FrontEnd.getView().sendToView("\nLOADING\n");
@@ -36,11 +35,6 @@ public class UnreadMessages implements CoreOperation {
         } else {
             // TODO: Some default response
         }
-
-        MessageJson messageJsonStateDeliverd = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.DELIVER_UNREAD_MSG, "90890");
-
-        MessageJson messageJ = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, new Gson().toJson(messageJsonStateDeliverd));
-        connectionModelLayer.sendMessage(messageJ);
     }
 
     private void displayResponse(String resp) {

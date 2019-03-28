@@ -70,9 +70,5 @@ public class AddUserToGroupModelLayer implements CoreOperation {
       // TODO: Some default response
     }
 
-
-
-
-
   }
 }
