@@ -188,7 +188,7 @@ public class GroupDao {
                 ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
                 throw new HibernateException("User not found");
             }
-            String sql = "select * from groups JOIN group_member  on groups.group_id=group_member.group_id where groups.group_name LIKE ? AND group_member.user_id=?";
+            String sql = "select groups.* from groups JOIN group_member  on groups.group_id=group_member.group_id where groups.group_name LIKE ? AND group_member.user_id=?";
             Query query = session.createNativeQuery(sql, Group.class);
             query.setParameter(1, "%"+ gName+ "%");
             query.setParameter(2, u);
