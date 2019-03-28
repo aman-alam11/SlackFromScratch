@@ -12,9 +12,10 @@ import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
-import edu.northeastern.ccs.im.clientmenu.models.UserSearch;
+import edu.northeastern.ccs.im.clientmenu.models.Search;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.UserSearch;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
@@ -30,9 +31,9 @@ public class UserSearchModelLayer extends CommonOperations {
     String chatUserOtherEnd = scanner.nextLine().toLowerCase().trim();
 
     String myUsername = GenerateLoginCredentials.getUsername();
-    UserSearch userSearch = new UserSearch(chatUserOtherEnd);
+    UserSearch search = new UserSearch(chatUserOtherEnd);
 
-    String userSearchJsonString = mGson.toJson(userSearch);
+    String userSearchJsonString = mGson.toJson(search);
     MessageJson messageJson = new MessageJson(myUsername, MessageType.USER_SEARCH, userSearchJsonString);
     model.sendMessage(messageJson);
 
@@ -40,14 +41,17 @@ public class UserSearchModelLayer extends CommonOperations {
 
     String resp = waitForResponseSocket(model);
     if (!StringUtil.isBlank(resp)) {
-      UserSearch userSearchResults = mGson.fromJson(resp, UserSearch.class);
-      usernames = userSearchResults.getListUserString();
+      UserSearch searchResults = mGson.fromJson(resp, UserSearch.class);
+      usernames = searchResults.getListUserString();
 
       if (usernames.isEmpty()) {
         FrontEnd.getView().sendToView("ERROR: No users with that name found");
       } else {
+        FrontEnd.getView().sendToView("RESULTS: Users found with name " + chatUserOtherEnd);
+         int count = 1;
         for (String username : usernames) {
-          FrontEnd.getView().sendToView(username);
+          FrontEnd.getView().sendToView(count + ": " + username);
+          count++;
         }
       }
 
@@ -55,7 +59,7 @@ public class UserSearchModelLayer extends CommonOperations {
       // TODO: Some default response
     }
 
-    FrontEnd.getView().sendToView("INPUT: Choose one of the user names from above\n");
+    FrontEnd.getView().sendToView("INPUT: Enter one of the user names from above\n");
     String userToChatWith = scanner.nextLine();
 
     if (usernames!= null && usernames.contains(userToChatWith)) {

@@ -18,7 +18,7 @@ public class ChatModelTest {
 
   @Test
   public void test2() {
-    Date date = new Date();
+//    Date date = new Date();
 //    ChatModel chatModel = new ChatModel("FROM", "TO", "CONVO", date, true);
 //    assertEquals("CONVO", chatModel.getConversation());
 //    assertEquals("FROM", chatModel.getSender());

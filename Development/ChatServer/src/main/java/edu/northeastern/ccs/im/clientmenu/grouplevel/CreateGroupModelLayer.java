@@ -21,7 +21,7 @@ import edu.northeastern.ccs.im.model.GroupCreateUpdateModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
-public class CreateGroup implements CoreOperation {
+public class CreateGroupModelLayer implements CoreOperation {
 
   private Gson gson;
   private Scanner scanner;
@@ -46,7 +46,6 @@ public class CreateGroup implements CoreOperation {
         case "n":
           break;
         default:
-
           FrontEnd.getView().sendToView("ERROR: Invalid Option!");
           break;
       }

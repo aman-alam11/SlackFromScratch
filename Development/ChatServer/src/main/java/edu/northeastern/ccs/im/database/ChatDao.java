@@ -33,9 +33,10 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public long create(User fromId, User toId, User replyTo, ChatModel chatModel) {
+    public long create(User fromId, User toId, ChatModel chatModel) {
 		// Create a session
 		Session session = mSessionFactory.openSession();
+		Group  group = null;
 		Transaction transaction = null;
 		long returnId = 0;
 		try {
@@ -45,7 +46,10 @@ public class ChatDao {
 			chat.setFromId(fromId);
 			chat.setToId(toId);
 			chat.setMsg(chatModel.getMsg());
-			chat.setReplyTo(replyTo != null ? replyTo.getId() : 0l);
+			if (chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0) {
+				group = JPAService.getInstance().findGroupByName(chatModel.getGroupName());
+			}
+      chat.setGroupId(group);
 			chat.setCreated(new Date());
 			chat.setExpiry(chatModel.getExpiry());
 			chat.setIsGrpMsg(chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0);

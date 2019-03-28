@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class UserSearchTest {
+public class SearchTest {
 
   @Test
   public void test() {

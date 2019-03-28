@@ -1,6 +1,5 @@
 package edu.northeastern.ccs.im.database;
 
-import javafx.util.Pair;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,11 +7,17 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
+import javafx.util.Pair;
 
 public class JPAService {
 
@@ -143,11 +148,8 @@ public class JPAService {
   public long createChatMessage(ChatModel chatModel) {
     User fromUser = findUserByName(chatModel.getFromUserName());
     User toUser = findUserByName(chatModel.getToUserName());
-    User replyTo = null;
-    if (chatModel.getReplyTo() != null) {
-    	replyTo = findUserByName(chatModel.getReplyTo());
-    }
-    return cd.create(fromUser, toUser, replyTo, chatModel);
+    Group grp = null;
+    return cd.create(fromUser, toUser, chatModel);
   }
 
   /**
@@ -220,12 +222,6 @@ public class JPAService {
     return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
   }
 
-  /**
-   * Retrieves all unread messages for the user.
-   *
-   * @param username The username for which we need to get all unread messages for.
-   * @return A list of all unread messages which includes User-User Chat Messages and Group Chat Messages.
-   */
   public List<UnreadMessageModel> getUnreadMessages(String username) {
 
     Session session = null;
@@ -265,36 +261,14 @@ public class JPAService {
   }
 
 
+  /**
+   * Set all the messages to deliver by specific username.
+   * @param username - user name of the user you want to set delivery true;
+   * @return - True or false according to the result.
+   */
   public boolean setDeliveredUnreadMessages(String username) {
 
-    Session session = null;
-    Transaction transaction = null;
-    boolean result = false;
-
-    try {
-      session = mSessionFactory.openSession();
-      transaction = session.beginTransaction();
-
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
-        return false;
-      }
-
-      result = ud.setDeliverAllUnreadMessages(userId);
-
-      // Commit the transaction
-      transaction.commit();
-    } catch (HibernateException ex) {
-      ChatLogger.error(ex.getMessage());
-      Objects.requireNonNull(transaction).rollback();
-    } finally {
-      Objects.requireNonNull(session).close();
-    }
-
-    return result;
+    return ud.setDeliverAllUnreadMessages(username);
   }
 
 
@@ -309,6 +283,11 @@ public class JPAService {
   public List<User> findNonMembers(List<String> names, String gName) {
     return gmd.findNonMembers(names, gName);
   }
+
+  public List<Group> allGroupsForUser(String uName, String gName){
+    return gd.allGroupsOfUser(uName,gName);
+  }
+
 
   /**
    * Get all the groups for a particular user that s/he is in.
@@ -423,5 +402,4 @@ public class JPAService {
 
     return isOperationSuccessful;
   }
-
 }

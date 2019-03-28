@@ -21,7 +21,7 @@ import org.jsoup.helper.StringUtil;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
-public class UpdateGroup implements CoreOperation {
+public class UpdateGroupModelLayer implements CoreOperation {
     private Scanner mScanner;
 
     @Override
@@ -104,6 +104,5 @@ public class UpdateGroup implements CoreOperation {
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         }
     }
-
 
 }

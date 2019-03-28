@@ -24,23 +24,16 @@ public class UnreadMessages implements CoreOperation {
     @Override
     public void passControl(Scanner scanner, Connection connectionModelLayer) {
 
-        MessageJson messageJsonState = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
 
-        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, new Gson().toJson(messageJsonState));
+        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
         connectionModelLayer.sendMessage(messageJson);
 
-        FrontEnd.getView().sendToView("\nLOADING\n");
         String resp = waitForResponseSocket(connectionModelLayer);
         if (!StringUtil.isBlank(resp)) {
             this.displayResponse(resp);
         } else {
             // TODO: Some default response
         }
-
-        MessageJson messageJsonStateDeliverd = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.DELIVER_UNREAD_MSG, "90890");
-
-        MessageJson messageJ = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, new Gson().toJson(messageJsonStateDeliverd));
-        connectionModelLayer.sendMessage(messageJ);
     }
 
     private void displayResponse(String resp) {
@@ -48,21 +41,35 @@ public class UnreadMessages implements CoreOperation {
         }.getType();
         List<UnreadMessageModel> listUnreadMessagesAll = new Gson().fromJson(resp, chatModelList);
 
-        FrontEnd.getView().sendToView("Unread Group Messages:");
-        for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
-            // Check if it is a group message
-            if (eachChat.isGroupMessage()) {
-                FrontEnd.getView().sendToView(eachChat.toString());
+
+        if(!listUnreadMessagesAll.isEmpty())  {
+            FrontEnd.getView().sendToView("GROUP MESSAGES: \n");
+            FrontEnd.getView().enterLines();
+            for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
+                // Check if it is a group message
+                if (eachChat.isGroupMessage()) {
+                    FrontEnd.getView().sendToView(eachChat.toString());
+                }
             }
+            FrontEnd.getView().enterLines();
+
+            FrontEnd.getView().sendToView("CHAT MESSAGES: \n");
+
+            FrontEnd.getView().enterLines();
+
+            for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
+                // Check if it is a group message
+                if (!eachChat.isGroupMessage()) {
+                    FrontEnd.getView().sendToView(eachChat.toString());
+                }
+            }
+            FrontEnd.getView().enterLines();
+        }
+        else {
+            FrontEnd.getView().sendToView("INFO: No new messages");
         }
 
-        FrontEnd.getView().sendToView("Unread Chat Messages:");
-        for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
-            // Check if it is a group message
-            if (!eachChat.isGroupMessage()) {
-                FrontEnd.getView().sendToView(eachChat.toString());
-            }
-        }
+
         FrontEnd.getView().showUserLevelOptions();
     }
 }

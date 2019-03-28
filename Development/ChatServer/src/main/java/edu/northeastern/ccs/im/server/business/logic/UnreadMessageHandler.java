@@ -27,29 +27,21 @@ public class UnreadMessageHandler implements MessageHandler {
     }
 
     @Override
-    public boolean handleMessage(String user, String message, Connection clientConnection) {
-        try {
-            if(user == null || StringUtil.isBlank(user)){
-                return false;
-            }
+	public boolean handleMessage(String user, String message, Connection clientConnection) {
+		try {
+			if (user == null || StringUtil.isBlank(user)) {
+				return false;
+			}
+			List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user);
+			MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.UNREAD_MSG,
+					mGson.toJson(unreadMessages));
+			sendResponse(response, clientConnection);
+			mJpaService.setDeliveredUnreadMessages(user);
+			return true;
 
-            MessageJson messageJson = mGson.fromJson(message, MessageJson.class);
-            if (messageJson.getMessageType().equals(MessageType.UNREAD_MSG)) {
-                List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user);
-                MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
-                        MessageType.UNREAD_MSG, mGson.toJson(unreadMessages));
-                sendResponse(response, clientConnection);
-                return true;
-            }
-            else {
-                ChatLogger.info("Loggds: " + messageJson.getMessage() + messageJson.getMessageType());
-                return mJpaService.setDeliveredUnreadMessages(user);
-            }
-
-
-        } catch (Exception e) {
-            ChatLogger.error(LOG_TAG + " : " + e.getMessage());
-            return false;
-        }
-    }
+		} catch (Exception e) {
+			ChatLogger.error(LOG_TAG + " : " + e.getMessage());
+			return false;
+		}
+	}
 }

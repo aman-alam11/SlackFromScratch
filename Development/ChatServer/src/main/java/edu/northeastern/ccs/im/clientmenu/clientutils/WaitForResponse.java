@@ -10,7 +10,7 @@ public class WaitForResponse {
   private static final int TIMEOUT_MILLISECONDS = 5000;
 
   private static final StringBuilder IS_LOADING_MESSAGE = new StringBuilder("LOADING");
-  private static final String LOADING_COMPLETE_MESSAGE = "LOADING COMPLETE\n";
+  private static final String LOADING_COMPLETE_MESSAGE = "DONE\n";
   private static final String THREAD_SLEEP_ERROR = "Unable to make the Thread sleep";
 
   public static String waitForResponseSocket(Connection modelLayer) {

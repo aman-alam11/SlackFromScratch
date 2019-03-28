@@ -15,7 +15,7 @@ import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.business.logic.UserSearchHandler;
 
 
-public class UserSearchHandlerTest {
+public class SearchHandlerTest {
 
   private UserSearchHandler userSearchHandler;
   private Gson mGson;

@@ -14,13 +14,12 @@ import java.util.Scanner;
 import static org.mockito.Mockito.when;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.clientmenu.models.UserSearch;
+import edu.northeastern.ccs.im.clientmenu.models.Search;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
-import edu.northeastern.ccs.im.model.AckModel;
 
-public class UserSearchModelLayerTest {
+public class SearchModelLayerTest {
 
   @Mock
   private Connection connection;
@@ -46,12 +45,12 @@ public class UserSearchModelLayerTest {
     String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
-    UserSearch userSearch = new UserSearch("atti");
+    Search search = new Search("atti");
     List<String> userList = new ArrayList<>();
     userList.add("hello");
     userList.add(WORLD);
-    userSearch.setUsersList(userList);
-    String userString = mGson.toJson(userSearch);
+    search.setList(userList);
+    String userString = mGson.toJson(search);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
 
     when(connection.hasNext()).thenReturn(true);
@@ -65,10 +64,10 @@ public class UserSearchModelLayerTest {
     String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
-    UserSearch userSearch = new UserSearch("atti");
+    Search search = new Search("atti");
     List<String> userList = new ArrayList<>();
-    userSearch.setUsersList(userList);
-    String userString = mGson.toJson(userSearch);
+    search.setList(userList);
+    String userString = mGson.toJson(search);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
 
     when(connection.hasNext()).thenReturn(true);
@@ -82,11 +81,11 @@ public class UserSearchModelLayerTest {
     String str = "atti\n" + "pass\n" + "lol\n";
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
-    UserSearch userSearch = new UserSearch("atti");
+    Search search = new Search("atti");
     List<String> userList = new ArrayList<>();
     userList.add("hello");
-    userSearch.setUsersList(userList);
-    String userString = mGson.toJson(userSearch);
+    search.setList(userList);
+    String userString = mGson.toJson(search);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
 
     when(connection.hasNext()).thenReturn(true);

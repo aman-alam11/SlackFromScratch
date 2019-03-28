@@ -26,7 +26,7 @@ public final class ClientHandler {
   public ClientHandler(Connection model) {
     modelLayer = model;
     if (modelLayer == null) {
-      FrontEnd.getView().sendToView("Server is not Running, Exiting.");
+      FrontEnd.getView().sendToView("INFO: Server is not Running, Exiting.");
       FrontEnd.getView().sendToView("Bye!!");
       return;
     }
@@ -62,7 +62,7 @@ public final class ClientHandler {
           Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();
           CurrentLevel currentLevel = InjectLevelUtil.getInstance().getCurrentLevel();
           if(currentLevel == CurrentLevel.LOGIN_LEVEL || currentLevel == CurrentLevel.USER_LEVEL) {
-            FrontEnd.getView().sendToView("MESSAGE: Cannot go back from this level!");
+            FrontEnd.getView().sendToView("INFO: Cannot go back from this level!");
           }
           else {
             CurrentLevel level = map.get(currentLevel);
