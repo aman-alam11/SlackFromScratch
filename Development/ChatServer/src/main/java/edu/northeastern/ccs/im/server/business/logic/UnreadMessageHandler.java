@@ -33,11 +33,20 @@ public class UnreadMessageHandler implements MessageHandler {
                 return false;
             }
 
-            List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user);
-            MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
-                    MessageType.UNREAD_MSG, mGson.toJson(unreadMessages));
-            sendResponse(response, clientConnection);
-            return true;
+            MessageJson messageJson = mGson.fromJson(message, MessageJson.class);
+            if (messageJson.getMessageType().equals(MessageType.UNREAD_MSG)) {
+                List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user);
+                MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+                        MessageType.UNREAD_MSG, mGson.toJson(unreadMessages));
+                sendResponse(response, clientConnection);
+                return true;
+            }
+            else {
+                ChatLogger.info("Loggds: " + messageJson.getMessage() + messageJson.getMessageType());
+                return mJpaService.setDeliveredUnreadMessages(user);
+            }
+
+
         } catch (Exception e) {
             ChatLogger.error(LOG_TAG + " : " + e.getMessage());
             return false;

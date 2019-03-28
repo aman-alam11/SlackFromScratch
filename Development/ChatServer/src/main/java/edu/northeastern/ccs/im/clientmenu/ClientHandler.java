@@ -64,7 +64,10 @@ public final class ClientHandler {
         else if(choiceString.equalsIgnoreCase(BACK)) {
           Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();
           CurrentLevel currentLevel = InjectLevelUtil.getInstance().getCurrentLevel();
-          if(currentLevel != CurrentLevel.LOGIN_LEVEL || currentLevel != CurrentLevel.USER_LEVEL) {
+          if(currentLevel == CurrentLevel.LOGIN_LEVEL || currentLevel == CurrentLevel.USER_LEVEL) {
+            FrontEnd.getView().sendToView("MESSAGE: Cannot go back from this level!");
+          }
+          else {
             CurrentLevel level = map.get(currentLevel);
             InjectLevelUtil.getInstance().injectLevel(level);
           }
