@@ -1,19 +1,23 @@
 package edu.northeastern.ccs.im.database;
 
-import edu.northeastern.ccs.im.ChatLogger;
-import javafx.util.Pair;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.logging.Logger;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import java.util.*;
-import java.util.logging.Logger;
+import edu.northeastern.ccs.im.ChatLogger;
 
 public class GroupMemberDao {
 
@@ -285,10 +289,10 @@ public class GroupMemberDao {
      * @return A List of Pair where key is the Group name and value is a boolean which represents whether s/he is a
      * moderator in that group.
      */
-    public List<Pair<String, Boolean>> getAllGroupsForUser(int userId) {
+    public Map<String, Boolean> getAllGroupsForUser(int userId) {
         Session session = mSessionFactory.openSession();
         List<GroupMember> listGroupForUser = new ArrayList<>();
-        List<Pair<String, Boolean>> groupNameList = new ArrayList<>();
+        Map<String, Boolean> groupNameList = new HashMap<>();
 
         try {
             String sql = "SELECT * FROM group_member WHERE user_id =?";
@@ -296,7 +300,7 @@ public class GroupMemberDao {
             query.setParameter(1, userId);
             listGroupForUser = query.getResultList();
             for(GroupMember member : listGroupForUser){
-                groupNameList.add(new Pair<>(member.getGroupId().getgName(), member.isModerator()));
+                groupNameList.put(member.getGroupId().getgName(), member.isModerator());
             }
         } catch (Exception ex) {
             // If there are any exceptions, roll back the changes

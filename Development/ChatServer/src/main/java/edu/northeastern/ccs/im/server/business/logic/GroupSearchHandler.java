@@ -26,7 +26,7 @@ public class GroupSearchHandler implements MessageHandler {
 		List<Group> groupList = JPAService.getInstance().allGroupsForUser(user, groupSearch.getToChatWithGroupName());
 		
 		GroupSearchModel searchResult = new GroupSearchModel(groupSearch.getToChatWithGroupName());
-		MessageJson msgJson = new MessageJson(MessageType.GROUP_SERACH);
+		MessageJson msgJson = new MessageJson(MessageType.GROUP_SEARCH);
 		if (groupList != null && !groupList.isEmpty()) {
 			for (Group group : groupList) {
 				searchResult.getListGroupString().add(group.getgName());
