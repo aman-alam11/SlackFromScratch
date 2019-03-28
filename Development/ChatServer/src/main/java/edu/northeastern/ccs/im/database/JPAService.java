@@ -306,4 +306,8 @@ public class JPAService {
     public List<User> findNonMembers(List<String> names, String gName) {
         return gmd.findNonMembers(names, gName);
     }
+
+    public List<Group> allGroupsForUser(String uName, String gName){
+        return gd.allGroupsOfUser(uName,gName);
+    }
 }
