@@ -24,9 +24,10 @@ public class Chat implements Serializable{
 	
 	@Column(name="Message", nullable=false)
 	private String msg;
-	
-	@Column(name="ReplyTo", nullable=true)
-	private long replyTo;
+
+	@ManyToOne
+	@JoinColumn(name="Group_id", nullable=true)
+	private Group groupId;
 	
 	@Column(name="Creation_date", nullable=false)
 	private Date created;
@@ -72,12 +73,12 @@ public class Chat implements Serializable{
 		this.msg = msg;
 	}
 
-	public long getReplyTo() {
-		return replyTo;
+	public Group getGroupId() {
+		return groupId;
 	}
 
-	public void setReplyTo(long replyTo) {
-		this.replyTo = replyTo;
+	public void setGroupId(Group groupId) {
+		this.groupId = groupId;
 	}
 
 	public Date getCreated() {

@@ -20,291 +20,290 @@ import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
 public class JPAService {
 
-  /**
-   * creating an object of UserDao to call the methods to perform operations on user.
-   */
-  private UserDao ud;
+    /**
+     * creating an object of UserDao to call the methods to perform operations on user.
+     */
+    private UserDao ud;
 
-  /**
-   * Creating an object of ChatDao to call the methods to perform operations on chat.
-   */
-  private ChatDao cd;
+    /**
+     * Creating an object of ChatDao to call the methods to perform operations on chat.
+     */
+    private ChatDao cd;
 
-  private GroupDao gd;
+    private GroupDao gd;
 
-  private GroupMemberDao gmd;
-  /**
-   * Initialize the SessionFactory instance.
-   */
+    private GroupMemberDao gmd;
+    /**
+     * Initialize the SessionFactory instance.
+     */
 
-  private static JPAService instance;
+    private static JPAService instance;
 
 
-  /**
-   * This method returns the instance of JPASercice, since its a singleton object
-   *
-   * @return {@link JPAService}
-   */
+    /**
+     * This method returns the instance of JPASercice, since its a singleton object
+     *
+     * @return {@link JPAService}
+     */
 
-  public static synchronized JPAService getInstance() {
-    if (instance == null) {
-      instance = new JPAService();
+    public static synchronized JPAService getInstance() {
+        if (instance == null) {
+            instance = new JPAService();
+        }
+        return instance;
     }
-    return instance;
-  }
 
-  // Create the SessionFactory using the ServiceRegistry
-  SessionFactory mSessionFactory = new Configuration().
-          configure().
-          addAnnotatedClass(User.class).
-          addAnnotatedClass(Chat.class).
-          addAnnotatedClass(Group.class).
-          addAnnotatedClass(GroupMember.class).
-          buildSessionFactory();
+    // Create the SessionFactory using the ServiceRegistry
+    SessionFactory mSessionFactory = new Configuration().
+            configure().
+            addAnnotatedClass(User.class).
+            addAnnotatedClass(Chat.class).
+            addAnnotatedClass(Group.class).
+            addAnnotatedClass(GroupMember.class).
+            buildSessionFactory();
 
-  /**
-   * Constructor to initialize userdao object.
-   */
-  private JPAService() {
-    ud = new UserDao(mSessionFactory);
-    cd = new ChatDao(mSessionFactory);
-    gd = new GroupDao(mSessionFactory);
-    gmd = new GroupMemberDao(mSessionFactory);
-  }
-
-  /**
-   * Only for testing purpose
-   */
-  public JPAService(SessionFactory sf) {
-    mSessionFactory = sf;
-    ud = new UserDao(mSessionFactory);
-    cd = new ChatDao(mSessionFactory);
-    gd = new GroupDao(mSessionFactory);
-    gmd = new GroupMemberDao(mSessionFactory);
-  }
-
-  /**
-   * Create a new user.
-   */
-  public boolean createUser(String name, String password) {
-    return ud.create(name, null, password);
-  }
-
-  public void createUser(String name, String email, String password) {
-    ud.create(name, email, password);
-  }
-
-  /**
-   * Read all users.
-   */
-  public List<User> readAllUsers() {
-    return ud.readAll();
-  }
-
-  /**
-   * Delete a user.
-   */
-  public void deleteUser(int id) {
-    ud.delete(id);
-  }
-
-  /**
-   * Update a user.
-   */
-  public void updateUser(int id, String name, String email, String password) {
-    ud.update(id, name, email, password);
-  }
-
-
-  /**
-   * Find a user by his user name.
-   */
-  public User findUserByName(String name) {
-    return ud.findUserByName(name);
-  }
-
-
-  public List<String> searchUserbyUserName(String userName) {
-    return ud.searchUserByName(userName);
-  }
-
-  public String getHashFromUsername(String username) {
-    return ud.findHashForUsername(username);
-  }
-
-  /**
-   * Close a session factory once the operations are done.
-   */
-  public void closeSessionFactory() {
-    mSessionFactory.close();
-  }
-
-  /**
-   * Create a new message in chat.
-   *
-   * @return A boolean representing if the transaction was successful or not.
-   */
-  public long createChatMessage(ChatModel chatModel) {
-    User fromUser = findUserByName(chatModel.getFromUserName());
-    User toUser = findUserByName(chatModel.getToUserName());
-    User replyTo = null;
-    if (chatModel.getReplyTo() != null) {
-    	replyTo = findUserByName(chatModel.getReplyTo());
+    /**
+     * Constructor to initialize userdao object.
+     */
+    private JPAService() {
+        ud = new UserDao(mSessionFactory);
+        cd = new ChatDao(mSessionFactory);
+        gd = new GroupDao(mSessionFactory);
+        gmd = new GroupMemberDao(mSessionFactory);
     }
-    return cd.create(fromUser, toUser, replyTo, chatModel);
-  }
 
-  /**
-   * List all messages for a user or a group.
-   */
-  public List<Chat> findByReceiver(String username) {
-    User user = findUserByName(username);
-    return cd.findByReceiver(user.getId());
+    /**
+     * Only for testing purpose
+     */
+    public JPAService(SessionFactory sf) {
+        mSessionFactory = sf;
+        ud = new UserDao(mSessionFactory);
+        cd = new ChatDao(mSessionFactory);
+        gd = new GroupDao(mSessionFactory);
+        gmd = new GroupMemberDao(mSessionFactory);
+    }
 
-  }
+    /**
+     * Create a new user.
+     */
+    public boolean createUser(String name, String password) {
+        return ud.create(name, null, password);
+    }
 
-  /**
-   * update the delivery status of chat for a chat id
-   */
-  public boolean updateChatStatus(long chatId, boolean status) {
-    return cd.updateDeliveryStatus(chatId, status);
-  }
+    public void createUser(String name, String email, String password) {
+        ud.create(name, email, password);
+    }
 
-  /**
-   * Delete the chat for a user or a group.
-   */
-  public void deleteChatByReceiver(String username) {
-    User user = findUserByName(username);
-    cd.deleteChatByReceiver(user.getId());
-  }
+    /**
+     * Read all users.
+     */
+    public List<User> readAllUsers() {
+        return ud.readAll();
+    }
 
-  /**
-   * Delete a particular message.
-   */
-  public void deleteMessage(int id) {
-    cd.delete(id);
-  }
+    /**
+     * Delete a user.
+     */
+    public void deleteUser(int id) {
+        ud.delete(id);
+    }
 
-  public boolean createGroup(String gName, String gCreator, boolean isAuthRequired) {
+    /**
+     * Update a user.
+     */
+    public void updateUser(int id, String name, String email, String password) {
+        ud.update(id, name, email, password);
+    }
 
-    return gd.create(gName, gCreator, isAuthRequired);
-  }
 
-  public Group findGroupByName(String gName) {
-    return gd.findGroupByName(gName);
-  }
+    /**
+     * Find a user by his user name.
+     */
+    public User findUserByName(String name) {
+        return ud.findUserByName(name);
+    }
 
-  public void deleteGroup(String gName) {
-    Group g = findGroupByName(gName);
-    gd.delete(g.getId());
-  }
 
-  public List<Group> findGroupByCreator(String name) {
-    User user = findUserByName(name);
-    return gd.findGroupByCreator(user);
-  }
+    public List<String> searchUserbyUserName(String userName) {
+        return ud.searchUserByName(userName);
+    }
 
-  public List<Group> searchGroupByName(String name) {
-    return gd.searchGroupByName(name);
-  }
+    public String getHashFromUsername(String username) {
+        return ud.findHashForUsername(username);
+    }
 
-  public boolean addGroupMember(String gName, String uName, boolean isModerator) {
-    return gmd.addMemberToGroup(gName, uName, isModerator);
-  }
+    /**
+     * Close a session factory once the operations are done.
+     */
+    public void closeSessionFactory() {
+        mSessionFactory.close();
+    }
 
-  public void deleteMemberFromGroup(String gName, String uName) {
-    gmd.deleteMemberFromGroup(gName, uName);
-  }
+    /**
+     * Create a new message in chat.
+     *
+     * @return A boolean representing if the transaction was successful or not.
+     */
+    public long createChatMessage(ChatModel chatModel) {
+        User fromUser = findUserByName(chatModel.getFromUserName());
+        User toUser = findUserByName(chatModel.getToUserName());
+        Group grp = null;
+        if (chatModel.getGroupName() != null) {
+            grp = findGroupByName(chatModel.getGroupName());
+        }
+        return cd.create(fromUser, toUser, grp, chatModel);
+    }
 
-  public void deleteAllMembersOfGroup(String gName) {
-    gmd.deleteAllMembersFromGroup(gName);
-  }
+    /**
+     * List all messages for a user or a group.
+     */
+    public List<Chat> findByReceiver(String username) {
+        User user = findUserByName(username);
+        return cd.findByReceiver(user.getId());
 
-  public boolean addMultipleUsersToGroup(List<String> usersToAdd, String grpToAddTo) {
-    return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
-  }
+    }
 
-  public List<UnreadMessageModel> getUnreadMessages(String username) {
+    /**
+     * update the delivery status of chat for a chat id
+     */
+    public boolean updateChatStatus(long chatId, boolean status) {
+        return cd.updateDeliveryStatus(chatId, status);
+    }
 
-    Session session = null;
-    Transaction transaction = null;
-    List<UnreadMessageModel> unreadMessageModels = new ArrayList<>();
+    /**
+     * Delete the chat for a user or a group.
+     */
+    public void deleteChatByReceiver(String username) {
+        User user = findUserByName(username);
+        cd.deleteChatByReceiver(user.getId());
+    }
 
-    try {
-      session = mSessionFactory.openSession();
-      transaction = session.beginTransaction();
+    /**
+     * Delete a particular message.
+     */
+    public void deleteMessage(int id) {
+        cd.delete(id);
+    }
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+    public boolean createGroup(String gName, String gCreator, boolean isAuthRequired) {
+
+        return gd.create(gName, gCreator, isAuthRequired);
+    }
+
+    public Group findGroupByName(String gName) {
+        return gd.findGroupByName(gName);
+    }
+
+    public void deleteGroup(String gName) {
+        Group g = findGroupByName(gName);
+        gd.delete(g.getId());
+    }
+
+    public List<Group> findGroupByCreator(String name) {
+        User user = findUserByName(name);
+        return gd.findGroupByCreator(user);
+    }
+
+    public List<Group> searchGroupByName(String name) {
+        return gd.searchGroupByName(name);
+    }
+
+    public boolean addGroupMember(String gName, String uName, boolean isModerator) {
+        return gmd.addMemberToGroup(gName, uName, isModerator);
+    }
+
+    public void deleteMemberFromGroup(String gName, String uName) {
+        gmd.deleteMemberFromGroup(gName, uName);
+    }
+
+    public void deleteAllMembersOfGroup(String gName) {
+        gmd.deleteAllMembersFromGroup(gName);
+    }
+
+    public boolean addMultipleUsersToGroup(List<String> usersToAdd, String grpToAddTo) {
+        return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
+    }
+
+    public List<UnreadMessageModel> getUnreadMessages(String username) {
+
+        Session session = null;
+        Transaction transaction = null;
+        List<UnreadMessageModel> unreadMessageModels = new ArrayList<>();
+
+        try {
+            session = mSessionFactory.openSession();
+            transaction = session.beginTransaction();
+
+            // Get the userId for the user for which we need the username
+            BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+            int userId = userIdBigInt.intValue();
+            if (userId <= 0) {
+                ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+                return unreadMessageModels;
+            }
+
+            List<Chat> listRows = ud.getUnreadMessages(userId);
+            for (Chat listRow : listRows) {
+                String fromPersonName = listRow.getFromId().getName();
+                Date timestamp = listRow.getCreated();
+                String message = listRow.getMsg();
+                unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
+            }
+
+            // Commit the transaction
+            transaction.commit();
+        } catch (HibernateException ex) {
+            ChatLogger.error(ex.getMessage());
+            Objects.requireNonNull(transaction).rollback();
+        } finally {
+            Objects.requireNonNull(session).close();
+        }
+
         return unreadMessageModels;
-      }
-
-      List<Chat> listRows = ud.getUnreadMessages(userId);
-      for (Chat listRow : listRows) {
-        String fromPersonName = listRow.getFromId().getName();
-        Date timestamp = listRow.getCreated();
-        String message = listRow.getMsg();
-        unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
-      }
-
-      // Commit the transaction
-      transaction.commit();
-    } catch (HibernateException ex) {
-      ChatLogger.error(ex.getMessage());
-      Objects.requireNonNull(transaction).rollback();
-    } finally {
-      Objects.requireNonNull(session).close();
     }
 
-    return unreadMessageModels;
-  }
 
+    public boolean setDeliveredUnreadMessages(String username) {
 
-  public boolean setDeliveredUnreadMessages(String username) {
+        Session session = null;
+        Transaction transaction = null;
+        boolean result = false;
 
-    Session session = null;
-    Transaction transaction = null;
-    boolean result = false;
+        try {
+            session = mSessionFactory.openSession();
+            transaction = session.beginTransaction();
 
-    try {
-      session = mSessionFactory.openSession();
-      transaction = session.beginTransaction();
+            // Get the userId for the user for which we need the username
+            BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+            int userId = userIdBigInt.intValue();
+            if (userId <= 0) {
+                ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+                return false;
+            }
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
-        return false;
-      }
+            result = ud.setDeliverAllUnreadMessages(userId);
 
-      result = ud.setDeliverAllUnreadMessages(userId);
-
-      // Commit the transaction
-      transaction.commit();
-    } catch (HibernateException ex) {
-      ChatLogger.error(ex.getMessage());
-      Objects.requireNonNull(transaction).rollback();
-    } finally {
-      Objects.requireNonNull(session).close();
+            // Commit the transaction
+            transaction.commit();
+        } catch (HibernateException ex) {
+            ChatLogger.error(ex.getMessage());
+            Objects.requireNonNull(transaction).rollback();
+        } finally {
+            Objects.requireNonNull(session).close();
+        }
+        return result;
     }
 
-    return result;
-  }
 
+    public List<User> findAllMembersOfGroup(String gName) {
+        return gmd.findAllMembersOfGroup(gName);
+    }
 
-  public List<User> findAllMembersOfGroup(String gName) {
-    return gmd.findAllMembersOfGroup(gName);
-  }
+    public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus) {
+        gmd.updateModeratorStatus(uName, gName, moderatorStatus);
+    }
 
-  public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus) {
-    gmd.updateModeratorStatus(uName, gName, moderatorStatus);
-  }
-
-  public List<User> findNonMembers(List<String> names, String gName) {
-    return gmd.findNonMembers(names, gName);
-  }
+    public List<User> findNonMembers(List<String> names, String gName) {
+        return gmd.findNonMembers(names, gName);
+    }
 }
