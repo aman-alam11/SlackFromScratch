@@ -62,14 +62,14 @@ public class FrontEnd {
     System.out.println("1. Create Group");
     System.out.println("2. Update Group");
     System.out.println("3. Group Chat");
-    System.out.println("Or Enter \\b to go back");
+    System.out.println("Or Enter \\b to go back or \\q to quit");
     System.out.println("INPUT: Enter From above Options: ");
   }
 
   public void showGroupUsersCrudLevelOptions() {
     System.out.println("1. Add Users");
     System.out.println("2. Delete Users");
-    System.out.println("Or Enter \\b to go back");
+    System.out.println("Or Enter \\b to go back or \\q to quit");
     System.out.println("INPUT: Enter From above Options: ");
   }
 
