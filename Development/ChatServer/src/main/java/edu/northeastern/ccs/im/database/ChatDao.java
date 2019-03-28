@@ -9,6 +9,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.jsoup.helper.StringUtil;
+
+import antlr.StringUtils;
+import edu.northeastern.ccs.im.model.ChatModel;
 
 @SuppressWarnings("all")
 public class ChatDao {
@@ -29,8 +33,7 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public long create(User fromId, User toId, String msg, int replyTo, Date expiry,
-			Boolean grpMsg, Boolean isDelivered) {
+    public long create(User fromId, User toId, User replyTo, ChatModel chatModel) {
 		// Create a session
 		Session session = mSessionFactory.openSession();
 		Transaction transaction = null;
@@ -41,12 +44,12 @@ public class ChatDao {
 			Chat chat = new Chat();
 			chat.setFromId(fromId);
 			chat.setToId(toId);
-			chat.setMsg(msg);
-			chat.setReplyTo(replyTo);
+			chat.setMsg(chatModel.getMsg());
+			chat.setReplyTo(replyTo != null ? replyTo.getId() : 0l);
 			chat.setCreated(new Date());
-			chat.setExpiry(expiry);
-			chat.setGrpMsg(grpMsg);
-			chat.setIsDelivered(isDelivered);
+			chat.setExpiry(chatModel.getExpiry());
+			chat.setIsGrpMsg(chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0);
+			chat.setIsDelivered(chatModel.getDelivered());
 			// Save the User
       session.save(chat);
 			returnId = chat.getId();

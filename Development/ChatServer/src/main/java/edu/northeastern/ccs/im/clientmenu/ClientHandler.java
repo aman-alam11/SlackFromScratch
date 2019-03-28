@@ -1,16 +1,13 @@
 package edu.northeastern.ccs.im.clientmenu;
 
-import com.google.gson.Gson;
-
-import java.util.Deque;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import com.google.gson.Gson;
+
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.client.communication.SocketConnection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.clientutils.ClientConstants;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;

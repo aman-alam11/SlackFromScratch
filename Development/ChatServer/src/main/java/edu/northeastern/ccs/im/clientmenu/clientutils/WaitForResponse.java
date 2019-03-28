@@ -29,7 +29,7 @@ public class WaitForResponse {
   private static void waitForResponseSync(Connection modelLayer) {
     long startTime = System.currentTimeMillis();
     int count = 0;
-    while (!modelLayer.hasNext() && (startTime + TIMEOUT_MILLISECONDS > System.currentTimeMillis())) {
+    while (!modelLayer.hasNext()) {
       // Wait
       try {
         if (count == 0) {
