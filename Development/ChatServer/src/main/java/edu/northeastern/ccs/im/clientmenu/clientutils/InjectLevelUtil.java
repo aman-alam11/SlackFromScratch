@@ -1,25 +1,20 @@
 package edu.northeastern.ccs.im.clientmenu.clientutils;
 
-import org.omg.CORBA.MARSHAL;
-
-import java.util.ArrayDeque;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Stack;
 import java.util.function.Function;
 
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.AddUserToGroup;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.CreateGroup;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.AddUserToGroupModelLayer;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.CreateGroupModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupChat;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
-import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroup;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupSearchModelLayer;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroupModelLayer;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -132,14 +127,14 @@ public final class InjectLevelUtil {
 
   private void injectGroupLevel() {
     FrontEnd.getView().showGroupLevelOptions();
-    mClientOptionsMap.put(1, scanner -> new CreateGroup());
-    mClientOptionsMap.put(2, scanner -> new UpdateGroup());
-    mClientOptionsMap.put(3, scanner -> new GroupChat());
+    mClientOptionsMap.put(1, scanner -> new CreateGroupModelLayer());
+    mClientOptionsMap.put(2, scanner -> new UpdateGroupModelLayer());
+    mClientOptionsMap.put(3, scanner -> new GroupSearchModelLayer());
   }
 
   private void injectGroupUsersCrudLevel() {
     FrontEnd.getView().showGroupUsersCrudLevelOptions();
-    mClientOptionsMap.put(1, scanner -> new AddUserToGroup());
+    mClientOptionsMap.put(1, scanner -> new AddUserToGroupModelLayer());
     mClientOptionsMap.put(2, scanner -> new DeleteUsersFromGroup());
   }
 

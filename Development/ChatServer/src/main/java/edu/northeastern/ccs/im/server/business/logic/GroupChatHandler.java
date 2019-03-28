@@ -37,6 +37,5 @@ public class GroupChatHandler implements MessageHandler {
   	groupChat.setMsg(chat.getMsg());
   	groupChat.setTimestamp(chat.getTimestamp());
   	return gson.toJson(groupChat);
-  	
   }
 }

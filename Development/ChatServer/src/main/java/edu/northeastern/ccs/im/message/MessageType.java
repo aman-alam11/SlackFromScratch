@@ -59,6 +59,11 @@ public enum MessageType {
    * Message whose contents are for group creation
    */
   CREATE_GROUP("CGR"),
+
+  /**
+   * Message whose contents are for group creation
+   */
+  GROUP_SERACH("GSC"),
   
   /**
    * Message whose contents are for group creation
