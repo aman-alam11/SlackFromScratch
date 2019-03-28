@@ -90,7 +90,13 @@ public enum MessageType {
   /**
    * Get all users for a particular group.
    */
-  GET_ALL_USERS_FOR_GRP("UGP");
+  GET_ALL_USERS_FOR_GRP("UGP"),
+
+
+  /**
+   * Toggle Moderator rights.
+   */
+  TOGGLE_MODERATOR("TGM");
 
   /**
    * Store the short name of this message type.

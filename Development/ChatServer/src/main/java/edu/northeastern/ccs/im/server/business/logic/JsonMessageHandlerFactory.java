@@ -52,6 +52,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
       case GET_ALL_USERS_FOR_GRP:
         handler = new GetAllUsersForGroup();
         break;
+
+      case TOGGLE_MODERATOR:
+        handler = new ToggleModeratorRightsHandler();
+        break;
       	
       default:
         // Send to Login Page as default for safety

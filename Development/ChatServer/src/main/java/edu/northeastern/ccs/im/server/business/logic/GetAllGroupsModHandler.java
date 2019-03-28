@@ -16,8 +16,6 @@ import java.util.List;
 public class GetAllGroupsModHandler implements MessageHandler {
 
     private static final String LOG_TAG = UnreadMessageHandler.class.getSimpleName();
-
-    
     private JPAService mJpaService;
 
     public GetAllGroupsModHandler() {

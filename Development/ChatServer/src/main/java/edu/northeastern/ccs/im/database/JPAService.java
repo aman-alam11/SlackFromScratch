@@ -348,6 +348,13 @@ public class JPAService {
   }
 
 
+  /**
+   * Gets all the users in a particular group.
+   *
+   * @param groupName The group name for which we need yo get all the users for.
+   * @return A Map where the key is the userName of members of the group and the value is a boolean representing if
+   * s/he is a moderator in that group.
+   */
   public Map<String, Boolean> getAllUsersForGroup(String groupName) {
     Session session = null;
     Transaction transaction = null;
@@ -367,7 +374,6 @@ public class JPAService {
 
       usernameModeratorMap = gmd.findAllMembersOfGroupAsMap(groupId);
 
-      // Commit the transaction
       transaction.commit();
     } catch (HibernateException ex) {
       ChatLogger.error(ex.getMessage());
@@ -377,6 +383,45 @@ public class JPAService {
     }
 
     return usernameModeratorMap;
+  }
+
+
+
+  public boolean toggleAdminRights(Pair<String, String> usernameGroupname){
+    Session session = null;
+    Transaction transaction = null;
+    boolean isOperationSuccessful = false;
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the userName
+      BigInteger userIdBigInt = ud.getUserIdFromUserName(usernameGroupname.getKey());
+
+      int userId = userIdBigInt.intValue();
+      if (userId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found : " + usernameGroupname.getKey());
+        return isOperationSuccessful;
+      }
+
+      long groupId = gd.findGroupByName(usernameGroupname.getValue()).getId();
+      if (groupId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "Group not found : " + usernameGroupname.getValue());
+        return isOperationSuccessful;
+      }
+
+      isOperationSuccessful = gmd.toggleAdminRightsOfUser(userId, groupId);
+
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return isOperationSuccessful;
   }
 
 }

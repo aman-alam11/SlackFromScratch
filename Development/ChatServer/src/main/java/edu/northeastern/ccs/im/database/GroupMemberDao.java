@@ -309,6 +309,11 @@ public class GroupMemberDao {
     }
 
 
+    /**
+     * Retrieves the names of all members of the particular group.
+     * @param groupId The groupId of the group for which we need to retrieve all the members for.
+     * @return A Map where the username of members is key and value is the property which represents if they are admin or not.
+     */
     public Map<String, Boolean> findAllMembersOfGroupAsMap(long groupId){
         Map<String, Boolean> allMembers = new HashMap<>();
         Session session = null;
@@ -339,5 +344,37 @@ public class GroupMemberDao {
         }
         return allMembers;
     }
+
+    public boolean toggleAdminRightsOfUser(int userId, long groupId){
+        Session session = null;
+        Transaction transaction = null;
+        boolean isTransSuccess = false;
+        try {
+            session = mSessionFactory.openSession();
+            // Begin a transaction
+            transaction = session.beginTransaction();
+
+            String sql = "UPDATE group_member SET isModerator =  isModerator ^ 1 WHERE user_Id = ? AND group_id = ?";
+            Query query = session.createNativeQuery(sql, GroupMember.class);
+            query.setParameter(1, userId);
+            query.setParameter(2, groupId);
+            query.executeUpdate();
+
+            transaction.commit();
+            isTransSuccess= true;
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            Objects.requireNonNull(transaction).rollback();
+        } finally {
+            // Close the session
+            Objects.requireNonNull(session).close();
+        }
+
+        return isTransSuccess;
+    }
+
+
 
 }

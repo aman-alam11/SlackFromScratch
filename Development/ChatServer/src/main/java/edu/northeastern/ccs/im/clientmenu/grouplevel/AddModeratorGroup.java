@@ -26,10 +26,12 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
 public class AddModeratorGroup implements CoreOperation {
 
     private Scanner mScanner;
+    private Connection mConnectionLayerModel;
 
     @Override
     public void passControl(Scanner scanner, Connection connectionLayerModel) {
         mScanner = scanner;
+        mConnectionLayerModel = connectionLayerModel;
         FrontEnd.getView().sendToView("Getting all users for group: " + CurrentGroupName.getGroupName());
 
         MessageJson messageJsonState = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.GET_ALL_USERS_FOR_GRP,
@@ -60,19 +62,38 @@ public class AddModeratorGroup implements CoreOperation {
 
         FrontEnd.getView().sendToView("Which user from above do you want to upgrade to as moderator?");
         String userToUpgrade = mScanner.nextLine().trim();
-        if(!userModMap.containsKey(userToUpgrade)){
+        if (!userModMap.containsKey(userToUpgrade)) {
             FrontEnd.getView().sendToView("Illegal Name Entered. Sending you back");
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
-            return;
         } else {
-            if(userModMap.get(userToUpgrade)){
-               // Means s/he is already a moderator
-                FrontEnd.getView().sendToView("The selected user is already a moderator. Sending you back");
+            legalEntryUsername(userModMap, userToUpgrade);
+        }
+    }
+
+    /**
+     * If the user entered a valid username from the list, we proceed with the add/upgrade of user.
+     *
+     * @param userModMap    The map that contains all the member names of the group.
+     * @param userToUpgrade The user we want to change to admin and hence make moderator.
+     */
+    private void legalEntryUsername(Map<String, Boolean> userModMap, String userToUpgrade) {
+        if (userModMap.get(userToUpgrade)) {
+            // Means s/he is already a moderator
+            FrontEnd.getView().sendToView("The selected user is already a moderator. Sending you back");
+            InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
+        } else {
+            Pair<String, String> pairUserGroupName = new Pair<>(userToUpgrade, CurrentGroupName.getGroupName());
+            MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TOGGLE_MODERATOR,
+                    new Gson().toJson(pairUserGroupName));
+            mConnectionLayerModel.sendMessage(messageJson);
+            String responseBoolean = waitForResponseSocket(mConnectionLayerModel);
+            if (responseBoolean.toLowerCase().equals("true")) {
+                FrontEnd.getView().sendToView("Operation Successful: \t" + pairUserGroupName.getKey()
+                        + " is a moderator now.");
                 InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
-                return;
             } else {
-                // TODO: Send a request to upgrade user
-                // TODO: Add people as moderators
+                FrontEnd.getView().sendToView("Operation Failed. Please try again");
+                InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
             }
         }
     }
