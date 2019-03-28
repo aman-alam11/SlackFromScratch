@@ -45,7 +45,7 @@ public class ChatDao {
 			chat.setFromId(fromId);
 			chat.setToId(toId);
 			chat.setMsg(chatModel.getMsg());
-      chat.setGroupId(groupId != null ? groupId : 0l);
+      chat.setGroupId(groupId != null ? groupId : null);
 			chat.setCreated(new Date());
 			chat.setExpiry(chatModel.getExpiry());
 			chat.setIsGrpMsg(chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0);
