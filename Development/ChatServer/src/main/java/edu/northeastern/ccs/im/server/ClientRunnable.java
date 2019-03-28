@@ -231,10 +231,10 @@ public class ClientRunnable implements Connection {
 
 					//in case of all other messages call the required factory.
 					default:
+						ChatLogger.info("Message received Type: " + msg.getMessageType());
 						MessageHandler messageHandler = connection
 										.getMessageHandlerFactory().getMessageHandler(msg.getMessageType());
 						messageHandler.handleMessage(userName, msg.getMessage(), this);
-						ChatLogger.info("Message received Type: " + msg.getMessageType());
 			}
 		}
 	}

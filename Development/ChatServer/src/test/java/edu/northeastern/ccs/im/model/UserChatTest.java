@@ -13,7 +13,7 @@ public class UserChatTest {
 
   @Test
   public void testNulls() {
-    UserChat userChat = new UserChat();
+    ChatModel userChat = new ChatModel();
     assertNull(userChat.getToUserName());
     assertNull(userChat.getFromUserName());
     assertNull(userChat.getExpiry());
@@ -27,7 +27,7 @@ public class UserChatTest {
   @Test
   public void testGetSet(){
     Date date = new Date();
-    UserChat userChat = new UserChat();
+    ChatModel userChat = new ChatModel();
     userChat.setDelivered(true);
     userChat.setToUserName("TO");
     userChat.setFromUserName("FROM");

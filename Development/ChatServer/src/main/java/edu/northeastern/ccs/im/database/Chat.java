@@ -35,7 +35,7 @@ public class Chat implements Serializable{
 	private Date expiry;
 	
 	@Column(name="isGrpMsg", nullable=false)
-	private Boolean grpMsg;
+	private Boolean isGrpMsg;
 	
 	@Column(name="isDelivered", nullable=false)
 	private Boolean isDelivered;
@@ -96,20 +96,20 @@ public class Chat implements Serializable{
 		this.expiry = expiry;
 	}
 
-	public Boolean getGrpMsg() {
-		return grpMsg;
-	}
-
-	public void setGrpMsg(Boolean grpMsg) {
-		this.grpMsg = grpMsg;
-	}
-
 	public Boolean getIsDelivered() {
 		return isDelivered;
 	}
 
 	public void setIsDelivered(Boolean isDelivered) {
 		this.isDelivered = isDelivered;
+	}
+	
+	public Boolean getIsGrpMsg() {
+		return isGrpMsg;
+	}
+
+	public void setIsGrpMsg(Boolean isGrpMsg) {
+		this.isGrpMsg = isGrpMsg;
 	}
 	
 	
