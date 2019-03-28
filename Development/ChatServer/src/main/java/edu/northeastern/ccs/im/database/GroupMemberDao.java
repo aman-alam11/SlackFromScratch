@@ -177,11 +177,11 @@ public class GroupMemberDao {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
-            query.select(root).where(builder.equal(root.get(GROUP_ID), grp));
+            query.select(root).where(builder.equal(root.get(GROUP_ID), grp.getId()));
             Query<GroupMember> q = session.createQuery(query);
             List<GroupMember> gMembers = q.getResultList();
             for(GroupMember gm: gMembers){
-                allMembers.add(session.get(User.class,gm.getGroupUser()));
+                allMembers.add(gm.getGroupUser());
             }
             transaction.commit();
         } catch (HibernateException ex) {

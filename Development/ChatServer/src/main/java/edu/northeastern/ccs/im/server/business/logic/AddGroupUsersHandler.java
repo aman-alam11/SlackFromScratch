@@ -43,6 +43,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 																									 .map(u -> u.getName())
 																									 .collect(Collectors.toList());
 			JPAService.getInstance().addMultipleUsersToGroup(userNameToAdd, usersModel.getGroupName());
+			ackModel.appendErrorMessage("\n Following Users got added :" + gson.toJson(userNameToAdd));
 		}
 		
 		MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(ackModel));

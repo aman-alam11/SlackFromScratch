@@ -1,6 +1,5 @@
 package edu.northeastern.ccs.im.server.business.logic;
 
-import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
