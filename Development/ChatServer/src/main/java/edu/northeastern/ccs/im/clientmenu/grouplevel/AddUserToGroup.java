@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import org.jsoup.helper.StringUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -20,11 +19,12 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.AddDeleteGroupUsers;
 import edu.northeastern.ccs.im.model.ErrorCodes;
-import edu.northeastern.ccs.im.server.business.logic.AddGroupUsersHandler;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
+// TODO: Only Moderators can add/delete new Users
+// TODO: Add people as moderators, delete moderators, change moderators
 public class AddUserToGroup implements CoreOperation {
 
   private Gson mGson;

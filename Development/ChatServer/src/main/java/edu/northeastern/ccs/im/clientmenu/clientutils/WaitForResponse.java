@@ -6,10 +6,17 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class WaitForResponse {
 
+  private static final int WAIT_TIME_MILLISECONDS = 1000;
+  private static final int TIMEOUT_MILLISECONDS = 5000;
+
+  private static final String IS_LOADING_MESSAGE = "LOADING";
+  private static final String LOADING_COMPLETE_MESSAGE = "LOADING COMPLETE\n";
+  private static final String THREAD_SLEEP_ERROR = "Unable to make the Thread sleep";
+
   public static String waitForResponseSocket(Connection modelLayer) {
 
     waitForResponseSync(modelLayer);
-    FrontEnd.getView().sendToView("LOADING COMPLETE\n");
+    FrontEnd.getView().sendToView(LOADING_COMPLETE_MESSAGE);
 
     if (modelLayer.hasNext()) {
       return modelLayer.next().getMessage();
@@ -19,15 +26,15 @@ public class WaitForResponse {
   }
 
 
-
   private static void waitForResponseSync(Connection modelLayer) {
-    while (!modelLayer.hasNext()) {
+    long startTime = System.currentTimeMillis();
+    while (!modelLayer.hasNext() || (startTime + TIMEOUT_MILLISECONDS > System.currentTimeMillis())) {
       // Wait
       try {
-        FrontEnd.getView().sendToView("LOADING");
-        Thread.sleep(1000);
+        FrontEnd.getView().sendToView(IS_LOADING_MESSAGE);
+        Thread.sleep(WAIT_TIME_MILLISECONDS);
       } catch (Exception e) {
-        ChatLogger.error("Unable to make the Thread sleep");
+        ChatLogger.error(THREAD_SLEEP_ERROR);
       }
     }
   }

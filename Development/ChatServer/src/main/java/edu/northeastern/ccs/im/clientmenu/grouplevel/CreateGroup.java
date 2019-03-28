@@ -21,7 +21,6 @@ import edu.northeastern.ccs.im.model.GroupCreateUpdateModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
-
 public class CreateGroup implements CoreOperation {
 
   private Gson gson;
