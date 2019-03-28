@@ -12,6 +12,7 @@ public class AckModel {
 	
 	public AckModel() {
 		errorCodesList = new ArrayList<>();
+		this.errorMessage = new StringBuilder();
 	}
 	
 	public AckModel(boolean isUserAuth, String errorMsg, boolean isLogin) {

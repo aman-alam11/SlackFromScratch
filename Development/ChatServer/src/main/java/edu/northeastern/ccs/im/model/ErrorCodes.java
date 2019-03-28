@@ -10,6 +10,7 @@ public enum ErrorCodes {
 	G806("Some Users Already Exists In Group"),
 	G807("All Users Exists In Group"),
 	G808("All Users Invalid"),
+	G809("Requester Is Not a Member Of Group"),
 	DB000("Could not persist");
 	
 	private String errorMessage;
