@@ -51,6 +51,13 @@ public class FrontEnd {
     System.out.println("INPUT: Enter From above Options: ");
   }
 
+  public void enterLines() {
+    for(int i = 0; i < 100; i++ ){
+      System.out.print("*");
+    }
+    System.out.println("\n");
+  }
+
   public void showGroupLevelOptions() {
     System.out.println("1. Create Group");
     System.out.println("2. Update Group");

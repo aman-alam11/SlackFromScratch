@@ -28,7 +28,6 @@ public class UnreadMessages implements CoreOperation {
         MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
         connectionModelLayer.sendMessage(messageJson);
 
-        FrontEnd.getView().sendToView("\nLOADING\n");
         String resp = waitForResponseSocket(connectionModelLayer);
         if (!StringUtil.isBlank(resp)) {
             this.displayResponse(resp);
@@ -44,24 +43,30 @@ public class UnreadMessages implements CoreOperation {
 
 
         if(!listUnreadMessagesAll.isEmpty())  {
-            FrontEnd.getView().sendToView("INFO: Unread Group Messages:");
+            FrontEnd.getView().sendToView("GROUP MESSAGES: \n");
+            FrontEnd.getView().enterLines();
             for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
                 // Check if it is a group message
                 if (eachChat.isGroupMessage()) {
                     FrontEnd.getView().sendToView(eachChat.toString());
                 }
             }
+            FrontEnd.getView().enterLines();
 
-            FrontEnd.getView().sendToView("INFO: Unread Chat Messages:");
+            FrontEnd.getView().sendToView("CHAT MESSAGES: \n");
+
+            FrontEnd.getView().enterLines();
+
             for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
                 // Check if it is a group message
                 if (!eachChat.isGroupMessage()) {
                     FrontEnd.getView().sendToView(eachChat.toString());
                 }
             }
+            FrontEnd.getView().enterLines();
         }
         else {
-            FrontEnd.getView().sendToView("INFO: No new Unread messages");
+            FrontEnd.getView().sendToView("INFO: No new messages");
         }
 
 
