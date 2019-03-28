@@ -109,7 +109,7 @@ public class GroupChatModelLayer implements CoreOperation {
             response.getMessageType().equals(MessageType.GROUP_CHAT)) {
 
       ChatModel chat = gson.fromJson(response.getMessage(), ChatModel.class);
-      String messageToDisplay = response.getMessageType().name() + "-" + chat.getMsg();
+      String messageToDisplay = response.getMessageType().name() + "-" + response.getFromUser() + " : " + chat.getMsg();
       FrontEnd.getView().sendToView(messageToDisplay);
     }
   }
