@@ -16,7 +16,9 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.business.logic.GetAllGroupsModHandler;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class GetAllGroupsModHandlerTest {
@@ -45,7 +47,8 @@ public class GetAllGroupsModHandlerTest {
     Map<String, Boolean> map = new HashMap<>();
     map.put("str", true);
     when(JPAService.getInstance().getAllGroupsForUser(any())).thenReturn(map);
-    getAllGroupsModHandler.handleMessage("user", new Gson().toJson(messageJson),connection);
+    boolean  b = getAllGroupsModHandler.handleMessage("user", new Gson().toJson(messageJson),connection);
+    assertTrue(b);
 
   }
 
@@ -57,8 +60,8 @@ public class GetAllGroupsModHandlerTest {
     Map<String, Boolean> map = new HashMap<>();
     map.put("str", true);
     when(JPAService.getInstance().getAllGroupsForUser(any())).thenReturn(map);
-    getAllGroupsModHandler.handleMessage(null, new Gson().toJson(messageJson),connection);
-
+    boolean  b = getAllGroupsModHandler.handleMessage(null, new Gson().toJson(messageJson),connection);
+    assertFalse(b);
   }
 
   @Test
@@ -69,8 +72,8 @@ public class GetAllGroupsModHandlerTest {
     Map<String, Boolean> map = new HashMap<>();
     map.put("str", true);
     when(JPAService.getInstance().getAllGroupsForUser(any())).thenReturn(map);
-    getAllGroupsModHandler.handleMessage("usr", new Gson().toJson(messageJson),connection);
-
+    boolean  b = getAllGroupsModHandler.handleMessage("usr", new Gson().toJson(messageJson),connection);
+    assertFalse(b);
   }
 
   @Test
@@ -81,8 +84,8 @@ public class GetAllGroupsModHandlerTest {
     Map<String, Boolean> map = new HashMap<>();
     map.put("str", true);
     when(JPAService.getInstance().getAllGroupsForUser(any())).thenReturn(map);
-    getAllGroupsModHandler.handleMessage("usr", new Gson().toJson(messageJson),null);
-
+    boolean  b = getAllGroupsModHandler.handleMessage("usr", new Gson().toJson(messageJson),null);
+    assertFalse(b);
   }
 
 }
