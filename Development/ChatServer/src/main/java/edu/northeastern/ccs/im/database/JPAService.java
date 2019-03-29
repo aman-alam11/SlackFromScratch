@@ -415,4 +415,8 @@ public class JPAService {
   public boolean renameUpdateGroup(String oldName, String newName){
     return gd.updateGroupName(oldName, newName);
   }
+
+  public boolean userIsModerator(String uName, String gName){
+    return gmd.userIsMember(uName,gName);
+  }
 }
