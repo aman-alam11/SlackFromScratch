@@ -7,20 +7,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
-import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.models.DeleteUserFromGroupModel;
 import edu.northeastern.ccs.im.database.JPAService;
-import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.business.logic.ToggleModeratorRightsHandler;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -45,23 +42,30 @@ public class ToggleModeratorRightsHandlerTest {
 
   @Test
   public void handleMessageTest() {
+    List<String> list = new ArrayList<>();
+    list.add("user");
+    list.add("user1");
     DeleteUserFromGroupModel deleteUserFromGroupModel = new DeleteUserFromGroupModel();
     deleteUserFromGroupModel.setMessageType(MessageType.TOGGLE_MODERATOR);
-    deleteUserFromGroupModel.setMessage("hello");
+    deleteUserFromGroupModel.setMessage(new Gson().toJson(list));
 
     when(JPAService.getInstance().toggleAdminRights(anyString(),anyString())).thenReturn(true);
     boolean flag = toggleModeratorRightsHandler.handleMessage("user", new Gson().toJson(deleteUserFromGroupModel),connection);
-    assertFalse(flag);
+    assertTrue(flag);
   }
 
   @Test
   public void handleMessageDeleteUserTest() {
+    List<String> list = new ArrayList<>();
+    list.add("user");
+    list.add("user1");
     DeleteUserFromGroupModel deleteUserFromGroupModel = new DeleteUserFromGroupModel();
     deleteUserFromGroupModel.setMessageType(MessageType.DELETER_USER_FROM_GROUP);
+    deleteUserFromGroupModel.setMessage(new Gson().toJson(list));
 
     when(JPAService.getInstance().toggleAdminRights(anyString(),anyString())).thenReturn(true);
     boolean flag = toggleModeratorRightsHandler.handleMessage("user", new Gson().toJson(deleteUserFromGroupModel),connection);
-    assertFalse(flag);
+    assertTrue(flag);
   }
 
   @Test

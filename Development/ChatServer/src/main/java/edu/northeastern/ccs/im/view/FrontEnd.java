@@ -1,11 +1,12 @@
 package edu.northeastern.ccs.im.view;
 
+@SuppressWarnings("all")
 public class FrontEnd {
 
   private static FrontEnd mFrontEnd;
 
 
-  @SuppressWarnings("all")
+
   private FrontEnd() {
   }
 
