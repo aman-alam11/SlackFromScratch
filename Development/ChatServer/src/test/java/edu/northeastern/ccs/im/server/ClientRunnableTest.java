@@ -82,28 +82,28 @@ public class ClientRunnableTest {
 	@Test
 	public void testRunwhenUserSendingChat() {
 
-//		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
-//		String loginCredential = mGson.toJson(chatModel);
-//		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
-//
-//		try {
-//			Field state = clientRunnable.getClass().getDeclaredField("state");
-//			state.setAccessible(true);
-//			state.set(clientRunnable,ClientState.LOGGED_IN);
-//			when(messageIterMock.hasNext()).thenReturn(true);
-//			when(messageIterMock.next()).thenReturn(msgJson);
-//
-//
-//			when(networkConnectionMock.getMessageHandlerFactory()).thenReturn(messageHandlerFactory);
-//			when(messageHandlerFactory.getMessageHandler(Matchers.eq(MessageType.USER_CHAT))).thenReturn(messageHandler);
-//			when(messageHandler.handleMessage(Matchers.contains("User"),any(), any())).thenReturn(true);
-//			clientRunnable.run();
-//			assertNull(clientRunnable.getUserName());
-//
-//
-//		} catch (NoSuchFieldException | IllegalAccessException e) {
-//			ChatLogger.error(e.toString());
-//		}
+		ChatModel chatModel = new ChatModel();
+		String loginCredential = mGson.toJson(chatModel);
+		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
+
+		try {
+			Field state = clientRunnable.getClass().getDeclaredField("state");
+			state.setAccessible(true);
+			state.set(clientRunnable,ClientState.LOGGED_IN);
+			when(messageIterMock.hasNext()).thenReturn(true);
+			when(messageIterMock.next()).thenReturn(msgJson);
+
+
+			when(networkConnectionMock.getMessageHandlerFactory()).thenReturn(messageHandlerFactory);
+			when(messageHandlerFactory.getMessageHandler(Matchers.eq(MessageType.USER_CHAT))).thenReturn(messageHandler);
+			when(messageHandler.handleMessage(Matchers.contains("User"),any(), any())).thenReturn(true);
+			clientRunnable.run();
+			assertNull(clientRunnable.getUserName());
+
+
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			ChatLogger.error(e.toString());
+		}
 
 	}
 
@@ -127,14 +127,14 @@ public class ClientRunnableTest {
 	@Test
 	public void testRunoutGoingMessage() {
 
-//		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
-//		String loginCredential = mGson.toJson(chatModel);
-//		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
-//		MessageJson msgJson1 = new MessageJson("", MessageType.USER_CHAT, loginCredential);
-//		clientRunnable.enqueueMessage(msgJson);
-//		clientRunnable.enqueueMessage(msgJson1);
-//		clientRunnable.run();
-//		assertNull(clientRunnable.getUserName());
+		ChatModel chatModel = new ChatModel();
+		String loginCredential = mGson.toJson(chatModel);
+		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
+		MessageJson msgJson1 = new MessageJson("", MessageType.USER_CHAT, loginCredential);
+		clientRunnable.enqueueMessage(msgJson);
+		clientRunnable.enqueueMessage(msgJson1);
+		clientRunnable.run();
+		assertNull(clientRunnable.getUserName());
 	}
 
 
