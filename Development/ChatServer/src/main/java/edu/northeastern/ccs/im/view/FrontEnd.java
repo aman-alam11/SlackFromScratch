@@ -5,6 +5,7 @@ public class FrontEnd {
   private static FrontEnd mFrontEnd;
 
 
+  @SuppressWarnings("all")
   private FrontEnd() {
   }
 
