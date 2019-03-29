@@ -23,7 +23,7 @@ public class DeleteGroupModelLayer implements CoreOperation {
     mScanner = scanner;
     mConnectionLayerModel = connectionLayerModel;
     FrontEnd.getView().sendToView("INFO: Let's see how many groups you belong to; " +
-            "Fetching all your groups that you can modify...");
+            "Fetching all your groups that you can modify...\n");
 
     parseResponse(GetAllGroupsUtil.parseResponse(MessageType.GET_ALL_GROUPS_MOD, connectionLayerModel));
   }
@@ -37,7 +37,7 @@ public class DeleteGroupModelLayer implements CoreOperation {
     }
 
     // Delete the group
-    FrontEnd.getView().sendToViewSameLine("INPUT: Which of the above groups do you want to delete? Enter name of that group...");
+    FrontEnd.getView().sendToViewSameLine("INPUT: Which of the above groups do you want to delete? Enter name of that group...\n");
     String getGroupToDelete = mScanner.nextLine().trim();
 
     if (listGroupMod.containsKey(getGroupToDelete)) {

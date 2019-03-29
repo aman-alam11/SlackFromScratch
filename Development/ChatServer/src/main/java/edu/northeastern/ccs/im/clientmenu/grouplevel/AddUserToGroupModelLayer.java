@@ -31,8 +31,10 @@ public class AddUserToGroupModelLayer implements CoreOperation {
     Gson mGson = new Gson();
 
     FrontEnd.getView().sendToView("INPUT: Enter name of users to be added split by \",\"");
+    FrontEnd.getView().sendToView("CAUTION: Don't add space");
     String scr = scanner.nextLine().trim();
     String[] users = scr.split(",");
+
 
     AddDeleteGroupUsers addDeleteGroupUsers = new AddDeleteGroupUsers();
     addDeleteGroupUsers.setGroupName(CurrentGroupName.getGroupName());
