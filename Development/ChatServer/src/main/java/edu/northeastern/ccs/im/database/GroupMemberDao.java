@@ -19,7 +19,6 @@ import javax.persistence.criteria.Root;
 
 import edu.northeastern.ccs.im.ChatLogger;
 
-@SuppressWarnings("all")
 public class GroupMemberDao {
 
     public static final String GROUP_ID = "groupId";
@@ -34,12 +33,9 @@ public class GroupMemberDao {
     public boolean addMemberToGroup(String gName, String uName, boolean isModerator){
         boolean isTransactionSuccessful = false;
         // Create a session
-        Session session = null;
-        Transaction transaction = null;
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
             User user = JPAService.getInstance().findUserByName(uName);
             if (user == null) {
                 ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
@@ -71,12 +67,9 @@ public class GroupMemberDao {
     }
 
     public void deleteMemberFromGroup(String gName, String uName){
-        Session session = null;
-        Transaction transaction = null;
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
             User user = getUser(uName);
 
             Group grp = getGroup(gName);
@@ -111,13 +104,9 @@ public class GroupMemberDao {
     }
 
     public void deleteAllMembersFromGroup(String gName){
-        Session session = null;
-        Transaction transaction = null;
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
-
             Group grp = getGroup(gName);
 
             CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -145,13 +134,9 @@ public class GroupMemberDao {
     public boolean addMultipleUsersToGroup(List<String> users, String gName){
         boolean isTransactionSuccessful = false;
         // Create a session
-        Session session = null;
-        Transaction transaction = null;
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
-
             for(String u: users){
                 JPAService.getInstance().addGroupMember(gName,u,false);
             }
@@ -172,12 +157,9 @@ public class GroupMemberDao {
 
     public List<User> findAllMembersOfGroup(String gName){
         List<User> allMembers = new ArrayList<>();
-        Session session = null;
-        Transaction transaction = null;
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
             Group grp = getGroup(gName);
 
             CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -203,12 +185,9 @@ public class GroupMemberDao {
     }
 
     public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus){
-        Session session = null;
-        Transaction transaction = null;
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
             User user = getUser(uName);
 
             Group grp = getGroup(gName);
@@ -245,13 +224,10 @@ public class GroupMemberDao {
 
     public List<User> findNonMembers(List<String> names, String gName){
         List<User> nonMembers = new ArrayList<>();
-        Session session = null;
-        Transaction transaction = null;
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
             List<User> tempUserList = new ArrayList<>();
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
             Group grp = getGroup(gName);
             for(String name: names){
                 tempUserList.add(getUser(name));
@@ -376,10 +352,7 @@ public class GroupMemberDao {
             // Close the session
             Objects.requireNonNull(session).close();
         }
-
         return isTransSuccess;
     }
-
-
 
 }
