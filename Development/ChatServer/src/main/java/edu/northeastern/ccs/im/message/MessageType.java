@@ -112,7 +112,12 @@ public enum MessageType {
   /**
    * Delete Group.
    */
-  DELETE_GROUP("DGP");
+  DELETE_GROUP("DGP"),
+
+  /**
+   * Delete User From Group.
+   */
+  DELETER_USER_FROM_GROUP("DUG");
 
   /**
    * Store the short name of this message type.

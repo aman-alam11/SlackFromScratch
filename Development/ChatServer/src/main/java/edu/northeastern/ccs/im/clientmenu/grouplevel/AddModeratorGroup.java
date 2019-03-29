@@ -7,10 +7,11 @@ import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.grouplevel.GetAllGroupsUtil.getAllUserGroup;
-import static edu.northeastern.ccs.im.clientmenu.grouplevel.GetAllGroupsUtil.userToToggleModerator;
+import static edu.northeastern.ccs.im.clientmenu.grouplevel.GetAllGroupsUtil.userToToggleModeratorOrDeleteUserGroup;
 
 public class AddModeratorGroup implements CoreOperation {
 
@@ -48,7 +49,8 @@ public class AddModeratorGroup implements CoreOperation {
             FrontEnd.getView().sendToView("The selected user is already a moderator. Sending you back");
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         } else {
-            String responseBoolean = userToToggleModerator(userToUpgrade, mConnectionLayerModel);
+            String responseBoolean = userToToggleModeratorOrDeleteUserGroup(userToUpgrade,
+                    mConnectionLayerModel, MessageType.TOGGLE_MODERATOR);
             if (responseBoolean.equalsIgnoreCase("true")) {
                 FrontEnd.getView().sendToView("Operation Successful: \t" + userToUpgrade
                         + " is a moderator now.");

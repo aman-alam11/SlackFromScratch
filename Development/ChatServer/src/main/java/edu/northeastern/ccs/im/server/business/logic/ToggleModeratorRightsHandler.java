@@ -15,6 +15,9 @@ import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
 
+/**
+ * This class handles moderator rights as well as deletion of user.
+ */
 public class ToggleModeratorRightsHandler implements MessageHandler {
 
     private static final String LOG_TAG = ToggleModeratorRightsHandler.class.getSimpleName();
@@ -31,14 +34,25 @@ public class ToggleModeratorRightsHandler implements MessageHandler {
             if (user == null || StringUtil.isBlank(user)) {
                 return false;
             }
+            boolean isSuccess = false;
+            MessageJson response = null;
 
             Gson gson = new Gson();
             Type modList = new TypeToken<List<String>>() {}.getType();
             List<String> lst = gson.fromJson(message, modList);
-            boolean isSuccess = mJpaService.toggleAdminRights(lst.get(0), lst.get(1));
+            // TODO: Response is not being deciphered here. Will throw NPE
 
-            MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
-                    MessageType.TOGGLE_MODERATOR, gson.toJson(isSuccess));
+            if(response.getMessageType() == MessageType.TOGGLE_MODERATOR) {
+                isSuccess = mJpaService.toggleAdminRights(lst.get(0), lst.get(1));
+
+                response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+                        MessageType.TOGGLE_MODERATOR, gson.toJson(isSuccess));
+            } else if(response.getMessageType() == MessageType.DELETER_USER_FROM_GROUP) {
+                isSuccess = mJpaService.deleteMemberFromGroup(lst.get(1), lst.get(0));
+
+                response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+                        MessageType.DELETER_USER_FROM_GROUP, gson.toJson(isSuccess));
+            }
 
             sendResponse(response, clientConnection);
             return true;

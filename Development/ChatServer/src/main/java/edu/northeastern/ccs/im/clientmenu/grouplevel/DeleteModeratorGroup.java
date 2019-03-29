@@ -8,10 +8,11 @@ import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.grouplevel.GetAllGroupsUtil.getAllUserGroup;
-import static edu.northeastern.ccs.im.clientmenu.grouplevel.GetAllGroupsUtil.userToToggleModerator;
+import static edu.northeastern.ccs.im.clientmenu.grouplevel.GetAllGroupsUtil.userToToggleModeratorOrDeleteUserGroup;
 
 public class DeleteModeratorGroup implements CoreOperation {
 
@@ -42,7 +43,7 @@ public class DeleteModeratorGroup implements CoreOperation {
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       } else {
 
-        String responseBoolean = userToToggleModerator(userToDowngrade, mConnectionLayerModel);
+        String responseBoolean = userToToggleModeratorOrDeleteUserGroup(userToDowngrade, mConnectionLayerModel, MessageType.TOGGLE_MODERATOR);
         if (responseBoolean.equalsIgnoreCase("true")) {
           FrontEnd.getView().sendToView("Operation Successful: \t" + userToDowngrade + " is not a moderator now.");
           InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);

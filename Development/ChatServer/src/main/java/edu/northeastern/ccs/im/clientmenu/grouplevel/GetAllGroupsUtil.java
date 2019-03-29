@@ -38,10 +38,11 @@ public class GetAllGroupsUtil {
       return null;
     }
 
-    Type modList = new TypeToken<Map<String, Boolean>>() {}.getType();
+    Type modList = new TypeToken<Map<String, Boolean>>() {
+    }.getType();
 
     Map<String, Boolean> listGroupMod = new Gson().fromJson(response, modList);
-    if(listGroupMod.size() <= 0){
+    if (listGroupMod.size() <= 0) {
       FrontEnd.getView().sendToView("You are part of no groups. Sending you back.\n");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       return listGroupMod;
@@ -75,7 +76,8 @@ public class GetAllGroupsUtil {
       return null;
     }
 
-    Type modList = new TypeToken<Map<String, Boolean>>() {}.getType();
+    Type modList = new TypeToken<Map<String, Boolean>>() {
+    }.getType();
     Map<String, Boolean> userModMap = new Gson().fromJson(response, modList);
     for (Map.Entry<String, Boolean> userBooleanEntry : userModMap.entrySet()) {
       String isMod = userBooleanEntry.getValue() ? "Yes" : "No";
@@ -87,11 +89,22 @@ public class GetAllGroupsUtil {
   }
 
 
-  public static String userToToggleModerator(String userToUpgrade, Connection mConnectionLayerModel) {
+  /**
+   * Either toggles the moderator rights or deletes the user from Group.
+   *
+   * @param userToWorkOn          The user who's rights will be toggled or will be removed from
+   *                              group
+   * @param mConnectionLayerModel The Connection layer to send message
+   * @param messageType           The deciding factor to let server side know which operation to
+   *                              perfrom.
+   */
+  public static String userToToggleModeratorOrDeleteUserGroup(String userToWorkOn,
+                                                              Connection mConnectionLayerModel,
+                                                              MessageType messageType) {
     List<String> listKeys = new ArrayList<>();
-    listKeys.add(userToUpgrade);
+    listKeys.add(userToWorkOn);
     listKeys.add(CurrentGroupName.getGroupName());
-    MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TOGGLE_MODERATOR,
+    MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), messageType,
             new Gson().toJson(listKeys));
     mConnectionLayerModel.sendMessage(messageJson);
     return waitForResponseSocket(mConnectionLayerModel);
