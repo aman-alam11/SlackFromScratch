@@ -16,11 +16,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
-import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;

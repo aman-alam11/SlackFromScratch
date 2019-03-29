@@ -34,6 +34,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 	 * Adds users provided in list to Group if at least one of the users is valid
 	 */
 	@Override
+	@SuppressWarnings("squid:S1612")
 	public boolean handleMessage(String user, String message, Connection clientConnection) {
 		
 		AddDeleteGroupUsers usersModel = gson.fromJson(message, AddDeleteGroupUsers.class);
@@ -78,6 +79,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 		return isValid;
 	}
 	
+	@SuppressWarnings("squid:S1612")
 	private boolean validateUsers(List<String> users, String groupName) {
 		boolean isValid = false;
 		List<String> validUsers = new ArrayList<>();

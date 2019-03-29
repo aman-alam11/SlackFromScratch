@@ -30,7 +30,6 @@ public class SocketConnection implements Connection {
   private static Gson gson;
 
   private static StringBuilder messageBuffer;
-  private static Thread messageListenerFromServer;
   private static boolean isAlive;
 
   //singleton implementation
@@ -57,6 +56,7 @@ public class SocketConnection implements Connection {
   }
 
   @Override
+  @SuppressWarnings("squid:S2696")
   public void terminate() {
     isAlive = false;
   }
@@ -64,7 +64,7 @@ public class SocketConnection implements Connection {
   private static void initThread() {
 	  messageQueue = new ConcurrentLinkedQueue<>();
 	  messageBuffer = new StringBuilder();
-     messageListenerFromServer = new Thread(() -> {
+	  Thread messageListenerFromServer = new Thread(() -> {
        isAlive = true;
       ByteBuffer buff = ByteBuffer.allocate(BUFFER_SIZE);
       while (isAlive) {
