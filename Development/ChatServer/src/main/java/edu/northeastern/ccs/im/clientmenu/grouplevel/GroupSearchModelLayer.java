@@ -60,6 +60,7 @@ public class GroupSearchModelLayer implements CoreOperation {
     String groupToChatWith = scanner.nextLine();
 
 
+    //TODO: CHECK FOR isEmpty NOT FOR NOT NULL : attinder
     if (groupNames!= null && groupNames.contains(groupToChatWith)) {
       CurrentGroupName.setGroupName(groupToChatWith);
       new GroupChatModelLayer(groupToChatWith).passControl(scanner, connectionLayerModel);

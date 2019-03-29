@@ -99,9 +99,7 @@ public class GroupChatModelLayer implements CoreOperation {
   }
 
 
-
-
-
+  //TODO make this method private: attinder
   /**
    * This method runs in a loop when thread starts till messgage quit comes
    */
