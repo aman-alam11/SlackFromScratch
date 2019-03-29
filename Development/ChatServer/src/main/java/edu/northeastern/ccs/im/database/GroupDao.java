@@ -24,11 +24,9 @@ public class GroupDao {
         boolean isTransactionSuccessful = false;
         // Create a session
         Session session = null;
-        Transaction transaction = null;
+        session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
             User user = JPAService.getInstance().findUserByName(gCreator);
             if (user == null) {
             	ChatLogger.info(this.getClass().getName() + "User not found : " + gCreator);
@@ -45,22 +43,11 @@ public class GroupDao {
         } catch (HibernateException ex) {
             // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
-            try {
-                transaction.rollback();
-            }
-            catch (Exception e) {
-                ChatLogger.error(e.getMessage());
-            }
+            transaction.rollback();
 
         } finally {
             // Close the session
-            try {
-                session.close();
-            }
-            catch (Exception ex) {
-                ChatLogger.error(ex.getMessage());
-            }
+            session.close();
 
         }
 
@@ -70,11 +57,9 @@ public class GroupDao {
     public boolean delete(long id) {
         // Create a session
         Session session = mSessionFactory.openSession();
-        Transaction transaction = null;
+        Transaction transaction = session.beginTransaction();;
         boolean isOperationSuccess = false;
         try {
-            // Begin a transaction
-            transaction = session.beginTransaction();
             // Get the User from the database.
             Group grp = session.get(Group.class, id);
             // Delete the User
@@ -174,13 +159,11 @@ public class GroupDao {
 
     public boolean updateGroupName(String oldName, String newName){
         Session session = null;
-        Transaction transaction = null;
+        session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();;
         boolean isTransactionSuccessful = false;
 
         try {
-            session = mSessionFactory.openSession();
-            // Begin a transaction
-            transaction = session.beginTransaction();
             Group grp = JPAService.getInstance().findGroupByName(oldName);
             if (grp == null) {
                 ChatLogger.info(this.getClass().getName() + "Group not found : " + oldName);
