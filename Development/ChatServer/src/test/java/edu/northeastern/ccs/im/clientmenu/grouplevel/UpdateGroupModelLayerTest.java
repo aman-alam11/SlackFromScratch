@@ -25,6 +25,7 @@ public class UpdateGroupModelLayerTest {
   private final static String USERNAME = "atti\n";
   private final static String QUIT = "\\q\n";
   private Gson gson;
+  private UpdateGroupModelLayer updateGroupModelLayer;
 
   @Mock
   Connection connection;
@@ -32,6 +33,7 @@ public class UpdateGroupModelLayerTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
+    updateGroupModelLayer = new UpdateGroupModelLayer();
     gson = new Gson();
   }
 
@@ -52,7 +54,6 @@ public class UpdateGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    UpdateGroupModelLayer updateGroupModelLayer = new UpdateGroupModelLayer();
     updateGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -74,7 +75,6 @@ public class UpdateGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    UpdateGroupModelLayer updateGroupModelLayer = new UpdateGroupModelLayer();
     updateGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -96,14 +96,13 @@ public class UpdateGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    UpdateGroupModelLayer updateGroupModelLayer = new UpdateGroupModelLayer();
     updateGroupModelLayer.passControl(scanner, connection);
 
   }
 
   @Test
   public void choiceThreeTest() {
-    String str =  USERNAME + "3\n";
+    String str =  USERNAME + "3\n"+ "2\n";
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
 
@@ -118,7 +117,6 @@ public class UpdateGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    UpdateGroupModelLayer updateGroupModelLayer = new UpdateGroupModelLayer();
     updateGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -140,7 +138,6 @@ public class UpdateGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    UpdateGroupModelLayer updateGroupModelLayer = new UpdateGroupModelLayer();
     updateGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -151,8 +148,6 @@ public class UpdateGroupModelLayerTest {
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
 
-
-
     Map<String, Boolean> listAllGroupsForUser = new HashMap<>();
 
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
@@ -160,7 +155,71 @@ public class UpdateGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    UpdateGroupModelLayer updateGroupModelLayer = new UpdateGroupModelLayer();
+    updateGroupModelLayer.passControl(scanner, connection);
+
+  }
+
+  @Test
+  public void fourthOptionTest() {
+    String str =  USERNAME + "4\n";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+
+
+    Map<String, Boolean> listAllGroupsForUser = new HashMap<>();
+    listAllGroupsForUser.put("atti", true);
+    listAllGroupsForUser.put("atti2", true);
+
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));
+
+    when(connection.hasNext()).thenReturn(true);
+    when(connection.next()).thenReturn(response);
+    updateGroupModelLayer.passControl(scanner, connection);
+
+  }
+
+  @Test
+  public void newNameTest() {
+    String str =  USERNAME + "3\n" + USERNAME;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+
+
+    Map<String, Boolean> listAllGroupsForUser = new HashMap<>();
+    listAllGroupsForUser.put("atti", true);
+    listAllGroupsForUser.put("atti2", true);
+
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));
+
+    when(connection.hasNext()).thenReturn(true);
+    when(connection.next()).thenReturn(response);
+    updateGroupModelLayer.passControl(scanner, connection);
+
+  }
+
+  @Test
+  public void renamedGroupTest() {
+    String str =  USERNAME + "3\n" + "hello";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+
+
+    Map<String, Boolean> listAllGroupsForUser = new HashMap<>();
+    listAllGroupsForUser.put("atti", true);
+    listAllGroupsForUser.put("atti2", true);
+
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));
+    MessageJson response1 = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.TOGGLE_MODERATOR, gson.toJson(true));
+
+    when(connection.hasNext()).thenReturn(true);
+    when(connection.next()).thenReturn(response).thenReturn(response1);
     updateGroupModelLayer.passControl(scanner, connection);
 
   }

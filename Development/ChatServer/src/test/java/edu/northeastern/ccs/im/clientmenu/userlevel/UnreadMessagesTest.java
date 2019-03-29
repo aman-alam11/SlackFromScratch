@@ -97,4 +97,25 @@ public class UnreadMessagesTest {
     unreadMessages.passControl(scanner, connection);
 
   }
+
+  @Test
+  public void noMessagesTest() {
+
+    String str = "";
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(byteArrayInputStream);
+
+    UnreadMessageModel unreadMessageModel = new UnreadMessageModel("atti", "kumar", new Date(), true);
+
+    List<UnreadMessageModel> unreadMessagesList = new ArrayList<>();
+
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.UNREAD_MSG, mGson.toJson(unreadMessagesList));
+
+    when(connection.hasNext()).thenReturn(true);
+    when(connection.next()).thenReturn(response);
+
+
+    unreadMessages.passControl(scanner, connection);
+  }
 }

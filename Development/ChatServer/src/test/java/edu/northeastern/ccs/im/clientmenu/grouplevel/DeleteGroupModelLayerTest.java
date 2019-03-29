@@ -19,11 +19,12 @@ import edu.northeastern.ccs.im.message.MessageType;
 
 import static org.mockito.Mockito.when;
 
-public class DeleteModeratorGroupTest {
+public class DeleteGroupModelLayerTest {
 
   private final static String USERNAME = "atti\n";
+  private final static String QUIT = "\\q\n";
   private Gson gson;
-  private DeleteModeratorGroup deleteModeratorGroup;
+  private DeleteGroupModelLayer deleteGroupModelLayer;
 
   @Mock
   Connection connection;
@@ -31,10 +32,9 @@ public class DeleteModeratorGroupTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
-    deleteModeratorGroup = new DeleteModeratorGroup();
+    deleteGroupModelLayer = new DeleteGroupModelLayer();
     gson = new Gson();
   }
-
 
   @Test
   public void passControlTest() {
@@ -53,12 +53,31 @@ public class DeleteModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    deleteModeratorGroup.passControl(scanner, connection);
+    deleteGroupModelLayer.passControl(scanner, connection);
 
   }
 
   @Test
-  public void containsKeyAndIsModeratorTest() {
+  public void emptyListTest() {
+    String str =  USERNAME;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+
+
+    Map<String, Boolean> listAllGroupsForUser = new HashMap<>();
+
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));
+
+    when(connection.hasNext()).thenReturn(true);
+    when(connection.next()).thenReturn(response);
+    deleteGroupModelLayer.passControl(scanner, connection);
+
+  }
+
+  @Test
+  public void deleteGroupErrorTest() {
     String str =  USERNAME;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -74,12 +93,33 @@ public class DeleteModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    deleteModeratorGroup.passControl(scanner, connection);
+    deleteGroupModelLayer.passControl(scanner, connection);
 
   }
 
   @Test
-  public void containsKeyModeratorTest() {
+  public void deleteGroupDontHaveRightTest() {
+    String str =  USERNAME;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+
+
+    Map<String, Boolean> listAllGroupsForUser = new HashMap<>();
+    listAllGroupsForUser.put("atti", false);
+    listAllGroupsForUser.put("atti2", true);
+
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+            MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));
+
+    when(connection.hasNext()).thenReturn(true);
+    when(connection.next()).thenReturn(response);
+    deleteGroupModelLayer.passControl(scanner, connection);
+
+  }
+
+  @Test
+  public void successfullyDeletedGroupTest() {
     String str =  USERNAME;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -98,28 +138,7 @@ public class DeleteModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response).thenReturn(response1);
-    deleteModeratorGroup.passControl(scanner, connection);
-
-  }
-
-  @Test
-  public void containsKeyButNotModeratorTest() {
-    String str =  USERNAME;
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-
-
-
-    Map<String, Boolean> listAllGroupsForUser = new HashMap<>();
-    listAllGroupsForUser.put("atti", false);
-    listAllGroupsForUser.put("atti2", true);
-
-    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
-            MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));
-
-    when(connection.hasNext()).thenReturn(true);
-    when(connection.next()).thenReturn(response);
-    deleteModeratorGroup.passControl(scanner, connection);
+    deleteGroupModelLayer.passControl(scanner, connection);
 
   }
 }
