@@ -35,7 +35,7 @@ public final class ClientHandler {
     InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
   }
 
-
+  @SuppressWarnings("squid:S3776")
   public void initClientOperations(Scanner scanner) {
     while (scanner.hasNext()) {
       int userChoice = 0;
