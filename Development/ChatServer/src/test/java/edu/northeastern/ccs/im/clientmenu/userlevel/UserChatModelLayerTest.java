@@ -13,8 +13,12 @@ import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
+import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
+import edu.northeastern.ccs.im.model.ChatModel;
+
 import static org.mockito.Mockito.when;
 
 public class UserChatModelLayerTest {
@@ -44,57 +48,64 @@ public class UserChatModelLayerTest {
 
   @Test
   public void passControlTest() {
-    String str = "1\n" + USERNAME;
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-    // TODO: Modify  Timestamp: 26 March
-//    userChatModelLayer.listen("message");
-    userChatModelLayer.passControl(scanner, connection);
-  }
-
-  @Test
-  public void passControlQuitTest() {
-    String str = QUIT;
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-    userChatModelLayer.passControl(scanner, connection);
-  }
-
-  @Test
-  public void frameChatMessageToDisplayTest() {
-    when(userChat.getMsg()).thenReturn("message from user");
-    // TODO: Modify  Timestamp: 26 March
-//    String str = userChatModelLayer.frameChatMessageToDisplay(userChat, MessageType.USER_CHAT);
-//    assertEquals("USER_CHAT-userChat",str);
-  }
-
-  @Test
-  public void runTest() {
-    String str = "1\n" + USERNAME + QUIT;
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-    userChatModelLayer.passControl(scanner, connection);
-    // TODO: Modify  Timestamp: 26 March
-//    userChatModelLayer.run();
-  }
-
-  @Test
-  public void run2Test() {
-    String str = "1\n" + USERNAME + QUIT;
+    String str =  USERNAME + USERNAME + QUIT;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
 
-    UserChat userChat1 = new UserChat();
-    userChat1.setMsg("hello");
-    userChat1.setFromUserName("atti");
-
-    String message = mGson.toJson(userChat1);
-    MessageJson messageJson = new MessageJson("atti",MessageType.USER_CHAT,message);
     when(connection.hasNext()).thenReturn(true);
-    when(connection.next()).thenReturn(messageJson);
-    userChatModelLayer.passControl(scanner, connection);
-    // TODO: Modify  Timestamp: 26 March
+    AckModel ackModel = new AckModel();
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, mGson.toJson(ackModel));
+    when(connection.next()).thenReturn(response);
+    userChatModelLayer.passControl(scanner,connection);
+  }
 
-//    userChatModelLayer.run();
+  @Test
+  public void groupChatTest() {
+    String str =  USERNAME + USERNAME + QUIT;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+    when(connection.hasNext()).thenReturn(true);
+    AckModel ackModel = new AckModel();
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, mGson.toJson(ackModel));
+    when(connection.next()).thenReturn(response);
+    userChatModelLayer.passControl(scanner,connection);
+    ChatModel chatModel = new ChatModel();
+    chatModel.setMsg("message");
+    MessageJson messageJson1 = new MessageJson("msg", MessageType.GROUP_CHAT, mGson.toJson(chatModel));
+    userChatModelLayer.displayResponse(messageJson1);
+  }
+
+  @Test
+  public void userChatTest() {
+    String str =  USERNAME + USERNAME + QUIT;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+    when(connection.hasNext()).thenReturn(true);
+    AckModel ackModel = new AckModel();
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, mGson.toJson(ackModel));
+    when(connection.next()).thenReturn(response);
+    userChatModelLayer.passControl(scanner,connection);
+    ChatModel chatModel = new ChatModel();
+    chatModel.setMsg("message");
+    MessageJson messageJson1 = new MessageJson("msg", MessageType.USER_CHAT, mGson.toJson(chatModel));
+    userChatModelLayer.displayResponse(messageJson1);
+  }
+
+
+
+  @Test
+  public void scannerNoHasNextTest() {
+    String str =  "";
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+    userChatModelLayer.passControl(scanner,connection);
+
+  }
+
+  @Test
+  public void displayResponseNullTest() {
+    userChatModelLayer.displayResponse(null);
   }
 }
