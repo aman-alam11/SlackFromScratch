@@ -34,6 +34,7 @@ public class SocketConnection implements Connection {
 
   //singleton implementation
   private SocketConnection() {
+  	
   }
 
   public static synchronized Connection getInstance(String url, int port) {
@@ -56,9 +57,10 @@ public class SocketConnection implements Connection {
   }
 
   @Override
-  @SuppressWarnings("squid:S2696")
   public void terminate() {
-    isAlive = false;
+  	synchronized (SocketConnection.class) {
+  		isAlive = false;
+		}
   }
 
   private static void initThread() {
