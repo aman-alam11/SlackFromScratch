@@ -23,6 +23,8 @@ public class GroupMemberDao {
 
     public static final String GROUP_ID = "groupId";
     public static final String GROUP_USER = "groupUser";
+    public static final String GROUP_NOT_FOUND = "Group not found :";
+    public static final String USER_NOT_FOUND = "User not found :";
 
     SessionFactory mSessionFactory;
 
@@ -38,13 +40,13 @@ public class GroupMemberDao {
         try {
             User user = JPAService.getInstance().findUserByName(uName);
             if (user == null) {
-                ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
+                ChatLogger.info(this.getClass().getName() + USER_NOT_FOUND + " " + uName);
                 return false;
             }
 
             Group grp = JPAService.getInstance().findGroupByName(gName);
             if (grp == null) {
-                ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
+                ChatLogger.info(this.getClass().getName() + GROUP_NOT_FOUND + " " + gName);
                 return false;
             }
             // Save the GroupMember
@@ -97,7 +99,7 @@ public class GroupMemberDao {
     private Group getGroup(String gName) {
         Group grp = JPAService.getInstance().findGroupByName(gName);
         if (grp == null) {
-            ChatLogger.info(this.getClass().getName() + "Group not found : " + gName);
+            ChatLogger.info(this.getClass().getName() + GROUP_NOT_FOUND + " " + gName);
             throw new HibernateException("group not found");
         }
         return grp;
@@ -216,7 +218,7 @@ public class GroupMemberDao {
     private User getUser(String uName) {
         User user = JPAService.getInstance().findUserByName(uName);
         if (user == null) {
-            ChatLogger.info(this.getClass().getName() + "User not found : " + uName);
+            ChatLogger.info(this.getClass().getName() + USER_NOT_FOUND + " " + uName);
             throw new HibernateException("user not found");
         }
         return user;
@@ -355,4 +357,46 @@ public class GroupMemberDao {
         return isTransSuccess;
     }
 
+    public boolean userIsMember(String uName, String gName){
+        boolean isTransactionSuccessful = false;
+        // Create a session
+        Session session = mSessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            User user = JPAService.getInstance().findUserByName(uName);
+            if (user == null) {
+                ChatLogger.info(this.getClass().getName() + USER_NOT_FOUND + " " + uName);
+                return false;
+            }
+
+            Group grp = JPAService.getInstance().findGroupByName(gName);
+            if (grp == null) {
+                ChatLogger.info(this.getClass().getName() + GROUP_NOT_FOUND + " " + gName);
+                return false;
+            }
+
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
+            Root<GroupMember> root = query.from(GroupMember.class);
+            query.select(root).where(builder.and(builder.equal(root.get(GROUP_ID), grp)),
+                    (builder.equal(root.get(GROUP_USER), user)),
+                    (builder.equal(root.get("isModerator"), true)));
+            Query<GroupMember> q = session.createQuery(query);
+            if(!q.getResultList().isEmpty()){
+                isTransactionSuccessful = true;
+            }
+            // Commit the transaction
+            transaction.commit();
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            transaction.rollback();
+        } finally {
+            // Close the session
+            session.close();
+        }
+
+        return isTransactionSuccessful;
+    }
 }
