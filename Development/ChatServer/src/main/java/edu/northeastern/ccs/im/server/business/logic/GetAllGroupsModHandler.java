@@ -1,18 +1,17 @@
 package edu.northeastern.ccs.im.server.business.logic;
 
 import com.google.gson.Gson;
+
+import org.jsoup.helper.StringUtil;
+
+import java.util.Map;
+
 import edu.northeastern.ccs.im.ChatLogger;
-import edu.northeastern.ccs.im.database.GroupMember;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
-import javafx.util.Pair;
-import org.jsoup.helper.StringUtil;
-
-import java.util.List;
-import java.util.Map;
 
 public class GetAllGroupsModHandler implements MessageHandler {
 

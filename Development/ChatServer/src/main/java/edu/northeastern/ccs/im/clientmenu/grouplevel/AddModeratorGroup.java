@@ -2,24 +2,25 @@ package edu.northeastern.ccs.im.clientmenu.grouplevel;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.jsoup.helper.StringUtil;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
-import edu.northeastern.ccs.im.database.User;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
-import javafx.util.Pair;
-import org.jsoup.helper.StringUtil;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
@@ -82,13 +83,15 @@ public class AddModeratorGroup implements CoreOperation {
             FrontEnd.getView().sendToView("The selected user is already a moderator. Sending you back");
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         } else {
-            Pair<String, String> pairUserGroupName = new Pair<>(userToUpgrade, CurrentGroupName.getGroupName());
+            List<String> listKeys = new ArrayList<>();
+            listKeys.add(userToUpgrade);
+            listKeys.add(CurrentGroupName.getGroupName());
             MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TOGGLE_MODERATOR,
-                    new Gson().toJson(pairUserGroupName));
+                    new Gson().toJson(listKeys));
             mConnectionLayerModel.sendMessage(messageJson);
             String responseBoolean = waitForResponseSocket(mConnectionLayerModel);
             if (responseBoolean.toLowerCase().equals("true")) {
-                FrontEnd.getView().sendToView("Operation Successful: \t" + pairUserGroupName.getKey()
+                FrontEnd.getView().sendToView("Operation Successful: \t" + userToUpgrade
                         + " is a moderator now.");
                 InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
             } else {

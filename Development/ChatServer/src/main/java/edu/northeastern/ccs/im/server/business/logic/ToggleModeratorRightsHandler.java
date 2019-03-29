@@ -2,16 +2,18 @@ package edu.northeastern.ccs.im.server.business.logic;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.jsoup.helper.StringUtil;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
-import javafx.util.Pair;
-import org.jsoup.helper.StringUtil;
-
-import java.lang.reflect.Type;
 
 public class ToggleModeratorRightsHandler implements MessageHandler {
 
@@ -31,12 +33,9 @@ public class ToggleModeratorRightsHandler implements MessageHandler {
             }
 
             Gson gson = new Gson();
-
-            Type modList = new TypeToken<Pair<String, String>>() {
-            }.getType();
-            Pair<String, String> pairUsernameGroupName = gson.fromJson(message, modList);
-
-            boolean isSuccess = mJpaService.toggleAdminRights(pairUsernameGroupName);
+            Type modList = new TypeToken<List<String>>() {}.getType();
+            List<String> lst = new Gson().fromJson(message, modList);
+            boolean isSuccess = mJpaService.toggleAdminRights(lst.get(0), lst.get(1));
 
             MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
                     MessageType.TOGGLE_MODERATOR, gson.toJson(isSuccess));

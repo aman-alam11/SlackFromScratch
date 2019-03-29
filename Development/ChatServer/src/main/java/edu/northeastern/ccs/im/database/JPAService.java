@@ -17,7 +17,6 @@ import java.util.Objects;
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
-import javafx.util.Pair;
 
 public class JPAService {
 
@@ -366,7 +365,7 @@ public class JPAService {
 
 
 
-  public boolean toggleAdminRights(Pair<String, String> usernameGroupname){
+  public boolean toggleAdminRights(String username, String groupName){
     Session session = null;
     Transaction transaction = null;
     boolean isOperationSuccessful = false;
@@ -376,17 +375,17 @@ public class JPAService {
       transaction = session.beginTransaction();
 
       // Get the userId for the userName
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(usernameGroupname.getKey());
+      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
 
       int userId = userIdBigInt.intValue();
       if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + usernameGroupname.getKey());
+        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
         return isOperationSuccessful;
       }
 
-      long groupId = gd.findGroupByName(usernameGroupname.getValue()).getId();
+      long groupId = gd.findGroupByName(groupName).getId();
       if (groupId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "Group not found : " + usernameGroupname.getValue());
+        ChatLogger.info(this.getClass().getName() + "Group not found : " + groupName);
         return isOperationSuccessful;
       }
 

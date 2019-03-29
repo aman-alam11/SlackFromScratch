@@ -11,10 +11,12 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
-import javafx.util.Pair;
 import org.jsoup.helper.StringUtil;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -71,13 +73,16 @@ public class DeleteModeratorGroup implements CoreOperation {
                 InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
                 return;
             } else {
-                Pair<String, String> pairUserGroupName = new Pair<>(userToDowngrade, CurrentGroupName.getGroupName());
+
+                List<String> listKeys = new ArrayList<>();
+                listKeys.add(userToDowngrade);
+                listKeys.add(CurrentGroupName.getGroupName());
                 MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TOGGLE_MODERATOR,
-                        new Gson().toJson(pairUserGroupName));
+                        new Gson().toJson(listKeys));
                 mConnectionLayerModel.sendMessage(messageJson);
                 String responseBoolean = waitForResponseSocket(mConnectionLayerModel);
-                if (responseBoolean.toLowerCase().equals("true")) {
-                    FrontEnd.getView().sendToView("Operation Successful: \t" + pairUserGroupName.getKey() + " is not a moderator now.");
+                if (responseBoolean.equalsIgnoreCase("true")) {
+                    FrontEnd.getView().sendToView("Operation Successful: \t" + userToDowngrade + " is not a moderator now.");
                     InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
                 } else {
                     FrontEnd.getView().sendToView("Operation Failed. Please try again");
