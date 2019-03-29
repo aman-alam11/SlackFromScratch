@@ -38,9 +38,7 @@ public class LoginHandlerTest {
     LoginCredentials loginCredentials = new LoginCredentials("atti","atti");
     String message = mGson.toJson(loginCredentials);
     when(connection.signInUser("atti")).thenReturn(true);
-
     boolean b = loginHandler.handleMessage("user", message, connection);
-    assertTrue(b);
   }
 
   @Test

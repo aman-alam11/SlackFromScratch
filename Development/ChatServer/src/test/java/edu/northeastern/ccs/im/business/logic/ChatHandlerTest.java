@@ -69,7 +69,5 @@ public class ChatHandlerTest {
 
     boolean b = chatHandler.handleMessage("user",message,connection);
     assertFalse(b);
-
-
   }
 }
