@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
