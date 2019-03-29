@@ -135,6 +135,8 @@ public class JPAServiceTest {
     assertEquals(2,jpaService.findNonMembers(names,"grp_1").size());
     jpaService.addMultipleUsersToGroup(names,"grp_1");
     assertEquals(4,jpaService.findAllMembersOfGroup("grp_1").size());
+    jpaService.deleteMemberFromGroup("grp_1","Bob");
+    assertEquals(3,jpaService.findAllMembersOfGroup("grp_1").size());
     jpaService.deleteAllMembersOfGroup("grp_1");
     assertEquals(0,jpaService.findAllMembersOfGroup("grp_1").size());
   }
