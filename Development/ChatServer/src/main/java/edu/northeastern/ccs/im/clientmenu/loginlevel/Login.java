@@ -45,7 +45,7 @@ public class Login extends CommonOperations {
       if (!StringUtil.isBlank(resp)) {
         this.listen(resp);
       } else {
-        // TODO: Some default response
+        InjectLevelUtil.getInstance().injectLevel(CurrentLevel.DEFAULT_LEVEL);
       }
     }
   }

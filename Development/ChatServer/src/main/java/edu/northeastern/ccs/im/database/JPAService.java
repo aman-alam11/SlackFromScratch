@@ -219,8 +219,8 @@ public class JPAService {
     return gmd.addMemberToGroup(gName, uName, isModerator);
   }
 
-  public void deleteMemberFromGroup(String gName, String uName) {
-    gmd.deleteMemberFromGroup(gName, uName);
+  public boolean deleteMemberFromGroup(String gName, String uName) {
+    return gmd.deleteMemberFromGroup(gName, uName);
   }
 
   public void deleteAllMembersOfGroup(String gName) {
@@ -414,5 +414,9 @@ public class JPAService {
 
   public boolean renameUpdateGroup(String oldName, String newName){
     return gd.updateGroupName(oldName, newName);
+  }
+
+  public boolean userIsModerator(String uName, String gName){
+    return gmd.userIsMember(uName,gName);
   }
 }

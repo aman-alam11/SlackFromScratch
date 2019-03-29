@@ -70,6 +70,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
       	handler = new GroupSearchHandler();
       	break;
 
+      case DELETER_USER_FROM_GROUP:
+        handler = new ToggleModeratorRightsHandler();
+        break;
+
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();

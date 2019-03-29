@@ -6,6 +6,7 @@ public class FrontEnd {
   private static FrontEnd mFrontEnd;
 
 
+
   private FrontEnd() {
   }
 
@@ -80,6 +81,11 @@ public class FrontEnd {
     System.out.println("1. Add/delete Users.");
     System.out.println("2. Add/delete Moderators.");
     System.out.println("3. Rename Group");
+  }
+
+  public void showDefaultErrorMessage() {
+    System.out.println("Uh Oh! This is embarrassing. Something went wrong.\n " +
+            "Sending you back to main menu");
   }
 
 

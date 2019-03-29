@@ -41,8 +41,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 		
 		if(validate(usersModel, user) && !validUsersToAdd.isEmpty()) {
 			List<String> userNameToAdd = validUsersToAdd.stream()
-																									 .map(u -> u.getName())
-																									 .collect(Collectors.toList());
+					.map(User::getName).collect(Collectors.toList());
 			JPAService.getInstance().addMultipleUsersToGroup(userNameToAdd, usersModel.getGroupName());
 			ackModel.appendErrorMessage("\n Following Users got added :" + gson.toJson(userNameToAdd));
 		}
@@ -111,7 +110,7 @@ public class AddGroupUsersHandler implements MessageHandler {
 			if (isValid && validUsersToAdd.size() != validUsers.size()) {
 				ackModel.addErrorCode(ErrorCodes.G806);
 				ackModel.appendErrorMessage(" \n Only Following Users were added in group :" + " : "
-						+ gson.toJson(validUsersToAdd.stream().map(u -> u.getName()).collect(Collectors.toList())));
+						+ gson.toJson(validUsersToAdd.stream().map(User::getName).collect(Collectors.toList())));
 			}
 		}
 		return isValid;

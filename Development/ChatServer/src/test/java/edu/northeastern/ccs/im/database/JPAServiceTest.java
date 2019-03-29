@@ -126,7 +126,9 @@ public class JPAServiceTest {
   @Test
   public void testE(){
     jpaService.createGroup("grp_1","Charlie",false);
+    assertEquals(true,jpaService.userIsModerator("Charlie","grp_1"));
     jpaService.addGroupMember("grp_1","Alice",false);
+    assertEquals(false,jpaService.userIsModerator("Alice","grp_1"));
     assertEquals(2,jpaService.findAllMembersOfGroup("grp_1").size());
     assertEquals(0,jpaService.getAllGroupsForUser("Alice").size());
     jpaService.updateModeratorStatus("Alice","grp_1",true);
