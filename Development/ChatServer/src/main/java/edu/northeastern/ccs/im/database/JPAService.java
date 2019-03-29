@@ -52,6 +52,14 @@ public class JPAService {
     }
     return instance;
   }
+  
+  /**
+   * only for testing purpose
+   * @param jpa
+   */
+  public static void setJPAService(JPAService jpa) {
+      instance = jpa;
+  }
 
   // Create the SessionFactory using the ServiceRegistry
   SessionFactory mSessionFactory = new Configuration().
