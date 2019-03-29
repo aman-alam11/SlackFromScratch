@@ -191,9 +191,9 @@ public class JPAService {
     return gd.findGroupByName(gName);
   }
 
-  public void deleteGroup(String gName) {
+  public boolean deleteGroup(String gName) {
     Group g = findGroupByName(gName);
-    gd.delete(g.getId());
+    return gd.delete(g.getId());
   }
 
   public List<Group> findGroupByCreator(String name) {

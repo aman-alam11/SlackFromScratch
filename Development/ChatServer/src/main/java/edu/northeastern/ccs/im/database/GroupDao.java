@@ -54,17 +54,17 @@ public class GroupDao {
         return isTransactionSuccessful;
     }
 
-    public void delete(long id) {
+    public boolean delete(long id) {
         // Create a session
         Session session = mSessionFactory.openSession();
         Transaction transaction = null;
+        boolean isOperationSuccess = false;
         try {
             // Begin a transaction
             transaction = session.beginTransaction();
             // Get the User from the database.
             Group grp = session.get(Group.class, id);
             // Delete the User
-            session.delete(grp);
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
@@ -74,8 +74,12 @@ public class GroupDao {
             for(GroupMember gm: gMembers){
                 session.delete(gm);
             }
-            // Commit the transaction
+
+            session.delete(grp);
+
+            isOperationSuccess = true;
             transaction.commit();
+
         } catch (HibernateException | IllegalArgumentException ex) {
             // Print the Exception
             ChatLogger.error(ex.getMessage());
@@ -85,6 +89,8 @@ public class GroupDao {
             // Close the session
             session.close();
         }
+
+        return isOperationSuccess;
     }
 
     public Group findGroupByName(String name){
