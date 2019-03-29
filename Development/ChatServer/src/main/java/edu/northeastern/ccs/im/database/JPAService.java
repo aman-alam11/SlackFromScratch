@@ -54,10 +54,10 @@ public class JPAService {
   }
   
   /**
-   * only for testing purpose
+   * Only for testing purpose
    * @param jpa
    */
-  public static void setJPAService(JPAService jpa) {
+  public static synchronized void setJPAService(JPAService jpa) {
       instance = jpa;
   }
 
