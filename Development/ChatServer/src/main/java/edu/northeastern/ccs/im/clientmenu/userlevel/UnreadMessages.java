@@ -11,7 +11,9 @@ import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
+import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
@@ -32,7 +34,7 @@ public class UnreadMessages implements CoreOperation {
         if (!StringUtil.isBlank(resp)) {
             this.displayResponse(resp);
         } else {
-            // TODO: Some default response
+            InjectLevelUtil.getInstance().injectLevel(CurrentLevel.DEFAULT_LEVEL);
         }
     }
 

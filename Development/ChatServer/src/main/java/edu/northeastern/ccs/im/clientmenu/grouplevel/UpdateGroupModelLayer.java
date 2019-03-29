@@ -30,7 +30,7 @@ public class UpdateGroupModelLayer implements CoreOperation {
     this.mScanner = scanner;
     mConnectionLayerModel = connectionLayerModel;
 
-    FrontEnd.getView().sendToView("Let's see how many groups you belong to; " +
+    FrontEnd.getView().sendToView("INFO: Let's see how many groups you belong to; " +
             "Fetching all your groups, please wait");
 
     modifyGroup(GetAllGroupsUtil.parseResponse(MessageType.GET_ALL_GROUPS_MOD, connectionLayerModel));
@@ -42,7 +42,7 @@ public class UpdateGroupModelLayer implements CoreOperation {
       return;
     }
 
-    FrontEnd.getView().sendToView("Enter name of the group you want to modify from above:");
+    FrontEnd.getView().sendToView( "INPUT: Enter name of the group you want to modify from above:");
     String groupName = mScanner.nextLine().trim();
     boolean noGroupMatched = true;
 
@@ -63,33 +63,33 @@ public class UpdateGroupModelLayer implements CoreOperation {
           } else if (choice == 3) {
             updateGroupName(eachGroupAndModPair.getKey());
           } else {
-            FrontEnd.getView().sendToView("Illegal Input entered. Sending you back.");
+            FrontEnd.getView().sendToView("ERROR: Illegal Input entered. Sending you back.");
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
           }
         } else {
-          FrontEnd.getView().sendToView("You do not have rights to modify that group. Sending you back");
+          FrontEnd.getView().sendToView("ERROR: You do not have rights to modify that group. Sending you back");
           InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         }
       }
     }
 
     if (noGroupMatched) {
-      FrontEnd.getView().sendToView("Illegal Group Name entered.");
+      FrontEnd.getView().sendToView("ERROR: Illegal Group Name entered.");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
     }
   }
 
   private void updateGroupName(String currentGroupName) {
-    FrontEnd.getView().sendToView("Enter the new name of group: " + currentGroupName);
+    FrontEnd.getView().sendToView("INPUT: Enter the new name of group: " + currentGroupName);
     String newName = mScanner.nextLine().trim();
     if(StringUtil.isBlank(newName)) {
-      FrontEnd.getView().sendToView("Name has to have at least 1 letter");
+      FrontEnd.getView().sendToView("ERROR: Name has to have at least 1 letter");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       return;
     }
 
     if(newName.equalsIgnoreCase(currentGroupName)){
-      FrontEnd.getView().sendToView("No update required as names are same.\n");
+      FrontEnd.getView().sendToView("INFO: No update required as names are same.\n");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
     } else {
       List<String> listName = new ArrayList<>();
@@ -100,9 +100,9 @@ public class UpdateGroupModelLayer implements CoreOperation {
       mConnectionLayerModel.sendMessage(messageJson);
       String response = waitForResponseSocket(mConnectionLayerModel);
       if (response.equalsIgnoreCase("true")) {
-        FrontEnd.getView().sendToView("Renamed Group to " + newName);
+        FrontEnd.getView().sendToView("SUCCESS: Renamed Group to " + newName);
       } else {
-        FrontEnd.getView().sendToView("Uh Oh! Unable to rename group, Let's try again!");
+        FrontEnd.getView().sendToView("ERROR: Uh Oh! Unable to rename group, Let's try again!");
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       }
 
@@ -112,7 +112,7 @@ public class UpdateGroupModelLayer implements CoreOperation {
 
   private boolean checkForNullEmpty(Map<String, Boolean> listGroupMod) {
     if (listGroupMod == null || listGroupMod.isEmpty()) {
-      FrontEnd.getView().sendToViewSameLine("Something went wrong. Please try again!");
+      FrontEnd.getView().sendToViewSameLine("ERROR: Something went wrong. Please try again!");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       return true;
     }

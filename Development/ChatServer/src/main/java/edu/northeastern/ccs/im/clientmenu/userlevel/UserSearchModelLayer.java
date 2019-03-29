@@ -65,7 +65,7 @@ public class UserSearchModelLayer extends CommonOperations {
       }
 
     } else {
-      // TODO: Some default response
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.DEFAULT_LEVEL);
     }
   }
 }
