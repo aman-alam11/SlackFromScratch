@@ -39,6 +39,7 @@ public class JPAServiceTest {
     JPAService.setJPAService(jpaService);
   }
 
+
   @Test
   public void testA() {
     try {
