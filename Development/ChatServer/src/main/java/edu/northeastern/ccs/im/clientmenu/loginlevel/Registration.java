@@ -50,7 +50,7 @@ public class Registration extends CommonOperations {
         if (!StringUtil.isBlank(resp)) {
           this.listen(resp);
         } else {
-          // TODO: Some default response
+          InjectLevelUtil.getInstance().injectLevel(CurrentLevel.DEFAULT_LEVEL);
         }
       } else {
         FrontEnd.getView().sendToView("ERROR: Passwords do not match! Please try again");

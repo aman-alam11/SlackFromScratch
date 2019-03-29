@@ -6,7 +6,6 @@ public class GroupUserHandler implements MessageHandler{
 
 	@Override
 	public boolean handleMessage(String user, String message, Connection clientConnection) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

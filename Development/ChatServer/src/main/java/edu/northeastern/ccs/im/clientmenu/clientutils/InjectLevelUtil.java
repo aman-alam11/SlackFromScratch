@@ -105,11 +105,20 @@ public final class InjectLevelUtil {
         injectUpdateModeratorsLevel();
         break;
 
+      case DEFAULT_LEVEL:
+        injectDefaultLevel();
+        break;
+
       default:
         setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
     }
     // Feed the appropriate options
+  }
+
+  private void injectDefaultLevel() {
+    FrontEnd.getView().showDefaultErrorMessage();
+    injectUserLevel();
   }
 
   private static void clearMap() {

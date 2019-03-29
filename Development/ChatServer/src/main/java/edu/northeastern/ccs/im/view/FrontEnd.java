@@ -82,6 +82,11 @@ public class FrontEnd {
     System.out.println("3. Rename Group");
   }
 
+  public void showDefaultErrorMessage() {
+    System.out.println("Uh Oh! This is embarrasing. Something went wrong.\n " +
+            "Sending you back to main menu");
+  }
+
 
   private static void printToStream(String string){
     System.out.println(string);
