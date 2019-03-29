@@ -9,10 +9,10 @@ import org.hibernate.cfg.Configuration;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-
-import javax.transaction.Transactional;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.ChatModel;
@@ -147,11 +147,8 @@ public class JPAService {
   public long createChatMessage(ChatModel chatModel) {
     User fromUser = findUserByName(chatModel.getFromUserName());
     User toUser = findUserByName(chatModel.getToUserName());
-    User replyTo = null;
-    if (chatModel.getReplyTo() != null) {
-    	replyTo = findUserByName(chatModel.getReplyTo());
-    }
-    return cd.create(fromUser, toUser, replyTo, chatModel);
+    Group grp = null;
+    return cd.create(fromUser, toUser, chatModel);
   }
 
   /**
@@ -263,36 +260,14 @@ public class JPAService {
   }
 
 
+  /**
+   * Set all the messages to deliver by specific username.
+   * @param username - user name of the user you want to set delivery true;
+   * @return - True or false according to the result.
+   */
   public boolean setDeliveredUnreadMessages(String username) {
 
-    Session session = null;
-    Transaction transaction = null;
-    boolean result = false;
-
-    try {
-      session = mSessionFactory.openSession();
-      transaction = session.beginTransaction();
-
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
-        return false;
-      }
-
-      result = ud.setDeliverAllUnreadMessages(userId);
-
-      // Commit the transaction
-      transaction.commit();
-    } catch (HibernateException ex) {
-      ChatLogger.error(ex.getMessage());
-      Objects.requireNonNull(transaction).rollback();
-    } finally {
-      Objects.requireNonNull(session).close();
-    }
-
-    return result;
+    return ud.setDeliverAllUnreadMessages(username);
   }
 
 
@@ -306,5 +281,124 @@ public class JPAService {
 
   public List<User> findNonMembers(List<String> names, String gName) {
     return gmd.findNonMembers(names, gName);
+  }
+
+  public List<Group> allGroupsForUser(String uName, String gName){
+    return gd.allGroupsOfUser(uName,gName);
+  }
+
+
+  /**
+   * Get all the groups for a particular user that s/he is in.
+   *
+   * @param username The username of the user for which we want to extract all the groups for.
+   * @return A List of Pair where the key is the group name and the value is a boolean that represents
+   * whether s/he is a moderator in that particular group or not.
+   */
+  public Map<String, Boolean> getAllGroupsForUser(String username) {
+    Session session = null;
+    Transaction transaction = null;
+    Map<String, Boolean> allGroupsForUser = new HashMap<>();
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+      int userId = userIdBigInt.intValue();
+      if (userId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        return allGroupsForUser;
+      }
+
+      allGroupsForUser = gmd.getAllGroupsForUser(userId);
+
+      // Commit the transaction
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return allGroupsForUser;
+  }
+
+
+  /**
+   * Gets all the users in a particular group.
+   *
+   * @param groupName The group name for which we need yo get all the users for.
+   * @return A Map where the key is the userName of members of the group and the value is a boolean representing if
+   * s/he is a moderator in that group.
+   */
+  public Map<String, Boolean> getAllUsersForGroup(String groupName) {
+    Session session = null;
+    Transaction transaction = null;
+    Map<String, Boolean> usernameModeratorMap = new HashMap<>();
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      long groupId = gd.findGroupByName(groupName).getId();
+
+      if (groupId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "Group not found : " + groupName);
+        return usernameModeratorMap;
+      }
+
+      usernameModeratorMap = gmd.findAllMembersOfGroupAsMap(groupId);
+
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return usernameModeratorMap;
+  }
+
+
+
+  public boolean toggleAdminRights(String username, String groupName){
+    Session session = null;
+    Transaction transaction = null;
+    boolean isOperationSuccessful = false;
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the userName
+      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+
+      int userId = userIdBigInt.intValue();
+      if (userId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        return isOperationSuccessful;
+      }
+
+      long groupId = gd.findGroupByName(groupName).getId();
+      if (groupId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "Group not found : " + groupName);
+        return isOperationSuccessful;
+      }
+
+      isOperationSuccessful = gmd.toggleAdminRightsOfUser(userId, groupId);
+
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return isOperationSuccessful;
   }
 }

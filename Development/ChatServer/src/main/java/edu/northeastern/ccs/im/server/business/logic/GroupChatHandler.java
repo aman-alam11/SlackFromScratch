@@ -22,6 +22,9 @@ public class GroupChatHandler implements MessageHandler {
   	List<User> groupUsers = JPAService.getInstance().findAllMembersOfGroup(groupChat.getToUserName());
   	MessageHandler chatHandler= new ChatHandler();
   	for (User gUser : groupUsers) {
+  		if (gUser.getName().equals(user)) {
+  			continue;
+  		}
   		String msg = convertUserChatToGroupChat(groupChat, gUser.getName());
   		chatHandler.handleMessage(user, msg, clientConnection);
   	}

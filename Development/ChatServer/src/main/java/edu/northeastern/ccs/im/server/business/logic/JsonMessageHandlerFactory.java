@@ -26,8 +26,8 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
         break;
        
       case USER_SEARCH:
-    	handler = new UserSearchHandler();
-    	break;
+      	handler = new UserSearchHandler();
+      	break;
 
       case CREATE_GROUP:
         handler = new GroupCreationHandler();
@@ -44,7 +44,32 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
       case UNREAD_MSG:
         handler = new UnreadMessageHandler();
         break;
-      	
+
+      case GET_ALL_GROUPS_MOD:
+        handler = new GetAllGroupsModHandler();
+        break;
+
+      case GET_ALL_USERS_FOR_GRP:
+        handler = new GetAllUsersForGroup();
+        break;
+
+      case TOGGLE_MODERATOR:
+        handler = new ToggleModeratorRightsHandler();
+        break;
+
+
+      case RENAME_GROUP:
+        handler = new RenameGroupHandler();
+        break;
+
+      case DELETE_GROUP:
+        handler = new DeleteGroupHandler();
+        break;
+
+      case GROUP_SEARCH:
+      	handler = new GroupSearchHandler();
+      	break;
+
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();

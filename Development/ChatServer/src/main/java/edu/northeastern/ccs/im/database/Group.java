@@ -43,27 +43,27 @@ public class Group implements Serializable {
         this.isAuthRequired = isAuthReq;
     }
 
-    protected long getId() {
+    public long getId() {
         return id;
     }
 
-    protected void setId(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    protected String getgName() {
+    public String getgName() {
         return gName;
     }
 
-    protected void setgName(String gName) {
+    public void setgName(String gName) {
         this.gName = gName;
     }
 
-    protected User getgCreator() {
+    public User getgCreator() {
         return gCreator;
     }
 
-    protected void setgCreator(User gCreator) {
+    public void setgCreator(User gCreator) {
         this.gCreator = gCreator;
     }
     

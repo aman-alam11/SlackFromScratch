@@ -27,7 +27,7 @@ public class UserChatModelLayer implements CoreOperation {
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
     connLocal = connectionLayerModel;
     gson = new Gson();
-    FrontEnd.getView().sendToView("MESSAGE: Chat initiated.");
+    FrontEnd.getView().sendToView("INFO: Chat initiated.");
     FrontEnd.getView().sendToView("INPUT: Enter Message or enter \\q to quit");
     initReaderThread();
 
@@ -49,7 +49,7 @@ public class UserChatModelLayer implements CoreOperation {
         initReaderThread();
       } else {
         shouldListenForMessages = false;
-        FrontEnd.getView().sendToView("MESSAGE: Ending Chat.");
+        FrontEnd.getView().sendToView("INFO: Ending Chat.");
         breakFromConversation(connectionLayerModel);
         FrontEnd.getView().showUserLevelOptions();
         break;
@@ -108,7 +108,7 @@ public class UserChatModelLayer implements CoreOperation {
             response.getMessageType().equals(MessageType.GROUP_CHAT)) {
 
       ChatModel chat = gson.fromJson(response.getMessage(), ChatModel.class);
-      String messageToDisplay = response.getMessageType().name() + "-" + chat.getMsg();
+      String messageToDisplay = response.getMessageType().name() + "-" + response.getFromUser() + ": " + chat.getMsg();
       FrontEnd.getView().sendToView(messageToDisplay);
     }
   }

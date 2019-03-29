@@ -18,8 +18,9 @@ import edu.northeastern.ccs.im.clientmenu.models.Search;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.UserSearch;
 
-public class SearchModelLayerTest {
+public class UserSearchModelLayerTest {
 
   @Mock
   private Connection connection;
@@ -45,11 +46,11 @@ public class SearchModelLayerTest {
     String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
-    Search search = new Search("atti");
+    UserSearch search = new UserSearch("atti");
     List<String> userList = new ArrayList<>();
     userList.add("hello");
     userList.add(WORLD);
-    search.setList(userList);
+    search.setUsersList(userList);
     String userString = mGson.toJson(search);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
 
@@ -64,9 +65,9 @@ public class SearchModelLayerTest {
     String str = USERNAME + HELLO;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
-    Search search = new Search("atti");
+    UserSearch search = new UserSearch("atti");
     List<String> userList = new ArrayList<>();
-    search.setList(userList);
+    search.setUsersList(userList);
     String userString = mGson.toJson(search);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
 
@@ -81,10 +82,10 @@ public class SearchModelLayerTest {
     String str = "atti\n" + "pass\n" + "lol\n";
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
-    Search search = new Search("atti");
+    UserSearch search = new UserSearch("atti");
     List<String> userList = new ArrayList<>();
     userList.add("hello");
-    search.setList(userList);
+    search.setUsersList(userList);
     String userString = mGson.toJson(search);
     MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
 

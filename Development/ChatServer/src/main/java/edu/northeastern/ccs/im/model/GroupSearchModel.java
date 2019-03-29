@@ -1,5 +1,6 @@
 package edu.northeastern.ccs.im.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupSearchModel {
@@ -9,6 +10,7 @@ public class GroupSearchModel {
 
   public GroupSearchModel(String toChatWithGroupName) {
     this.toChatWithGroupName = toChatWithGroupName;
+    groupList = new ArrayList<>();
   }
 
   public String getToChatWithGroupName() {

@@ -9,10 +9,10 @@ import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
-import edu.northeastern.ccs.im.clientmenu.models.Search;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.GroupSearchModel;
@@ -21,6 +21,7 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
 public class GroupSearchModelLayer implements CoreOperation {
+
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
 
@@ -33,7 +34,7 @@ public class GroupSearchModelLayer implements CoreOperation {
     GroupSearchModel search = new GroupSearchModel(chatOtherGroup);
 
     String groupSearchJsonString = mGson.toJson(search);
-    MessageJson messageJson = new MessageJson(myUsername, MessageType.GROUP_SERACH, groupSearchJsonString);
+    MessageJson messageJson = new MessageJson(myUsername, MessageType.GROUP_SEARCH, groupSearchJsonString);
     connectionLayerModel.sendMessage(messageJson);
 
     List<String> groupNames = null;
@@ -55,10 +56,13 @@ public class GroupSearchModelLayer implements CoreOperation {
       // TODO: Some default response
     }
 
-    FrontEnd.getView().sendToView("INPUT: Choose one of the Group names from above\n");
+    FrontEnd.getView().sendToView("INPUT: Enter one of the Group names from above\n");
     String groupToChatWith = scanner.nextLine();
 
+
+    //TODO: CHECK FOR isEmpty NOT FOR NOT NULL : attinder
     if (groupNames!= null && groupNames.contains(groupToChatWith)) {
+      CurrentGroupName.setGroupName(groupToChatWith);
       new GroupChatModelLayer(groupToChatWith).passControl(scanner, connectionLayerModel);
     } else {
       FrontEnd.getView().sendToView("ERROR: Invalid Group name");

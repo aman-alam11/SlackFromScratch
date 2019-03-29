@@ -11,9 +11,7 @@ import java.util.Scanner;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
-import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
-import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
@@ -23,17 +21,13 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.waitForResponseSocket;
 
-// TODO: Only Moderators can add/delete new Users
-// TODO: Add people as moderators, delete moderators, change moderators
 public class AddUserToGroupModelLayer implements CoreOperation {
 
   private Gson mGson;
-  private Scanner scanner;
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
     this.mGson = new Gson();
-    this.scanner = scanner;
 
     FrontEnd.getView().sendToView("INPUT: Enter name of users to be added split by \",\"");
     String scr = scanner.nextLine().trim();
@@ -69,10 +63,6 @@ public class AddUserToGroupModelLayer implements CoreOperation {
     } else {
       // TODO: Some default response
     }
-
-
-
-
 
   }
 }

@@ -1,18 +1,23 @@
 package edu.northeastern.ccs.im.database;
 
-import edu.northeastern.ccs.im.ChatLogger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.logging.Logger;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import java.util.ArrayList;
-import java.util.List;
+import edu.northeastern.ccs.im.ChatLogger;
 
 public class GroupMemberDao {
 
@@ -276,4 +281,104 @@ public class GroupMemberDao {
         }
         return nonMembers;
     }
+
+    /**
+     * Get all groups for the particular user with passed userid
+     *
+     * @param userId The userId which is in any group.
+     * @return A List of Pair where key is the Group name and value is a boolean which represents whether s/he is a
+     * moderator in that group.
+     */
+    public Map<String, Boolean> getAllGroupsForUser(int userId) {
+        Session session = mSessionFactory.openSession();
+        List<GroupMember> listGroupForUser = new ArrayList<>();
+        Map<String, Boolean> groupNameList = new HashMap<>();
+
+        try {
+            String sql = "SELECT * FROM group_member WHERE user_id =?";
+            Query query = session.createNativeQuery(sql, GroupMember.class);
+            query.setParameter(1, userId);
+            listGroupForUser = query.getResultList();
+            for(GroupMember member : listGroupForUser){
+                groupNameList.put(member.getGroupId().getgName(), member.isModerator());
+            }
+        } catch (Exception ex) {
+            // If there are any exceptions, roll back the changes
+            Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+        } finally {
+            // Close the session
+            session.close();
+        }
+        return groupNameList;
+    }
+
+
+    /**
+     * Retrieves the names of all members of the particular group.
+     * @param groupId The groupId of the group for which we need to retrieve all the members for.
+     * @return A Map where the username of members is key and value is the property which represents if they are admin or not.
+     */
+    public Map<String, Boolean> findAllMembersOfGroupAsMap(long groupId){
+        Map<String, Boolean> allMembers = new HashMap<>();
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = mSessionFactory.openSession();
+            // Begin a transaction
+            transaction = session.beginTransaction();
+
+            String sql = "SELECT * FROM group_member where group_id=?";
+            Query query = session.createNativeQuery(sql, GroupMember.class);
+            query.setParameter(1, groupId);
+            List<GroupMember> listUsersForGroup = (List<GroupMember>) query.getResultList();
+
+            for(GroupMember gm: listUsersForGroup){
+                allMembers.put(gm.getGroupUser().getName(), gm.isModerator());
+            }
+
+            transaction.commit();
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            Objects.requireNonNull(transaction).rollback();
+        } finally {
+            // Close the session
+            Objects.requireNonNull(session).close();
+        }
+        return allMembers;
+    }
+
+    public boolean toggleAdminRightsOfUser(int userId, long groupId){
+        Session session = null;
+        Transaction transaction = null;
+        boolean isTransSuccess = false;
+        try {
+            session = mSessionFactory.openSession();
+            // Begin a transaction
+            transaction = session.beginTransaction();
+
+            String sql = "UPDATE group_member SET isModerator =  isModerator ^ 1 WHERE user_Id = ? AND group_id = ?";
+            Query query = session.createNativeQuery(sql, GroupMember.class);
+            query.setParameter(1, userId);
+            query.setParameter(2, groupId);
+            query.executeUpdate();
+
+            transaction.commit();
+            isTransSuccess= true;
+        } catch (HibernateException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+            // If there are any exceptions, roll back the changes
+            Objects.requireNonNull(transaction).rollback();
+        } finally {
+            // Close the session
+            Objects.requireNonNull(session).close();
+        }
+
+        return isTransSuccess;
+    }
+
+
+
 }

@@ -7,8 +7,10 @@ import java.util.Scanner;
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
+import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
@@ -16,18 +18,28 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class GroupChatModelLayer implements CoreOperation {
 
+
+
   private static final String QUIT = "\\q";
   private Connection connLocal;
   private Gson gson;
   private ChatModel chatModel;
   private boolean shouldListenForMessages = true;
 
+  public GroupChatModelLayer(String toGgroupChat) {
+    // Create Object
+    chatModel = new ChatModel();
+    chatModel.setFromUserName(GenerateLoginCredentials.getUsername());
+    chatModel.setGroupName(toGgroupChat);
+    chatModel.setToUserName(toGgroupChat);
+  }
+
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
     connLocal = connectionLayerModel;
     gson = new Gson();
 
-    FrontEnd.getView().sendToView("MESSAGE: Chat initiated.");
+    FrontEnd.getView().sendToView("INFO: Chat initiated.");
     FrontEnd.getView().sendToView("INPUT: Enter Message or enter \\q to quit");
     initReaderThread();
 
@@ -50,14 +62,13 @@ public class GroupChatModelLayer implements CoreOperation {
         initReaderThread();
       } else {
         shouldListenForMessages = false;
-        FrontEnd.getView().sendToView("MESSAGE: Ending Chat.");
+        FrontEnd.getView().sendToView("INFO: Ending Chat.");
         breakFromConversation(connectionLayerModel);
-        FrontEnd.getView().showUserLevelOptions();
+        InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         break;
       }
     }
   }
-
 
   private void initReaderThread() {
     if(connLocal == null){
@@ -88,14 +99,7 @@ public class GroupChatModelLayer implements CoreOperation {
   }
 
 
-  public GroupChatModelLayer(String toGgroupChat) {
-    // Create Object
-    chatModel = new ChatModel();
-    chatModel.setFromUserName(GenerateLoginCredentials.getUsername());
-    chatModel.setToUserName(toGgroupChat);
-  }
-
-
+  //TODO make this method private: attinder
   /**
    * This method runs in a loop when thread starts till messgage quit comes
    */
@@ -113,5 +117,4 @@ public class GroupChatModelLayer implements CoreOperation {
       FrontEnd.getView().sendToView(messageToDisplay);
     }
   }
-
 }

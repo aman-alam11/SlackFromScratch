@@ -47,8 +47,11 @@ public class UserSearchModelLayer extends CommonOperations {
       if (usernames.isEmpty()) {
         FrontEnd.getView().sendToView("ERROR: No users with that name found");
       } else {
+        FrontEnd.getView().sendToView("RESULTS: Users found with name " + chatUserOtherEnd);
+         int count = 1;
         for (String username : usernames) {
-          FrontEnd.getView().sendToView(username);
+          FrontEnd.getView().sendToView(count + ": " + username);
+          count++;
         }
       }
 
@@ -56,7 +59,7 @@ public class UserSearchModelLayer extends CommonOperations {
       // TODO: Some default response
     }
 
-    FrontEnd.getView().sendToView("INPUT: Choose one of the user names from above\n");
+    FrontEnd.getView().sendToView("INPUT: Enter one of the user names from above\n");
     String userToChatWith = scanner.nextLine();
 
     if (usernames!= null && usernames.contains(userToChatWith)) {

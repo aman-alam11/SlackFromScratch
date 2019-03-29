@@ -9,8 +9,11 @@ import java.util.function.Function;
 
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.AddModeratorGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.AddUserToGroupModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.CreateGroupModelLayer;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteGroupModelLayer;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteModeratorGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupSearchModelLayer;
@@ -96,6 +99,12 @@ public final class InjectLevelUtil {
         injectGroupUsersCrudLevel();
         break;
 
+
+      case GROUP_USERS_MODERATOR_OPERATIONS:
+        setCurrentLevel(CurrentLevel.GROUP_USERS_MODERATOR_OPERATIONS);
+        injectUpdateModeratorsLevel();
+        break;
+
       default:
         setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
@@ -130,12 +139,19 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(1, scanner -> new CreateGroupModelLayer());
     mClientOptionsMap.put(2, scanner -> new UpdateGroupModelLayer());
     mClientOptionsMap.put(3, scanner -> new GroupSearchModelLayer());
+    mClientOptionsMap.put(4, scanner -> new DeleteGroupModelLayer());
   }
 
   private void injectGroupUsersCrudLevel() {
     FrontEnd.getView().showGroupUsersCrudLevelOptions();
     mClientOptionsMap.put(1, scanner -> new AddUserToGroupModelLayer());
     mClientOptionsMap.put(2, scanner -> new DeleteUsersFromGroup());
+  }
+
+  private void injectUpdateModeratorsLevel() {
+    FrontEnd.getView().showModeratorsOptions();
+    mClientOptionsMap.put(1, scanner -> new AddModeratorGroup());
+    mClientOptionsMap.put(2, scanner -> new DeleteModeratorGroup());
   }
 
 }
