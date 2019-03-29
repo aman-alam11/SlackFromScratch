@@ -56,7 +56,7 @@ public class GroupDao {
     public boolean delete(long id) {
         // Create a session
         Session session = mSessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();;
+        Transaction transaction = session.beginTransaction();
         boolean isOperationSuccess = false;
         try {
             // Get the User from the database.
@@ -159,7 +159,7 @@ public class GroupDao {
     public boolean updateGroupName(String oldName, String newName){
         Session session = null;
         session = mSessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();;
+        Transaction transaction = session.beginTransaction();
         boolean isTransactionSuccessful = false;
 
         try {

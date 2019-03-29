@@ -79,7 +79,6 @@ public class GroupChatModelLayer implements CoreOperation {
         try {
           Thread.sleep(500);
           if(connLocal.hasNext()){
-            // TODO: Check if it is of response type
             displayResponse(connLocal.next());
           }
         } catch (Exception e) {
@@ -98,7 +97,6 @@ public class GroupChatModelLayer implements CoreOperation {
   }
 
 
-  //TODO make this method private: attinder
   /**
    * This method runs in a loop when thread starts till messgage quit comes
    */
