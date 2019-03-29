@@ -49,7 +49,7 @@ public class GroupSearchModelLayerTest {
   }
 
   @Test
-  public void searchResultListEmptyTest() {
+  public void searchResultListContainsTest() {
     String str =  USERNAME + USERNAME + QUIT;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
@@ -64,5 +64,39 @@ public class GroupSearchModelLayerTest {
     GroupSearchModelLayer createGroupModelLayer = new GroupSearchModelLayer();
     createGroupModelLayer.passControl(scanner, connection);
   }
+
+  @Test
+  public void searchResultListDoesNotContainTest() {
+    String str =  USERNAME + USERNAME + QUIT;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+    when(connection.hasNext()).thenReturn(true);
+    GroupSearchModel searchModel = new GroupSearchModel(USERNAME);
+    List<String> list = new ArrayList<>();
+    list.add("sd");
+    searchModel.setGroupList(list);
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(searchModel));
+    when(connection.next()).thenReturn(response);
+    GroupSearchModelLayer createGroupModelLayer = new GroupSearchModelLayer();
+    createGroupModelLayer.passControl(scanner, connection);
+  }
+
+  @Test
+  public void searchResultListNullTest() {
+    String str =  USERNAME + USERNAME + QUIT;
+    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+    Scanner scanner = new Scanner(in);
+
+    when(connection.hasNext()).thenReturn(true);
+    GroupSearchModel searchModel = new GroupSearchModel(USERNAME);
+    searchModel.setGroupList(null);
+    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(searchModel));
+    when(connection.next()).thenReturn(response);
+    GroupSearchModelLayer createGroupModelLayer = new GroupSearchModelLayer();
+    createGroupModelLayer.passControl(scanner, connection);
+  }
+
+
 
 }

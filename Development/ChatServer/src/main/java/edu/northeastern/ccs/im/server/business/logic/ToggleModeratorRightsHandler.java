@@ -34,7 +34,7 @@ public class ToggleModeratorRightsHandler implements MessageHandler {
 
             Gson gson = new Gson();
             Type modList = new TypeToken<List<String>>() {}.getType();
-            List<String> lst = new Gson().fromJson(message, modList);
+            List<String> lst = gson.fromJson(message, modList);
             boolean isSuccess = mJpaService.toggleAdminRights(lst.get(0), lst.get(1));
 
             MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,

@@ -44,30 +44,28 @@ public class GroupSearchModelLayer implements CoreOperation {
       GroupSearchModel searchResults = mGson.fromJson(resp, GroupSearchModel.class);
       groupNames = searchResults.getListGroupString();
 
-      if (groupNames.isEmpty()) {
+      if (groupNames == null || groupNames.isEmpty()) {
         FrontEnd.getView().sendToView("ERROR: No Groups with that name found");
       } else {
         for (String name : groupNames) {
           FrontEnd.getView().sendToView(name);
+        }
+
+        FrontEnd.getView().sendToView("INPUT: Enter one of the Group names from above\n");
+        String groupToChatWith = scanner.nextLine();
+
+
+        if (groupNames.contains(groupToChatWith)) {
+          CurrentGroupName.setGroupName(groupToChatWith);
+          new GroupChatModelLayer(groupToChatWith).passControl(scanner, connectionLayerModel);
+        } else {
+          FrontEnd.getView().sendToView("ERROR: Invalid Group name");
+          InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         }
       }
 
     } else {
       // TODO: Some default response
     }
-
-    FrontEnd.getView().sendToView("INPUT: Enter one of the Group names from above\n");
-    String groupToChatWith = scanner.nextLine();
-
-
-    //TODO: CHECK FOR isEmpty NOT FOR NOT NULL : attinder
-    if (groupNames!= null && groupNames.contains(groupToChatWith)) {
-      CurrentGroupName.setGroupName(groupToChatWith);
-      new GroupChatModelLayer(groupToChatWith).passControl(scanner, connectionLayerModel);
-    } else {
-      FrontEnd.getView().sendToView("ERROR: Invalid Group name");
-      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
-    }
-
   }
 }
