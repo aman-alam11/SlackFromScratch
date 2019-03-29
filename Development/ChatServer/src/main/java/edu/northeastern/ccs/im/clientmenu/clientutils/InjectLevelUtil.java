@@ -12,6 +12,7 @@ import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.AddModeratorGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.AddUserToGroupModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.CreateGroupModelLayer;
+import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteGroupModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteModeratorGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
@@ -138,6 +139,7 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(1, scanner -> new CreateGroupModelLayer());
     mClientOptionsMap.put(2, scanner -> new UpdateGroupModelLayer());
     mClientOptionsMap.put(3, scanner -> new GroupSearchModelLayer());
+    mClientOptionsMap.put(4, scanner -> new DeleteGroupModelLayer());
   }
 
   private void injectGroupUsersCrudLevel() {

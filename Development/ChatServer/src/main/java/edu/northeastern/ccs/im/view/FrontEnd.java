@@ -62,6 +62,7 @@ public class FrontEnd {
     System.out.println("1. Create Group");
     System.out.println("2. Update Group");
     System.out.println("3. Group Chat");
+    System.out.println("4. Delete Group");
     System.out.println("Or Enter \\b to go back or \\q to quit");
     System.out.println("INPUT: Enter From above Options: ");
   }

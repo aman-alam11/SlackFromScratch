@@ -57,6 +57,15 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
         handler = new ToggleModeratorRightsHandler();
         break;
 
+
+      case RENAME_GROUP:
+        handler = new RenameGroupHandler();
+        break;
+
+      case DELETE_GROUP:
+        handler = new DeleteGroupHandler();
+        break;
+
       case GROUP_SEARCH:
       	handler = new GroupSearchHandler();
       	break;
