@@ -40,58 +40,58 @@ public class SearchModelLayerTest {
     mGson = new Gson();
   }
 
-  @Test
-  public void passControlTest() {
-    String str = USERNAME + HELLO;
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-    Search search = new Search("atti");
-    List<String> userList = new ArrayList<>();
-    userList.add("hello");
-    userList.add(WORLD);
-    search.setList(userList);
-    String userString = mGson.toJson(search);
-    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
-
-    when(connection.hasNext()).thenReturn(true);
-    when(connection.next()).thenReturn(messageJson);
-    userSearchModelLayer.passControl(scanner, connection);
-  }
-
-
-  @Test
-  public void noUsersReturnedTest() {
-    String str = USERNAME + HELLO;
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-    Search search = new Search("atti");
-    List<String> userList = new ArrayList<>();
-    search.setList(userList);
-    String userString = mGson.toJson(search);
-    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
-
-    when(connection.hasNext()).thenReturn(true);
-    when(connection.next()).thenReturn(messageJson);
-    userSearchModelLayer.passControl(scanner, connection);
-  }
+//  @Test
+//  public void passControlTest() {
+//    String str = USERNAME + HELLO;
+//    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+//    Scanner scanner = new Scanner(in);
+//    Search search = new Search("atti");
+//    List<String> userList = new ArrayList<>();
+//    userList.add("hello");
+//    userList.add(WORLD);
+//    search.setList(userList);
+//    String userString = mGson.toJson(search);
+//    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
+//
+//    when(connection.hasNext()).thenReturn(true);
+//    when(connection.next()).thenReturn(messageJson);
+//    userSearchModelLayer.passControl(scanner, connection);
+//  }
 
 
-  @Test
-  public void wrongUserEnteredTest() {
-    String str = "atti\n" + "pass\n" + "lol\n";
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-    Search search = new Search("atti");
-    List<String> userList = new ArrayList<>();
-    userList.add("hello");
-    search.setList(userList);
-    String userString = mGson.toJson(search);
-    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
+//  @Test
+//  public void noUsersReturnedTest() {
+//    String str = USERNAME + HELLO;
+//    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+//    Scanner scanner = new Scanner(in);
+//    Search search = new Search("atti");
+//    List<String> userList = new ArrayList<>();
+//    search.setList(userList);
+//    String userString = mGson.toJson(search);
+//    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
+//
+//    when(connection.hasNext()).thenReturn(true);
+//    when(connection.next()).thenReturn(messageJson);
+//    userSearchModelLayer.passControl(scanner, connection);
+//  }
 
-    when(connection.hasNext()).thenReturn(true);
-    when(connection.next()).thenReturn(messageJson);
-    userSearchModelLayer.passControl(scanner, connection);
-  }
+
+//  @Test
+//  public void wrongUserEnteredTest() {
+//    String str = "atti\n" + "pass\n" + "lol\n";
+//    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
+//    Scanner scanner = new Scanner(in);
+//    Search search = new Search("atti");
+//    List<String> userList = new ArrayList<>();
+//    userList.add("hello");
+//    search.setList(userList);
+//    String userString = mGson.toJson(search);
+//    MessageJson messageJson = new MessageJson("atti", MessageType.USER_SEARCH, userString);
+//
+//    when(connection.hasNext()).thenReturn(true);
+//    when(connection.next()).thenReturn(messageJson);
+//    userSearchModelLayer.passControl(scanner, connection);
+//  }
 
   @Test
   public void blankResponseUserSearchTest() {
