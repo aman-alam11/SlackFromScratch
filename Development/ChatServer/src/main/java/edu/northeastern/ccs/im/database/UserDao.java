@@ -243,7 +243,6 @@ public class UserDao {
 
     try {
       String sql = "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered";
-      // TODO: Update isDelivered
       Query query = session.createNativeQuery(sql, Chat.class);
       query.setParameter(1, userId);
       listUnreadChatRows.addAll(query.getResultList());
@@ -289,5 +288,4 @@ public class UserDao {
     }
     return result;
   }
-
 }

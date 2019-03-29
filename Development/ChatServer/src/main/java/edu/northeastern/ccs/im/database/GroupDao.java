@@ -74,7 +74,15 @@ public class GroupDao {
             for(GroupMember gm: gMembers){
                 session.delete(gm);
             }
-
+            CriteriaBuilder builderChat = session.getCriteriaBuilder();
+            CriteriaQuery<Chat> queryChat = builderChat.createQuery(Chat.class);
+            Root<Chat> rootChat = queryChat.from(Chat.class);
+            queryChat.select(rootChat).where(builderChat.equal(rootChat.get("groupId"), grp));
+            Query<Chat> qChat = session.createQuery(queryChat);
+            List<Chat> allC = qChat.getResultList();
+            for(Chat c: allC){
+                session.delete(c);
+            }
             session.delete(grp);
 
             isOperationSuccess = true;

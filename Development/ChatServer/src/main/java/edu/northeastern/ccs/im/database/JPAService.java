@@ -246,9 +246,6 @@ public class JPAService {
         String message = listRow.getMsg();
         unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
       }
-
-      // TODO: Check if working @Mitresh.
-      //  Mark all messages as read
       ud.setDeliverAllUnreadMessages(username);
 
       transaction.commit();
