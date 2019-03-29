@@ -22,7 +22,6 @@ import edu.northeastern.ccs.im.database.User;
 import edu.northeastern.ccs.im.model.AddDeleteGroupUsers;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.business.logic.AddGroupUsersHandler;
-import static org.hamcrest.Matchers.*;
 
 public class AddGroupUsersHandlerTest {
 	
