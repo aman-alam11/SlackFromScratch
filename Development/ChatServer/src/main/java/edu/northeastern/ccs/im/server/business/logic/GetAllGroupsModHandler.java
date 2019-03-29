@@ -33,6 +33,7 @@ public class GetAllGroupsModHandler implements MessageHandler {
             Gson gson = new Gson();
 
             MessageJson messageJson = gson.fromJson(message, MessageJson.class);
+
             if (messageJson.getMessageType().equals(MessageType.GET_ALL_GROUPS_MOD)) {
 
                 Map<String, Boolean> listAllGroupsForUser = mJpaService.getAllGroupsForUser(user);
