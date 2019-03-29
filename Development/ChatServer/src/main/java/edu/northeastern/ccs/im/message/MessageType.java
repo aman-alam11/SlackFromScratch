@@ -101,7 +101,18 @@ public enum MessageType {
   /**
    * Toggle Moderator rights.
    */
-  TOGGLE_MODERATOR("TGM");
+  TOGGLE_MODERATOR("TGM"),
+
+  /**
+   * Rename Group.
+   */
+  RENAME_GROUP("RGP"),
+
+
+  /**
+   * Delete Group.
+   */
+  DELETE_GROUP("DGP");
 
   /**
    * Store the short name of this message type.
