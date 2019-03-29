@@ -2,6 +2,8 @@ package edu.northeastern.ccs.im.message;
 
 import java.util.Date;
 
+import com.google.gson.Gson;
+
 public class MessageJson {
   private MessageType messageType;
   private String fromUser;
@@ -58,5 +60,11 @@ public class MessageJson {
 
   public void setMessage(String message) {
     this.message = message;
+  }
+  
+  @Override
+  public String toString() {
+  	
+  	return new Gson().toJson(this);
   }
 }

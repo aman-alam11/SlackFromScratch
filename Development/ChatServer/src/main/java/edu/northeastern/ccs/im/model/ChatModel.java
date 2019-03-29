@@ -2,49 +2,80 @@ package edu.northeastern.ccs.im.model;
 
 import java.util.Date;
 
-/**
- * Structure for ChatModel:
- *
- * { from: to: conversation: time: isDelivered: }
- */
 public class ChatModel {
 
-  private String from;
-  private String to;
-  private String conversation;
-  private Date time;
-  private boolean isDelivered;
+  private String fromUserName;
+  private String toUserName;
+  private String msg;
+  private Date timestamp;
+  private Date expiry;
+  private Boolean isDelivered;
+  private String errorCode;
+  private String groupName;
+  private String replyTo;
 
-  public ChatModel(){}
-
-  public ChatModel(String from, String to, String conversation, Date time, boolean isDelivered) {
-
-    this.from = from;
-    this.to = to;
-    this.conversation = conversation;
-    this.time = time;
-    this.isDelivered = isDelivered;
+  public String getErrorCode() {
+    return errorCode;
   }
 
-
-  public String getSender() {
-    return from;
-  }
-
-  public String getReciever() {
-    return to;
-  }
-
-  public String getConversation() {
-    return conversation;
-  }
-
-  public Date getTimeStamp() {
-    return time;
-  }
-
-  public boolean isDelivered() {
+  public Boolean getDelivered() {
     return isDelivered;
   }
 
+  public void setDelivered(Boolean delivered) {
+    isDelivered = delivered;
+  }
+
+  public Date getExpiry() {
+    return expiry;
+  }
+
+  public Date getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(Date timestamp) {
+    this.timestamp = timestamp;
+  }
+
+  public String getMsg() {
+    return msg;
+  }
+
+  public void setMsg(String msg) {
+    this.msg = msg;
+  }
+
+  public String getToUserName() {
+    return toUserName;
+  }
+
+  public void setToUserName(String toUserName) {
+    this.toUserName = toUserName;
+  }
+
+  public String getFromUserName() {
+    return fromUserName;
+  }
+
+  public void setFromUserName(String fromUserName) {
+    this.fromUserName = fromUserName;
+  }
+  
+	public String getReplyTo() {
+		return replyTo;
+	}
+
+	public void setReplyTo(String replyTo) {
+		this.replyTo = replyTo;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+  
 }

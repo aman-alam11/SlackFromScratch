@@ -1,8 +1,9 @@
 package edu.northeastern.ccs.im.servertest;
 
 
-import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
 import edu.northeastern.ccs.im.server.Prattle;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

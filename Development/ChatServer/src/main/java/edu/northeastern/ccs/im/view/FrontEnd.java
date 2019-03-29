@@ -1,5 +1,6 @@
 package edu.northeastern.ccs.im.view;
 
+@SuppressWarnings("all")
 public class FrontEnd {
 
   private static FrontEnd mFrontEnd;
@@ -21,36 +22,73 @@ public class FrontEnd {
     if (stringToDisplay == null) {
       return;
     }
+    printToStream(stringToDisplay);
+  }
 
-    System.out.println(stringToDisplay);
+  public void sendToViewSameLine(String stringToDisplay) {
+    if (stringToDisplay == null) {
+      return;
+    }
+    System.out.print(stringToDisplay);
   }
 
 
   public void showMainMenu() {
-    System.out.println("Welcome to Chatter Application");
-    System.out.println("1. Login");
-    System.out.println("2. Registration");
-    System.out.println("Or Enter \\q to quit");
-    System.out.println("Enter From above Options: ");
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("Welcome to Chatter Application \n");
+    stringBuilder.append("1. Login \n");
+    stringBuilder.append("2. Registration \n");
+    stringBuilder.append("Or Enter \\q to quit \n");
+    stringBuilder.append("INPUT: Enter From above Options: \n");
+    printToStream(stringBuilder.toString());
   }
 
 
-  public void showFirstLevelOptions() {
+  public void showUserLevelOptions() {
     System.out.println("1. Unread Messages");
     System.out.println("2. Chat user");
-    System.out.println("Or type logout to logout user");
-    System.out.println("Enter From above Options: ");
+    System.out.println("3. Group Options");
+    System.out.println("Or Enter \\q to quit");
+    System.out.println("INPUT: Enter From above Options: ");
   }
 
-
-  public static void showLoadingView(boolean shouldStopLoading) {
-    System.out.println(shouldStopLoading ? "Loading complete" : "\nLoading" );
-    long getStartTime = shouldStopLoading ?  System.currentTimeMillis() + 10000 : System.currentTimeMillis();
-
-    while (!shouldStopLoading && (System.currentTimeMillis() - getStartTime < 200)) {
-      System.out.print(".");
+  public void enterLines() {
+    for(int i = 0; i < 100; i++ ){
+      System.out.print("*");
     }
     System.out.println("\n");
   }
 
+  public void showGroupLevelOptions() {
+    System.out.println("1. Create Group");
+    System.out.println("2. Update Group");
+    System.out.println("3. Group Chat");
+    System.out.println("4. Delete Group");
+    System.out.println("Or Enter \\b to go back or \\q to quit");
+    System.out.println("INPUT: Enter From above Options: ");
+  }
+
+  public void showGroupUsersCrudLevelOptions() {
+    System.out.println("1. Add Users");
+    System.out.println("2. Delete Users");
+    System.out.println("Or Enter \\b to go back or \\q to quit");
+    System.out.println("INPUT: Enter From above Options: ");
+  }
+
+  public void showUpdateGroupOptions() {
+    FrontEnd.getView().sendToView("");
+    System.out.println("1. Add/delete Users.");
+    System.out.println("2. Add/delete Moderators.");
+    System.out.println("3. Rename Group");
+  }
+
+
+  private static void printToStream(String string){
+    System.out.println(string);
+  }
+
+    public void showModeratorsOptions() {
+        System.out.println("1. Add Moderators.");
+        System.out.println("2. Delete Moderators.");
+    }
 }

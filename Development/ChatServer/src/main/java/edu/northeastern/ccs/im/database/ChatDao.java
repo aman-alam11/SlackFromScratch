@@ -10,6 +10,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import edu.northeastern.ccs.im.model.ChatModel;
+
 @SuppressWarnings("all")
 public class ChatDao {
 
@@ -29,26 +31,31 @@ public class ChatDao {
      * @param grpMsg
      * @param isDelivered
      */
-    public int create(User fromId, User toId, String msg, int replyTo, Date expiry,
-			Boolean grpMsg, Boolean isDelivered) {
+    public long create(User fromId, User toId, ChatModel chatModel) {
 		// Create a session
 		Session session = mSessionFactory.openSession();
+		Group  group = null;
 		Transaction transaction = null;
-		int id = 0;
+		long returnId = 0;
 		try {
 			// Begin a transaction
 			transaction = session.beginTransaction();
 			Chat chat = new Chat();
 			chat.setFromId(fromId);
 			chat.setToId(toId);
-			chat.setMsg(msg);
-			chat.setReplyTo(replyTo);
+			chat.setMsg(chatModel.getMsg());
+			if (chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0) {
+				group = JPAService.getInstance().findGroupByName(chatModel.getGroupName());
+			}
+      chat.setGroupId(group);
 			chat.setCreated(new Date());
-			chat.setExpiry(expiry);
-			chat.setGrpMsg(grpMsg);
-			chat.setIsDelivered(isDelivered);
+			chat.setExpiry(chatModel.getExpiry());
+			chat.setIsGrpMsg(chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0);
+			chat.setIsDelivered(chatModel.getDelivered());
 			// Save the User
-			id = (int) session.save(chat);
+      session.save(chat);
+			returnId = chat.getId();
+
 			// Commit the transaction
 			// Commit the transaction
 			transaction.commit();
@@ -61,7 +68,7 @@ public class ChatDao {
 			// Close the session
 			session.close();
 		}
-		return id;
+		return returnId;
 	}
    
    /**
@@ -69,7 +76,7 @@ public class ChatDao {
     * @param receiverId
     * @return
     */
-   public List<Chat> findByReceiver(int receiverId) {
+   public List<Chat> findByReceiver(long receiverId) {
 	Session session = null;
 	Transaction transaction = null;
 	List<Chat> chat = null;
@@ -100,7 +107,7 @@ public class ChatDao {
     * Delete the chat for a particular user or a group.
     * @param receiverId
     */
-   public void deleteChatByReceiver(int receiverId) {
+   public void deleteChatByReceiver(long receiverId) {
 	   Session session = null;
        Transaction transaction = null;
        try {
@@ -129,7 +136,7 @@ public class ChatDao {
     * Delete a particular message.
     * @param id
     */
-   public void delete(int id) {
+   public void delete(long id) {
        // Create a session
        Session session = null;
        Transaction transaction = null;
@@ -154,18 +161,20 @@ public class ChatDao {
        }
    }
 
-	public void updateDeliveryStatus(int id, boolean status) {
+	public boolean updateDeliveryStatus(long id, boolean status) {
 
 		Transaction tx = null;
 		try (Session session = mSessionFactory.openSession()) {
 			tx = session.beginTransaction();
 			Chat chat = (Chat) session.get(Chat.class, id);
 			chat.setIsDelivered(status);
-			session.update(chat);
+			 session.update(chat);
 			tx.commit();
+      return true;
 		} catch (Exception e) {
             Logger.getLogger(this.getClass().getSimpleName()).info(e.getMessage());
             tx.rollback();
+            return false;
 		}
 	}
 }

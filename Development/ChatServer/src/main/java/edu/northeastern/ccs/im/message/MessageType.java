@@ -31,9 +31,19 @@ public enum MessageType {
   USER_SEARCH("SRH"),
 
   /**
-   * Message whose contents are user to user chat
+   * Message whose contents are user to user chat and it is general message type.
    */
   USER_CHAT("UCT"),
+
+  /**
+   * Send this type before the starting of the chat, to let server know that user is about to start chat.
+   */
+  USER_CHAT_START("UCS"),
+
+  /**
+   * Send this after quitting the chat to let server know that client is not chatting now.
+   */
+  USER_CHAT_END("UCE"),
 
   /**
    * Message whose contents are user to group chat
@@ -51,11 +61,58 @@ public enum MessageType {
   CREATE_GROUP("CGR"),
 
   /**
+   * Message whose contents are for group creation
+   */
+  GROUP_SEARCH("GSC"),
+  
+  /**
+   * Message whose contents are for group creation
+   */
+  ADD_USER_IN_GROUP("AGR"),
+
+  /**
    * Message to prompt quit
    */
   LOG_OUT("LGO"),
 
-  AUTH_ACK("ACK");
+  AUTH_ACK("ACK"),
+  
+   /**
+   * Unread Messages.
+   */
+  UNREAD_MSG("UNM"),
+
+  /**
+   * To set all undelivered messages as delivered
+   */
+  DELIVER_UNREAD_MSG("DUR"),
+
+  /**
+   * Get all groups for a user and the moderators.
+   */
+  GET_ALL_GROUPS_MOD("MOD"),
+
+  /**
+   * Get all users for a particular group.
+   */
+  GET_ALL_USERS_FOR_GRP("UGP"),
+
+
+  /**
+   * Toggle Moderator rights.
+   */
+  TOGGLE_MODERATOR("TGM"),
+
+  /**
+   * Rename Group.
+   */
+  RENAME_GROUP("RGP"),
+
+
+  /**
+   * Delete Group.
+   */
+  DELETE_GROUP("DGP");
 
   /**
    * Store the short name of this message type.

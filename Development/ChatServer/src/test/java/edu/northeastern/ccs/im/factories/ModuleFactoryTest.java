@@ -20,10 +20,8 @@ public class ModuleFactoryTest {
     isCoreOperationType = moduleFactory.getModelFromFactory(CurrentLevel.REGISTRATION) != null;
     assertTrue(isCoreOperationType);
 
-    isCoreOperationType = moduleFactory.getModelFromFactory(CurrentLevel.LEVEL1) != null;
+    isCoreOperationType = moduleFactory.getModelFromFactory(CurrentLevel.USER_LEVEL) != null;
     assertTrue(isCoreOperationType);
 
-    isCoreOperationType = moduleFactory.getModelFromFactory(CurrentLevel.LEVEL2) != null;
-    assertTrue(isCoreOperationType);
   }
 }

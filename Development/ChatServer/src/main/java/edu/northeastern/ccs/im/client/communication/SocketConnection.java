@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.message.MessageJson;
-import edu.northeastern.ccs.im.message.MessageType;
 
 public class SocketConnection implements Connection {
 
@@ -31,9 +30,8 @@ public class SocketConnection implements Connection {
   private static Gson gson;
 
   private static StringBuilder messageBuffer;
-  private static AsyncListener mAsyncListener;
-  private static MessageType listenerMessageType;
   private static Thread messageListenerFromServer;
+  private static boolean isAlive;
 
   //singleton implementation
   private SocketConnection() {
@@ -59,21 +57,15 @@ public class SocketConnection implements Connection {
   }
 
   @Override
-  public void registerListener(AsyncListener asyncListener, MessageType messageType) {
-    mAsyncListener = asyncListener;
-    listenerMessageType = messageType;
-  }
-
-  @Override
   public void terminate() {
-    messageListenerFromServer.interrupt();
+    isAlive = false;
   }
 
   private static void initThread() {
 	  messageQueue = new ConcurrentLinkedQueue<>();
 	  messageBuffer = new StringBuilder();
      messageListenerFromServer = new Thread(() -> {
-      boolean isAlive = true;
+       isAlive = true;
       ByteBuffer buff = ByteBuffer.allocate(BUFFER_SIZE);
       while (isAlive) {
         try {
@@ -113,11 +105,6 @@ public class SocketConnection implements Connection {
           isMessageDecoded = true;
           messageQueue.add(extractedMessage);
 
-          // Remove async listener as the controller is synchronous
-
-          if (extractedMessage.getMessageType().equals(listenerMessageType)) {
-            mAsyncListener.listen(extractedMessage.getMessage());
-          }
           messageBuffer.delete(start - 1, end + 1);
         } catch (JsonSyntaxException e) {
           ChatLogger.error(e.getMessage());

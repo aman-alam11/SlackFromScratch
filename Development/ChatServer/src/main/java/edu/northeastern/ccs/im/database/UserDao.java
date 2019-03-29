@@ -7,8 +7,13 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import edu.northeastern.ccs.im.ChatLogger;
 
 @SuppressWarnings("all")
 public class UserDao {
@@ -203,5 +208,83 @@ public class UserDao {
       session.close();
     }
     return "";
+  }
+
+
+  public BigInteger getUserIdFromUserName(String username) {
+    Session session = mSessionFactory.openSession();
+    BigInteger userId = new BigInteger("-1");
+    try {
+      String sql = "SELECT users.user_id FROM new_test_hibernate.users WHERE new_test_hibernate.users.user_name =?";
+
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, username);
+      userId = (BigInteger) query.getSingleResult();
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return userId;
+  }
+
+  /**
+   * Retrieves all unread messages for the user with the passed user id.
+   *
+   * @param userId The userId for which we need to get all the unread messages for.
+   * @return A List of complete chat rows from which information will be extracted based on use case.
+   */
+  public List<Chat> getUnreadMessages(int userId) {
+    Session session = mSessionFactory.openSession();
+    List<Chat> listUnreadChatRows = new ArrayList<>();
+
+    try {
+      String sql = "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered";
+      Query query = session.createNativeQuery(sql, Chat.class);
+      query.setParameter(1, userId);
+      listUnreadChatRows.addAll(query.getResultList());
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return listUnreadChatRows;
+  }
+
+  public boolean setDeliverAllUnreadMessages(String username) {
+
+    Session session = null;
+    boolean result = false;
+    try {
+      session = mSessionFactory.openSession();
+      Transaction transaction = session.beginTransaction();
+
+      BigInteger userIdBigInt = this.getUserIdFromUserName(username);
+      int userId = userIdBigInt.intValue();
+      if (userId <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        return false;
+      }
+      String sql = "UPDATE chat SET chat.isDelivered = true WHERE chat.To_id =?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, userId);
+      int res = query.executeUpdate();
+      ChatLogger.info("Rows Affected: " + res);
+      result = true;
+      transaction.commit();
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+      result = false;
+
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return result;
   }
 }

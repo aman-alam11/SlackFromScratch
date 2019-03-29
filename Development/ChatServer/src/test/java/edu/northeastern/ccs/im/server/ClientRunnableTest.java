@@ -20,12 +20,12 @@ import org.mockito.MockitoAnnotations;
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.NetworkConnection;
-import edu.northeastern.ccs.im.business.logic.MessageHandler;
-import edu.northeastern.ccs.im.business.logic.MessageHandlerFactory;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.LoginCredentials;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandlerFactory;
 
 public class ClientRunnableTest {
 
@@ -82,7 +82,7 @@ public class ClientRunnableTest {
 	@Test
 	public void testRunwhenUserSendingChat() {
 
-		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
+		ChatModel chatModel = new ChatModel();
 		String loginCredential = mGson.toJson(chatModel);
 		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
 
@@ -127,7 +127,7 @@ public class ClientRunnableTest {
 	@Test
 	public void testRunoutGoingMessage() {
 
-		ChatModel chatModel = new ChatModel("atti","singh","hello", new Date(), true);
+		ChatModel chatModel = new ChatModel();
 		String loginCredential = mGson.toJson(chatModel);
 		MessageJson msgJson = new MessageJson("", MessageType.USER_CHAT, loginCredential);
 		MessageJson msgJson1 = new MessageJson("", MessageType.USER_CHAT, loginCredential);

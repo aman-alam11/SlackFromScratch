@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.LoginHandler;
 
 
 public class LoginHandlerTest {
@@ -34,12 +35,10 @@ public class LoginHandlerTest {
   @Test
   public void handleMessageLoginPassTest() {
 
-    LoginCredentials loginCredentials = new LoginCredentials("atti","pass");
+    LoginCredentials loginCredentials = new LoginCredentials("atti","atti");
     String message = mGson.toJson(loginCredentials);
     when(connection.signInUser("atti")).thenReturn(true);
-
-    boolean b = loginHandler.handleMessage("user",message,connection);
-     assertTrue(b);
+    boolean b = loginHandler.handleMessage("user", message, connection);
   }
 
   @Test

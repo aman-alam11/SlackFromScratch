@@ -4,6 +4,22 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.server.business.logic.AddGroupUsersHandler;
+import edu.northeastern.ccs.im.server.business.logic.ChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.DeleteGroupHandler;
+import edu.northeastern.ccs.im.server.business.logic.GetAllGroupsModHandler;
+import edu.northeastern.ccs.im.server.business.logic.GetAllUsersForGroup;
+import edu.northeastern.ccs.im.server.business.logic.GroupChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.GroupCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.GroupSearchHandler;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
+import edu.northeastern.ccs.im.server.business.logic.LoginHandler;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.RenameGroupHandler;
+import edu.northeastern.ccs.im.server.business.logic.ToggleModeratorRightsHandler;
+import edu.northeastern.ccs.im.server.business.logic.UnreadMessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.UserCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.UserSearchHandler;
 
 public class JsonMessageHandlerFactoryTest {
 
@@ -34,6 +50,40 @@ public class JsonMessageHandlerFactoryTest {
     MessageHandler messageHandlerDefault = jsonMessageHandlerFactory.getMessageHandler(MessageType.HELLO);
     assertEquals(LoginHandler.class, messageHandlerDefault.getClass());
 
+
+    MessageHandler messageHandlercreateGroup = jsonMessageHandlerFactory.getMessageHandler(MessageType.CREATE_GROUP);
+    assertEquals(GroupCreationHandler.class, messageHandlercreateGroup.getClass());
+
+    MessageHandler messageHandlerGroupChat = jsonMessageHandlerFactory.getMessageHandler(MessageType.GROUP_CHAT);
+    assertEquals(GroupChatHandler.class, messageHandlerGroupChat.getClass());
+
+
+    MessageHandler messageHandlerAddUserInGroup = jsonMessageHandlerFactory.getMessageHandler(MessageType.ADD_USER_IN_GROUP);
+    assertEquals(AddGroupUsersHandler.class, messageHandlerAddUserInGroup.getClass());
+
+    MessageHandler messageHandlerUnreadMessages = jsonMessageHandlerFactory.getMessageHandler(MessageType.UNREAD_MSG);
+    assertEquals(UnreadMessageHandler.class, messageHandlerUnreadMessages.getClass());
+
+    MessageHandler messageHandlerGetAllGroupMod = jsonMessageHandlerFactory.getMessageHandler(MessageType.GET_ALL_GROUPS_MOD);
+    assertEquals(GetAllGroupsModHandler.class, messageHandlerGetAllGroupMod.getClass());
+
+
+    MessageHandler messageHandlerGetAllUsersForGroup = jsonMessageHandlerFactory.getMessageHandler(MessageType.GET_ALL_USERS_FOR_GRP);
+    assertEquals(GetAllUsersForGroup.class, messageHandlerGetAllUsersForGroup.getClass());
+
+
+    MessageHandler messageHandlerToggleMod = jsonMessageHandlerFactory.getMessageHandler(MessageType.TOGGLE_MODERATOR);
+    assertEquals(ToggleModeratorRightsHandler.class, messageHandlerToggleMod.getClass());
+
+    MessageHandler messageHandlerRenameGroup = jsonMessageHandlerFactory.getMessageHandler(MessageType.RENAME_GROUP);
+    assertEquals(RenameGroupHandler.class, messageHandlerRenameGroup.getClass());
+
+
+    MessageHandler messageHandlerDeleteGroup = jsonMessageHandlerFactory.getMessageHandler(MessageType.DELETE_GROUP);
+    assertEquals(DeleteGroupHandler.class, messageHandlerDeleteGroup.getClass());
+
+    MessageHandler messageHandlerGroupSearch = jsonMessageHandlerFactory.getMessageHandler(MessageType.GROUP_SEARCH);
+    assertEquals(GroupSearchHandler.class, messageHandlerGroupSearch.getClass());
 
   }
 }

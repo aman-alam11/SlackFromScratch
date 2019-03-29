@@ -8,6 +8,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,13 +16,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.ClientState;
 import edu.northeastern.ccs.im.Message;
 import edu.northeastern.ccs.im.NetworkConnection;
-import edu.northeastern.ccs.im.business.logic.JsonMessageHandlerFactory;
 import edu.northeastern.ccs.im.message.MessageJson;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
 
 /**
  * A network server that communicates with IM clients that connect to it. This version of the server
@@ -56,11 +58,19 @@ public abstract class Prattle {
    */
   private static ConcurrentHashMap<String, Connection> authenticatedActiveUsers;
 
-  /** All of the static initialization occurs in this "method" */
+  /**
+   * Collection of users currently in chat window and chatting.
+   */
+  private static Set<String> chattingUsers;
+
+  /**
+   *  All of the static initialization occurs in this "method".
+   */
   static {
     // Create the new queue of active threads.
     unAuthenticatedActiveUsers = Collections.newSetFromMap(new ConcurrentHashMap<ClientRunnable, Boolean>());
     authenticatedActiveUsers = new ConcurrentHashMap<>();
+    chattingUsers = new HashSet<>();
   }
 
 
@@ -94,6 +104,18 @@ public abstract class Prattle {
 	  return authenticatedActiveUsers.containsKey(userName);
   }
 
+  public static boolean isUserChatting(String userName) {
+    return chattingUsers.contains(userName);
+  }
+
+  public static void addToChattingUsers(String userName) {
+    chattingUsers.add(userName);
+  }
+
+  public static void removeFromChattingUsers(String userName) {
+    chattingUsers.remove(userName);
+  }
+
  /**
   *  This method is used to change an unauthenticated user thread to authenticated
   * @param clientThread
@@ -110,9 +132,9 @@ public abstract class Prattle {
 			} else {
 				return false;
 			}
-
 		}
   }
+
   /**
    * Remove the given IM client from the list of active threads.
    *
@@ -161,8 +183,11 @@ public abstract class Prattle {
       Selector selector = SelectorProvider.provider().openSelector();
       // Register to receive any incoming connection messages.
       serverSocket.register(selector, SelectionKey.OP_ACCEPT);
+
+      //Get number of logical cores.
+      int cores = Runtime.getRuntime().availableProcessors();
       // Create our pool of threads on which we will execute.
-      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(1);
+      ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(cores*4);
       // If we get this far than the server is initialized correctly
       isReady = true;
       // Now listen on this port as long as the server is ready
@@ -174,7 +199,7 @@ public abstract class Prattle {
           // Now iterate through all of the keys
           Iterator<SelectionKey> it = acceptKeys.iterator();
           while (it.hasNext()) {
-            // Get the next key; it had better be from a new incoming connection
+            // Get the next key, it had better be from a new incoming connection
             key = it.next();
             it.remove();
             // Assert certain things I really hope is true
@@ -201,12 +226,11 @@ public abstract class Prattle {
   private static void createClientThread(ServerSocketChannel serverSocket, ScheduledExecutorService threadPool) {
     try {
       if (threadPool == null) {
+        ChatLogger.error("Thread Pool is null");
         throw new Exception("Thread Pool and server socket are both null");
       }
-
       // Accept the connection and create a new thread to handle this client.
       SocketChannel socket = serverSocket.accept();
-
       // Make sure we have a connection to work with.
       NetworkConnection connection = new NetworkConnection(socket, new JsonMessageHandlerFactory());
       ClientRunnable tt = new ClientRunnable(connection);
