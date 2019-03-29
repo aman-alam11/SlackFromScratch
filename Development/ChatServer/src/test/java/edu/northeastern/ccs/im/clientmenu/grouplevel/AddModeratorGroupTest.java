@@ -24,6 +24,7 @@ public class AddModeratorGroupTest {
   private final static String USERNAME = "atti\n";
   private final static String QUIT = "\\q\n";
   private Gson gson;
+  private AddModeratorGroup addModeratorGroup;
 
   @Mock
   Connection connection;
@@ -31,6 +32,7 @@ public class AddModeratorGroupTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
+    addModeratorGroup = new AddModeratorGroup();
     gson = new Gson();
   }
 
@@ -52,7 +54,6 @@ public class AddModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    AddModeratorGroup addModeratorGroup = new AddModeratorGroup();
     addModeratorGroup.passControl(scanner, connection);
 
   }
@@ -74,7 +75,6 @@ public class AddModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    AddModeratorGroup addModeratorGroup = new AddModeratorGroup();
     addModeratorGroup.passControl(scanner, connection);
 
   }
@@ -99,7 +99,6 @@ public class AddModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    AddModeratorGroup addModeratorGroup = new AddModeratorGroup();
     addModeratorGroup.passControl(scanner, connection);
 
     GroupLayer groupLayer = new GroupLayer();
@@ -129,7 +128,6 @@ public class AddModeratorGroupTest {
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response).thenReturn(response1);
 
-    AddModeratorGroup addModeratorGroup = new AddModeratorGroup();
     addModeratorGroup.passControl(scanner, connection);
 
   }

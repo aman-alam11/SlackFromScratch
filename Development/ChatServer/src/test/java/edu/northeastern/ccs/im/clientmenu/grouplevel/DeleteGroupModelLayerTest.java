@@ -24,6 +24,7 @@ public class DeleteGroupModelLayerTest {
   private final static String USERNAME = "atti\n";
   private final static String QUIT = "\\q\n";
   private Gson gson;
+  private DeleteGroupModelLayer deleteGroupModelLayer;
 
   @Mock
   Connection connection;
@@ -31,6 +32,7 @@ public class DeleteGroupModelLayerTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
+    deleteGroupModelLayer = new DeleteGroupModelLayer();
     gson = new Gson();
   }
 
@@ -51,7 +53,6 @@ public class DeleteGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    DeleteGroupModelLayer deleteGroupModelLayer = new DeleteGroupModelLayer();
     deleteGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -71,7 +72,6 @@ public class DeleteGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    DeleteGroupModelLayer deleteGroupModelLayer = new DeleteGroupModelLayer();
     deleteGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -93,7 +93,6 @@ public class DeleteGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    DeleteGroupModelLayer deleteGroupModelLayer = new DeleteGroupModelLayer();
     deleteGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -115,7 +114,6 @@ public class DeleteGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    DeleteGroupModelLayer deleteGroupModelLayer = new DeleteGroupModelLayer();
     deleteGroupModelLayer.passControl(scanner, connection);
 
   }
@@ -140,7 +138,6 @@ public class DeleteGroupModelLayerTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response).thenReturn(response1);
-    DeleteGroupModelLayer deleteGroupModelLayer = new DeleteGroupModelLayer();
     deleteGroupModelLayer.passControl(scanner, connection);
 
   }

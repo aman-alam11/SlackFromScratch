@@ -24,6 +24,7 @@ public class GroupChatModelLayerTest {
   private final static String USERNAME = "atti\n";
   private final static String QUIT = "\\q\n";
   private Gson gson;
+  private GroupChatModelLayer groupChatModelLayer;
 
   @Mock
   Connection connection;
@@ -31,6 +32,7 @@ public class GroupChatModelLayerTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
+    groupChatModelLayer = new GroupChatModelLayer(USERNAME);
     gson = new Gson();
   }
 
@@ -44,7 +46,6 @@ public class GroupChatModelLayerTest {
     AckModel ackModel = new AckModel();
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(ackModel));
     when(connection.next()).thenReturn(response);
-    GroupChatModelLayer groupChatModelLayer = new GroupChatModelLayer(USERNAME);
     groupChatModelLayer.passControl(scanner,connection);
     ChatModel chatModel = new ChatModel();
     chatModel.setMsg("message");
@@ -59,8 +60,6 @@ public class GroupChatModelLayerTest {
 
   @Test
   public void displayResponseNullTest() {
-
-    GroupChatModelLayer groupChatModelLayer = new GroupChatModelLayer("name");
     groupChatModelLayer.displayResponse(null);
   }
 

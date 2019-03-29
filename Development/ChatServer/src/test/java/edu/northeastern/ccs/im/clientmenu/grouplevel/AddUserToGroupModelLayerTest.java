@@ -23,6 +23,7 @@ public class AddUserToGroupModelLayerTest {
   private final static String USERNAME = "atti\n";
   private final static String QUIT = "\\q\n";
   private Gson gson;
+  private AddUserToGroupModelLayer addUserToGroupModelLayer;
 
   @Mock
   Connection connection;
@@ -30,6 +31,7 @@ public class AddUserToGroupModelLayerTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
+    addUserToGroupModelLayer = new AddUserToGroupModelLayer();
     gson = new Gson();
   }
 
@@ -44,7 +46,6 @@ public class AddUserToGroupModelLayerTest {
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(ackModel));
     when(connection.next()).thenReturn(response);
 
-    AddUserToGroupModelLayer addUserToGroupModelLayer = new AddUserToGroupModelLayer();
     addUserToGroupModelLayer.passControl(scanner,connection);
   }
 
@@ -62,7 +63,6 @@ public class AddUserToGroupModelLayerTest {
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(ackModel));
     when(connection.next()).thenReturn(response);
 
-    AddUserToGroupModelLayer addUserToGroupModelLayer = new AddUserToGroupModelLayer();
     addUserToGroupModelLayer.passControl(scanner,connection);
   }
 
@@ -79,7 +79,6 @@ public class AddUserToGroupModelLayerTest {
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(ackModel));
     when(connection.next()).thenReturn(response);
 
-    AddUserToGroupModelLayer addUserToGroupModelLayer = new AddUserToGroupModelLayer();
     addUserToGroupModelLayer.passControl(scanner,connection);
   }
 }

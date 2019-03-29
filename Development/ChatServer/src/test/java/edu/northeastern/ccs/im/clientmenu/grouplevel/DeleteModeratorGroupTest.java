@@ -23,6 +23,7 @@ public class DeleteModeratorGroupTest {
 
   private final static String USERNAME = "atti\n";
   private Gson gson;
+  private DeleteModeratorGroup deleteModeratorGroup;
 
   @Mock
   Connection connection;
@@ -30,6 +31,7 @@ public class DeleteModeratorGroupTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
+    deleteModeratorGroup = new DeleteModeratorGroup();
     gson = new Gson();
   }
 
@@ -51,7 +53,6 @@ public class DeleteModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    DeleteModeratorGroup deleteModeratorGroup = new DeleteModeratorGroup();
     deleteModeratorGroup.passControl(scanner, connection);
 
   }
@@ -73,7 +74,6 @@ public class DeleteModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    DeleteModeratorGroup deleteModeratorGroup = new DeleteModeratorGroup();
     deleteModeratorGroup.passControl(scanner, connection);
 
   }
@@ -98,7 +98,6 @@ public class DeleteModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response).thenReturn(response1);
-    DeleteModeratorGroup deleteModeratorGroup = new DeleteModeratorGroup();
     deleteModeratorGroup.passControl(scanner, connection);
 
   }
@@ -120,7 +119,6 @@ public class DeleteModeratorGroupTest {
 
     when(connection.hasNext()).thenReturn(true);
     when(connection.next()).thenReturn(response);
-    DeleteModeratorGroup deleteModeratorGroup = new DeleteModeratorGroup();
     deleteModeratorGroup.passControl(scanner, connection);
 
   }

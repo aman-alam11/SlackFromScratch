@@ -25,6 +25,7 @@ public class GroupSearchModelLayerTest {
   private final static String USERNAME = "atti\n";
   private final static String QUIT = "\\q\n";
   private Gson gson;
+  private GroupSearchModelLayer groupSearchModelLayer;
 
   @Mock
   Connection connection;
@@ -32,6 +33,7 @@ public class GroupSearchModelLayerTest {
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
+    groupSearchModelLayer = new GroupSearchModelLayer();
     gson = new Gson();
   }
 
@@ -44,8 +46,7 @@ public class GroupSearchModelLayerTest {
     GroupSearchModel searchModel = new GroupSearchModel(USERNAME);
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(searchModel));
     when(connection.next()).thenReturn(response);
-    GroupSearchModelLayer createGroupModelLayer = new GroupSearchModelLayer();
-    createGroupModelLayer.passControl(scanner,connection);
+    groupSearchModelLayer.passControl(scanner,connection);
   }
 
   @Test
@@ -61,8 +62,7 @@ public class GroupSearchModelLayerTest {
     searchModel.setGroupList(list);
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(searchModel));
     when(connection.next()).thenReturn(response);
-    GroupSearchModelLayer createGroupModelLayer = new GroupSearchModelLayer();
-    createGroupModelLayer.passControl(scanner, connection);
+    groupSearchModelLayer.passControl(scanner, connection);
   }
 
   @Test
@@ -78,8 +78,7 @@ public class GroupSearchModelLayerTest {
     searchModel.setGroupList(list);
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(searchModel));
     when(connection.next()).thenReturn(response);
-    GroupSearchModelLayer createGroupModelLayer = new GroupSearchModelLayer();
-    createGroupModelLayer.passControl(scanner, connection);
+    groupSearchModelLayer.passControl(scanner, connection);
   }
 
   @Test
@@ -93,8 +92,7 @@ public class GroupSearchModelLayerTest {
     searchModel.setGroupList(null);
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(searchModel));
     when(connection.next()).thenReturn(response);
-    GroupSearchModelLayer createGroupModelLayer = new GroupSearchModelLayer();
-    createGroupModelLayer.passControl(scanner, connection);
+    groupSearchModelLayer.passControl(scanner, connection);
   }
 
 
