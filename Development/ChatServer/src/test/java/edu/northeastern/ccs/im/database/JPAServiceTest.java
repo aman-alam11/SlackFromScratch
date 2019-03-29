@@ -57,7 +57,7 @@ public class JPAServiceTest {
       JPAService jpaService = new JPAService(sessionFactory);
 
       jpaService.deleteUser(1);
-      assertEquals(6, jpaService.readAllUsers().size());
+      assertEquals(7, jpaService.readAllUsers().size());
     } catch (Exception e) {
       //assertEquals("", e.getMessage());
     }
@@ -304,7 +304,7 @@ public class JPAServiceTest {
     try {
       JPAService jpaS = new JPAService(sessionFactory);
 
-      assertEquals(0, jpaS.searchUserbyUserName("Ali").size());
+      assertEquals(3, jpaS.searchUserbyUserName("Ali").size());
     } catch (Exception e) {
       assertEquals("", e.getMessage());
     }
