@@ -6,6 +6,7 @@ import org.hibernate.cfg.Configuration;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -119,6 +120,19 @@ public class JPAServiceTest {
     jpaService.deleteGroup("new_grp_1");
     assertEquals(0,jpaService.searchGroupByName("new").size());
     jpaService.findGroupByCreator("A");
+  }
+
+  @Test
+  public void testE(){
+    jpaService.createGroup("grp_1","Charlie",false);
+    jpaService.addGroupMember("grp_1","Alice",false);
+    assertEquals(2,jpaService.findAllMembersOfGroup("grp_1").size());
+    jpaService.updateModeratorStatus("Alice","grp_1",true);
+    List<String> names = new ArrayList<>();
+    names.add("Alice");
+    names.add("Bob");
+    names.add("Ali");
+    assertEquals(2,jpaService.findNonMembers(names,"grp_1").size());
   }
 
   @Test
