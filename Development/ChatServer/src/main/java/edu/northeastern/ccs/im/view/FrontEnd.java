@@ -1,6 +1,5 @@
 package edu.northeastern.ccs.im.view;
 
-@SuppressWarnings("all")
 public class FrontEnd {
 
   private static FrontEnd mFrontEnd;
@@ -83,7 +82,7 @@ public class FrontEnd {
   }
 
   public void showDefaultErrorMessage() {
-    System.out.println("Uh Oh! This is embarrasing. Something went wrong.\n " +
+    System.out.println("Uh Oh! This is embarrassing. Something went wrong.\n " +
             "Sending you back to main menu");
   }
 

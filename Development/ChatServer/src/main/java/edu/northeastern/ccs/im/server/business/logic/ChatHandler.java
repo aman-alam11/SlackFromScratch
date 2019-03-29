@@ -1,14 +1,12 @@
 package edu.northeastern.ccs.im.server.business.logic;
 
 import com.google.gson.Gson;
-
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.Prattle;
-import edu.northeastern.ccs.im.view.FrontEnd;
 
 /**
  * This is the handler for chat.

@@ -3,6 +3,7 @@ package edu.northeastern.ccs.im.server.business.logic;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import edu.northeastern.ccs.im.clientmenu.models.DeleteUserFromGroupModel;
 import org.jsoup.helper.StringUtil;
 
 import java.lang.reflect.Type;
@@ -38,16 +39,16 @@ public class ToggleModeratorRightsHandler implements MessageHandler {
             MessageJson response = null;
 
             Gson gson = new Gson();
-            Type modList = new TypeToken<List<String>>() {}.getType();
-            List<String> lst = gson.fromJson(message, modList);
-            // TODO: Response is not being deciphered here. Will throw NPE
+            DeleteUserFromGroupModel model = gson.fromJson(message, DeleteUserFromGroupModel.class);
+            Type nameList = new TypeToken<List<String>>() {}.getType();
+            List<String> lst = new Gson().fromJson(model.getMessage(), nameList);
 
-            if(response.getMessageType() == MessageType.TOGGLE_MODERATOR) {
+            if(model.getMessageType() == MessageType.TOGGLE_MODERATOR) {
                 isSuccess = mJpaService.toggleAdminRights(lst.get(0), lst.get(1));
 
                 response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
                         MessageType.TOGGLE_MODERATOR, gson.toJson(isSuccess));
-            } else if(response.getMessageType() == MessageType.DELETER_USER_FROM_GROUP) {
+            } else if(model.getMessageType() == MessageType.DELETER_USER_FROM_GROUP) {
                 isSuccess = mJpaService.deleteMemberFromGroup(lst.get(1), lst.get(0));
 
                 response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,

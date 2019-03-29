@@ -23,7 +23,17 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
 
 public class GetAllGroupsUtil {
 
+  private GetAllGroupsUtil() {
+    // Private Constructor
+  }
 
+  /**
+   * A Util method to parse user response. This is used in both add moderator and delete moderator.
+   *
+   * @param messageType          The type of operation encapsulated as message Type.
+   * @param connectionLayerModel The connection layer to send message.
+   * @return A map of all users in the group and the value of the map representing whether the user is moderator or not.
+   */
   public static Map<String, Boolean> parseResponse(MessageType messageType, Connection connectionLayerModel) {
     MessageJson messageJsonState = new MessageJson(GenerateLoginCredentials.getUsername(), messageType, "");
     MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), messageType,
@@ -59,6 +69,12 @@ public class GetAllGroupsUtil {
   }
 
 
+  /**
+   * Gets all users for a particular group.
+   *
+   * @param connectionLayerModel The connection layer to make requests to server.
+   * @return A map where the key is username and value is boolean representing whether the user has admin rights or not.
+   */
   public static Map<String, Boolean> getAllUserGroup(Connection connectionLayerModel) {
     FrontEnd.getView().sendToView("Getting all users for group: " + CurrentGroupName.getGroupName());
 
@@ -90,7 +106,8 @@ public class GetAllGroupsUtil {
 
 
   /**
-   * Either toggles the moderator rights or deletes the user from Group.
+   * Either toggles the moderator rights or deletes the user from Group. A common method to toggle the user rights
+   * of moderation. This is also used for deleting the user from group.
    *
    * @param userToWorkOn          The user who's rights will be toggled or will be removed from
    *                              group
@@ -104,8 +121,9 @@ public class GetAllGroupsUtil {
     List<String> listKeys = new ArrayList<>();
     listKeys.add(userToWorkOn);
     listKeys.add(CurrentGroupName.getGroupName());
+    MessageJson jsonState = new MessageJson(GenerateLoginCredentials.getUsername(), messageType, listKeys.toString());
     MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), messageType,
-            new Gson().toJson(listKeys));
+            new Gson().toJson(jsonState));
     mConnectionLayerModel.sendMessage(messageJson);
     return waitForResponseSocket(mConnectionLayerModel);
   }
