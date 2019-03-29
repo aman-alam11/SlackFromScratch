@@ -12,7 +12,6 @@ import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CommonOperations;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
-import edu.northeastern.ccs.im.clientmenu.models.Search;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.UserSearch;
@@ -44,7 +43,7 @@ public class UserSearchModelLayer extends CommonOperations {
       UserSearch searchResults = mGson.fromJson(resp, UserSearch.class);
       usernames = searchResults.getListUserString();
 
-      if (usernames.isEmpty()) {
+      if (usernames == null || usernames.isEmpty()) {
         FrontEnd.getView().sendToView("ERROR: No users with that name found");
       } else {
         FrontEnd.getView().sendToView("RESULTS: Users found with name " + chatUserOtherEnd);
@@ -53,21 +52,20 @@ public class UserSearchModelLayer extends CommonOperations {
           FrontEnd.getView().sendToView(count + ": " + username);
           count++;
         }
+
+        FrontEnd.getView().sendToView("INPUT: Enter one of the user names from above\n");
+        String userToChatWith = scanner.nextLine();
+
+        if (usernames.contains(userToChatWith)) {
+          new UserChatModelLayer(userToChatWith).passControl(scanner, model);
+        } else {
+          FrontEnd.getView().sendToView("ERROR: Invalid username");
+          InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
+        }
       }
 
     } else {
       // TODO: Some default response
     }
-
-    FrontEnd.getView().sendToView("INPUT: Enter one of the user names from above\n");
-    String userToChatWith = scanner.nextLine();
-
-    if (usernames!= null && usernames.contains(userToChatWith)) {
-      new UserChatModelLayer(userToChatWith).passControl(scanner, model);
-    } else {
-      FrontEnd.getView().sendToView("ERROR: Invalid username");
-      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
-    }
-
   }
 }

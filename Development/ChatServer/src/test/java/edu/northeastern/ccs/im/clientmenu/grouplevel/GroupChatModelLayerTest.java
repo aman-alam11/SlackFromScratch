@@ -36,7 +36,7 @@ public class GroupChatModelLayerTest {
 
   @Test
   public void passControlTest() {
-    String str =  USERNAME + QUIT;
+    String str =  USERNAME + USERNAME + QUIT;
     ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
     Scanner scanner = new Scanner(in);
 
@@ -46,26 +46,23 @@ public class GroupChatModelLayerTest {
     when(connection.next()).thenReturn(response);
     GroupChatModelLayer groupChatModelLayer = new GroupChatModelLayer(USERNAME);
     groupChatModelLayer.passControl(scanner,connection);
-  }
-
-  //TODO fix this test: not working after thread.sleep: attinder
-  @Test
-  public void displayResponseTest() {
-    String str =  USERNAME;
-    ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
-    Scanner scanner = new Scanner(in);
-
-    when(connection.hasNext()).thenReturn(true);
     ChatModel chatModel = new ChatModel();
-    chatModel.setToUserName(USERNAME);
-    chatModel.setGroupName("GROUP");
-    chatModel.setMsg("hello");
-    MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.AUTH_ACK, gson.toJson(chatModel));
-    when(connection.next()).thenReturn(response);
-    GroupChatModelLayer groupChatModelLayer = new GroupChatModelLayer(USERNAME);
-    groupChatModelLayer.passControl(scanner,connection);
+    chatModel.setMsg("message");
+    MessageJson messageJson = new MessageJson("msg", MessageType.USER_CHAT, gson.toJson(chatModel));
+    groupChatModelLayer.displayResponse(messageJson);
+
+    ChatModel chatModel1 = new ChatModel();
+    chatModel.setMsg("message");
+    MessageJson messageJson1 = new MessageJson("msg",MessageType.GROUP_CHAT, gson.toJson(chatModel1));
+    groupChatModelLayer.displayResponse(messageJson1);
   }
 
+  @Test
+  public void displayResponseNullTest() {
+
+    GroupChatModelLayer groupChatModelLayer = new GroupChatModelLayer("name");
+    groupChatModelLayer.displayResponse(null);
+  }
 
 
 }
