@@ -20,7 +20,7 @@ import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.UserSearch;
 
-public class SearchModelLayerTest {
+public class UserSearchModelLayerTest {
 
   @Mock
   private Connection connection;
