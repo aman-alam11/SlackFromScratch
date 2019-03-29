@@ -74,6 +74,13 @@ public class FrontEnd {
     System.out.println("INPUT: Enter From above Options: ");
   }
 
+  public void showUpdateGroupOptions() {
+    FrontEnd.getView().sendToView("");
+    System.out.println("1. Add/delete Users.");
+    System.out.println("2. Add/delete Moderators.");
+    System.out.println("3. Rename Group");
+  }
+
 
   private static void printToStream(String string){
     System.out.println(string);

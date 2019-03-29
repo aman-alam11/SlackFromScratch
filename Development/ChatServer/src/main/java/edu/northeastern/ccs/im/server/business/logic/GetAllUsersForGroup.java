@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class GetAllUsersForGroup implements MessageHandler {
 
-    private static final String LOG_TAG = UnreadMessageHandler.class.getSimpleName();
+    private static final String LOG_TAG = GetAllUsersForGroup.class.getSimpleName();
     private JPAService mJpaService;
 
     public GetAllUsersForGroup() {

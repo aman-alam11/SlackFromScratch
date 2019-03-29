@@ -17,7 +17,7 @@ import edu.northeastern.ccs.im.server.Connection;
 
 public class ToggleModeratorRightsHandler implements MessageHandler {
 
-    private static final String LOG_TAG = UnreadMessageHandler.class.getSimpleName();
+    private static final String LOG_TAG = ToggleModeratorRightsHandler.class.getSimpleName();
     private JPAService mJpaService;
 
     public ToggleModeratorRightsHandler() {

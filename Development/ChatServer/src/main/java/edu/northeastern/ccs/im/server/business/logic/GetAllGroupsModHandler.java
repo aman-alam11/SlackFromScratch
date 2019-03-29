@@ -15,7 +15,7 @@ import edu.northeastern.ccs.im.server.Connection;
 
 public class GetAllGroupsModHandler implements MessageHandler {
 
-    private static final String LOG_TAG = UnreadMessageHandler.class.getSimpleName();
+    private static final String LOG_TAG = GetAllGroupsModHandler.class.getSimpleName();
     private JPAService mJpaService;
 
     public GetAllGroupsModHandler() {

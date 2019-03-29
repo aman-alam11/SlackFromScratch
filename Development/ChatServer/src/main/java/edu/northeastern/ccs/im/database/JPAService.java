@@ -247,7 +247,10 @@ public class JPAService {
         unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
       }
 
-      // Commit the transaction
+      // TODO: Check if working @Mitresh.
+      //  Mark all messages as read
+      ud.setDeliverAllUnreadMessages(username);
+
       transaction.commit();
     } catch (HibernateException ex) {
       ChatLogger.error(ex.getMessage());
@@ -400,5 +403,9 @@ public class JPAService {
     }
 
     return isOperationSuccessful;
+  }
+
+  public boolean renameUpdateGroup(String oldName, String newName){
+    return gd.updateGroupName(oldName, newName);
   }
 }

@@ -2,8 +2,6 @@ package edu.northeastern.ccs.im.server.business.logic;
 
 import com.google.gson.Gson;
 
-import java.util.Map;
-
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;

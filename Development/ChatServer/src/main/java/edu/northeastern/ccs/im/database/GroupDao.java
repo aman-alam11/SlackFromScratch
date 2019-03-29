@@ -151,9 +151,11 @@ public class GroupDao {
         return allGrps;
     }
 
-    public void updateGroupName(String oldName, String newName){
+    public boolean updateGroupName(String oldName, String newName){
         Session session = null;
         Transaction transaction = null;
+        boolean isTransactionSuccessful = false;
+
         try {
             session = mSessionFactory.openSession();
             // Begin a transaction
@@ -161,18 +163,22 @@ public class GroupDao {
             Group grp = JPAService.getInstance().findGroupByName(oldName);
             if (grp == null) {
                 ChatLogger.info(this.getClass().getName() + "Group not found : " + oldName);
-                throw new HibernateException("Group not found");
+                isTransactionSuccessful = false;
+                 throw new HibernateException("Group not found");
             }
 
             Group newGrp = JPAService.getInstance().findGroupByName(newName);
             if (newGrp != null) {
                 ChatLogger.info(this.getClass().getName() + "Group already exist : " + newName);
+                isTransactionSuccessful = false;
                 throw new HibernateException("Group with same name found");
             }
+
             grp.setgName(newName);
             // Save the Group
             session.update(grp);
-            // Commit the transaction
+            isTransactionSuccessful = true;
+
             transaction.commit();
         } catch (HibernateException ex) {
             // Print the Exception
@@ -183,6 +189,7 @@ public class GroupDao {
             // Close the session
             session.close();
         }
+        return isTransactionSuccessful;
     }
 
     public List<Group> allGroupsOfUser(String uName, String gName){
