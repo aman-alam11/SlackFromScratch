@@ -77,7 +77,7 @@ public class CreateGroupModelLayer implements CoreOperation {
         }
       }
     } else {
-      // TODO: Some default response
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.DEFAULT_LEVEL);
     }
   }
 

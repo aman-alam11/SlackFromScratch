@@ -67,7 +67,6 @@ public class UserChatModelLayer implements CoreOperation {
         try {
           Thread.sleep(500);
           if(connLocal.hasNext()){
-            // TODO: Check if it is of response type
             displayResponse(connLocal.next());
           }
         } catch (Exception e) {
@@ -96,7 +95,7 @@ public class UserChatModelLayer implements CoreOperation {
 
 
   /**
-   * This method runs in a loop when thread starts till messgage quit comes
+   * This method runs in a loop when thread starts till message quit comes
    */
   public void displayResponse(MessageJson response) {
     if (response == null) {

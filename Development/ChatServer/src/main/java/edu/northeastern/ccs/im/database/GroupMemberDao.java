@@ -68,9 +68,11 @@ public class GroupMemberDao {
         return isTransactionSuccessful;
     }
 
-    public void deleteMemberFromGroup(String gName, String uName){
+    public boolean deleteMemberFromGroup(String gName, String uName){
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
+        boolean isTransactionSuccessful = false;
+
         try {
             User user = getUser(uName);
 
@@ -83,17 +85,21 @@ public class GroupMemberDao {
             Query<GroupMember> q = session.createQuery(query);
             GroupMember gMemberToDelete = q.getSingleResult();
             session.delete(gMemberToDelete);
-            // Commit the transaction
+
+            isTransactionSuccessful = true;
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
+            isTransactionSuccessful = false;
             ChatLogger.error(ex.getMessage());
+
             // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
             // Close the session
             session.close();
         }
+
+        return isTransactionSuccessful;
     }
 
     private Group getGroup(String gName) {
