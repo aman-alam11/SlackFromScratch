@@ -31,22 +31,22 @@ public class DeleteUsersFromGroup implements CoreOperation {
       return;
     }
 
-    FrontEnd.getView().sendToView("Which user from above do you want to remove from the group?");
+    FrontEnd.getView().sendToView("INPUT: Which user from above do you want to remove from the group?");
     String userToDelete = mScanner.nextLine().trim();
 
     if (!userModMap.containsKey(userToDelete)) {
-      FrontEnd.getView().sendToView("Illegal Name Entered. Sending you back");
+      FrontEnd.getView().sendToView("ERROR: Illegal Name Entered. Sending you back");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
     } else {
       // Delete User from Group
       String responseBoolean = userToToggleModeratorOrDeleteUserGroup(userToDelete, mConnectionLayerModel,
               MessageType.DELETER_USER_FROM_GROUP);
       if (responseBoolean.equalsIgnoreCase("true")) {
-        FrontEnd.getView().sendToView("Operation Successful: \t" + userToDelete +
+        FrontEnd.getView().sendToView("SUCCESS: Operation Successful: \t" + userToDelete +
                 " has been deleted now.");
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       } else {
-        FrontEnd.getView().sendToView("Operation Failed. Please try again");
+        FrontEnd.getView().sendToView("ERROR: Operation Failed. Please try again");
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       }
     }
@@ -54,7 +54,7 @@ public class DeleteUsersFromGroup implements CoreOperation {
 
   private boolean oneMemberCheckDeleteUser(Map<String, Boolean> userModMap) {
     if(userModMap.size() <= 1) {
-      FrontEnd.getView().sendToView("Only " + userModMap.size() + " member left in group." +
+      FrontEnd.getView().sendToView("ERROR: Only " + userModMap.size() + " member left in group." +
               "Can't delete users for now.\n Taking you back\n");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       return true;

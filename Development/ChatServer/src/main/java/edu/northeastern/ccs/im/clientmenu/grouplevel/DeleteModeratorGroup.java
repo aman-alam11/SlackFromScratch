@@ -31,24 +31,24 @@ public class DeleteModeratorGroup implements CoreOperation {
   private void parseResponse(Map<String, Boolean> userModMap) {
 
 
-    FrontEnd.getView().sendToView("Which user from above do you want to downgrade from as moderator?");
+    FrontEnd.getView().sendToView("INPUT: Which user from above do you want to downgrade from as moderator?");
     String userToDowngrade = mScanner.nextLine().trim();
     if (!userModMap.containsKey(userToDowngrade)) {
-      FrontEnd.getView().sendToView("Illegal Name Entered. Sending you back");
+      FrontEnd.getView().sendToView("ERROR: Illegal Name Entered. Sending you back");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
     } else {
       if (!userModMap.get(userToDowngrade)) {
         // Means s/he is already a moderator
-        FrontEnd.getView().sendToView("The selected user is not a moderator. Sending you back");
+        FrontEnd.getView().sendToView("ERROR: The selected user is not a moderator. Sending you back");
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       } else {
 
         String responseBoolean = userToToggleModeratorOrDeleteUserGroup(userToDowngrade, mConnectionLayerModel, MessageType.TOGGLE_MODERATOR);
         if (responseBoolean.equalsIgnoreCase("true")) {
-          FrontEnd.getView().sendToView("Operation Successful: \t" + userToDowngrade + " is not a moderator now.");
+          FrontEnd.getView().sendToView("SUCCESS: Operation Successful: \t" + userToDowngrade + " is not a moderator now.");
           InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         } else {
-          FrontEnd.getView().sendToView("Operation Failed. Please try again");
+          FrontEnd.getView().sendToView("ERROR: Operation Failed. Please try again");
           InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         }
       }

@@ -43,7 +43,7 @@ public class GetAllGroupsUtil {
 
     String response = waitForResponseSocket(connectionLayerModel);
     if (StringUtil.isBlank(response)) {
-      FrontEnd.getView().sendToView("Uh Oh! Unable to process request, Let's try again!");
+      FrontEnd.getView().sendToView("ERROR: Uh Oh! Unable to process request, Let's try again!");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       return null;
     }
@@ -53,12 +53,12 @@ public class GetAllGroupsUtil {
 
     Map<String, Boolean> listGroupMod = new Gson().fromJson(response, modList);
     if (listGroupMod.size() <= 0) {
-      FrontEnd.getView().sendToView("You are part of no groups. Sending you back.\n");
+      FrontEnd.getView().sendToView("ERROR: You are part of no groups. Sending you back.\n");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       return listGroupMod;
     }
 
-    FrontEnd.getView().sendToView("You are part of following groups: ");
+    FrontEnd.getView().sendToView("INFO: You are part of following groups: ");
 
     for (Map.Entry<String, Boolean> eachGroupAndModPair : listGroupMod.entrySet()) {
       String canModify = eachGroupAndModPair.getValue() ? "YES" : "NO";
@@ -76,7 +76,7 @@ public class GetAllGroupsUtil {
    * @return A map where the key is username and value is boolean representing whether the user has admin rights or not.
    */
   public static Map<String, Boolean> getAllUserGroup(Connection connectionLayerModel) {
-    FrontEnd.getView().sendToView("Getting all users for group: " + CurrentGroupName.getGroupName());
+    FrontEnd.getView().sendToView("INFO: Getting all users for group: " + CurrentGroupName.getGroupName());
 
     MessageJson messageJsonState = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.GET_ALL_USERS_FOR_GRP,
             CurrentGroupName.getGroupName());
@@ -87,7 +87,7 @@ public class GetAllGroupsUtil {
 
     String response = waitForResponseSocket(connectionLayerModel);
     if (StringUtil.isBlank(response)) {
-      FrontEnd.getView().sendToView("Uh Oh! Unable to get all users for the group, Let's try again!");
+      FrontEnd.getView().sendToView("ERROR: Uh Oh! Unable to get all users for the group, Let's try again!");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_USERS_MODERATOR_OPERATIONS);
       return null;
     }

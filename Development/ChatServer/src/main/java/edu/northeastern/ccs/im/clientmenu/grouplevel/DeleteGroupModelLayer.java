@@ -22,7 +22,7 @@ public class DeleteGroupModelLayer implements CoreOperation {
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
     mScanner = scanner;
     mConnectionLayerModel = connectionLayerModel;
-    FrontEnd.getView().sendToView("Let's see how many groups you belong to; " +
+    FrontEnd.getView().sendToView("INFO: Let's see how many groups you belong to; " +
             "Fetching all your groups that you can modify...");
 
     parseResponse(GetAllGroupsUtil.parseResponse(MessageType.GET_ALL_GROUPS_MOD, connectionLayerModel));
@@ -31,20 +31,20 @@ public class DeleteGroupModelLayer implements CoreOperation {
   private void parseResponse(Map<String, Boolean> listGroupMod) {
 
     if (listGroupMod == null || listGroupMod.isEmpty()) {
-      FrontEnd.getView().sendToViewSameLine("Uh Oh! Please try again, operation failed");
+      FrontEnd.getView().sendToViewSameLine("ERROR: Uh Oh! Please try again, operation failed");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       return;
     }
 
     // Delete the group
-    FrontEnd.getView().sendToViewSameLine("Which of the above groups do you want to delete? Enter name of that group...");
+    FrontEnd.getView().sendToViewSameLine("INPUT: Which of the above groups do you want to delete? Enter name of that group...");
     String getGroupToDelete = mScanner.nextLine().trim();
 
     if (listGroupMod.containsKey(getGroupToDelete)) {
       if (listGroupMod.get(getGroupToDelete)) {
         sendMessageToDeleteGroup(getGroupToDelete);
       } else {
-        FrontEnd.getView().sendToView("You do not have rights to delete this group. Sending you back");
+        FrontEnd.getView().sendToView("ERROR: You do not have rights to delete this group. Sending you back");
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
       }
     } else {
@@ -60,9 +60,9 @@ public class DeleteGroupModelLayer implements CoreOperation {
     mConnectionLayerModel.sendMessage(messageJson);
     String response = waitForResponseSocket(mConnectionLayerModel);
     if (response.equalsIgnoreCase("true")) {
-      FrontEnd.getView().sendToView("Successfully deleted group: " + groupToDelete);
+      FrontEnd.getView().sendToView("SUCCESS: Successfully deleted group: " + groupToDelete);
     } else {
-      FrontEnd.getView().sendToView("Unable to delete group. Please try again");
+      FrontEnd.getView().sendToView("ERROR: Unable to delete group. Please try again");
     }
 
     InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
