@@ -23,11 +23,10 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
 
 public class AddUserToGroupModelLayer implements CoreOperation {
 
-  private Gson mGson;
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
-    this.mGson = new Gson();
+    Gson mGson = new Gson();
 
     FrontEnd.getView().sendToView("INPUT: Enter name of users to be added split by \",\"");
     String scr = scanner.nextLine().trim();

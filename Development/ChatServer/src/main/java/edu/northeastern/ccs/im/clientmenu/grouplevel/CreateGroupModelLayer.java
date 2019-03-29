@@ -24,31 +24,29 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
 public class CreateGroupModelLayer implements CoreOperation {
 
   private Gson gson;
-  private Scanner scanner;
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
-    this.scanner = scanner;
     this.gson = new Gson();
     FrontEnd.getView().sendToView("INPUT: Enter Group name you want to create: ");
     String groupName = scanner.nextLine().trim();
 
-    //FrontEnd.getView().sendToView("INPUT: Press Y/N ");
+    /**FrontEnd.getView().sendToView("INPUT: Press Y/N ");**/
     boolean yesNoModerator = false;
 
-    // This is the first time user is creating the group.
-    // Hence s/he is automatically the admin/moderator and can add members.
-    // For updating a group, we go to update group.
-//    switch (scanner.nextLine().trim().toLowerCase()) {
-//        case "y":
-//          yesNoModerator = true;
-//          break;
-//        case "n":
-//          break;
-//        default:
-//          FrontEnd.getView().sendToView("ERROR: Invalid Option!");
-//          break;
-//      }
+    /** This is the first time user is creating the group.
+     Hence s/he is automatically the admin/moderator and can add members.
+     For updating a group, we go to update group.
+    switch (scanner.nextLine().trim().toLowerCase()) {
+        case "y":
+          yesNoModerator = true;
+          break;
+        case "n":
+          break;
+        default:
+          FrontEnd.getView().sendToView("ERROR: Invalid Option!");
+          break;
+      }**/
 
     GroupCreateUpdateModel groupCreateUpdateModel = new GroupCreateUpdateModel(groupName,
             GenerateLoginCredentials.getUsername(),yesNoModerator);

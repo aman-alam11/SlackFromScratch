@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.message.MessageJson;
-import edu.northeastern.ccs.im.message.MessageType;
 
 public class SocketConnection implements Connection {
 

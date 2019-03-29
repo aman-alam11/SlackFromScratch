@@ -49,7 +49,7 @@ public class AddModeratorGroup implements CoreOperation {
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
         } else {
             String responseBoolean = userToToggleModerator(userToUpgrade, mConnectionLayerModel);
-            if (responseBoolean.toLowerCase().equals("true")) {
+            if (responseBoolean.equalsIgnoreCase("true")) {
                 FrontEnd.getView().sendToView("Operation Successful: \t" + userToUpgrade
                         + " is a moderator now.");
                 InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);

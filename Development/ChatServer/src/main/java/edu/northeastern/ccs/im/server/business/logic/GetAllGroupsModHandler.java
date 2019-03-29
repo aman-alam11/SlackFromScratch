@@ -46,7 +46,6 @@ public class GetAllGroupsModHandler implements MessageHandler {
             }
             else {
                 ChatLogger.info(LOG_TAG + messageJson.getMessage() + messageJson.getMessageType());
-//                return mJpaService.setDeliveredUnreadMessages(user);
             }
 
         } catch (Exception e) {

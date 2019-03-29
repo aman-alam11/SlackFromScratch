@@ -7,7 +7,6 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

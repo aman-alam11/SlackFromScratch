@@ -7,7 +7,6 @@ import java.util.Scanner;
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
-import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;

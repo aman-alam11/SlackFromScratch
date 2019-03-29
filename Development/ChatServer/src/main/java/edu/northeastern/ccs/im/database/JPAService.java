@@ -25,6 +25,8 @@ public class JPAService {
    */
   private UserDao ud;
 
+  private static final String USERNOTFOUND = "User not found : ";
+
   /**
    * Creating an object of ChatDao to call the methods to perform operations on chat.
    */
@@ -38,6 +40,7 @@ public class JPAService {
    */
 
   private static JPAService instance;
+
 
 
   /**
@@ -155,7 +158,6 @@ public class JPAService {
   public long createChatMessage(ChatModel chatModel) {
     User fromUser = findUserByName(chatModel.getFromUserName());
     User toUser = findUserByName(chatModel.getToUserName());
-    Group grp = null;
     return cd.create(fromUser, toUser, chatModel);
   }
 
@@ -243,7 +245,7 @@ public class JPAService {
       BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
       int userId = userIdBigInt.intValue();
       if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
         return unreadMessageModels;
       }
 
@@ -315,7 +317,7 @@ public class JPAService {
       BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
       int userId = userIdBigInt.intValue();
       if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
         return allGroupsForUser;
       }
 
@@ -387,7 +389,7 @@ public class JPAService {
 
       int userId = userIdBigInt.intValue();
       if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + "User not found : " + username);
+        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
         return isOperationSuccessful;
       }
 

@@ -6,8 +6,11 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class WaitForResponse {
 
+  private WaitForResponse() {
+    //private constructor
+  }
+
   private static final int WAIT_TIME_MILLISECONDS = 1000;
-  private static final int TIMEOUT_MILLISECONDS = 5000;
 
   private static final StringBuilder IS_LOADING_MESSAGE = new StringBuilder("LOADING");
   private static final String LOADING_COMPLETE_MESSAGE = "DONE\n";

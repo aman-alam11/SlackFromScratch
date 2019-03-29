@@ -45,10 +45,22 @@ public class GroupDao {
             // Print the Exception
             ChatLogger.error(ex.getMessage());
             // If there are any exceptions, roll back the changes
-            transaction.rollback();
+            try {
+                transaction.rollback();
+            }
+            catch (Exception e) {
+                ChatLogger.error(e.getMessage());
+            }
+
         } finally {
             // Close the session
-            session.close();
+            try {
+                session.close();
+            }
+            catch (Exception ex) {
+                ChatLogger.error(ex.getMessage());
+            }
+
         }
 
         return isTransactionSuccessful;
@@ -171,14 +183,12 @@ public class GroupDao {
             Group grp = JPAService.getInstance().findGroupByName(oldName);
             if (grp == null) {
                 ChatLogger.info(this.getClass().getName() + "Group not found : " + oldName);
-                isTransactionSuccessful = false;
                  throw new HibernateException("Group not found");
             }
 
             Group newGrp = JPAService.getInstance().findGroupByName(newName);
             if (newGrp != null) {
                 ChatLogger.info(this.getClass().getName() + "Group already exist : " + newName);
-                isTransactionSuccessful = false;
                 throw new HibernateException("Group with same name found");
             }
 

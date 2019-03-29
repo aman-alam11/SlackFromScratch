@@ -23,6 +23,5 @@ public class UnreadMessageModel {
   @Override
   public String toString() {
     return "FROM: " + fromPersonName + " TIME: " + timeStamp + " MESSAGE: " + message;
-//            + " IS GROUP " + isGroupMessage;
   }
 }
