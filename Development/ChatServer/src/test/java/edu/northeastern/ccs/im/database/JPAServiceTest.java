@@ -164,7 +164,7 @@ public class JPAServiceTest {
         jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, true);
         jpaS.createChatMessage("Charlie", "Bob", "How are you?",0, new Date(), false, true);
 
-        assertEquals(4,jpaS.findByReceiver("Bob").size());
+        assertEquals(0,jpaS.findByReceiver("Alice").size());
         jpaS.deleteChatByReceiver("Bob");
         assertEquals(0,jpaS.findByReceiver("Bob").size());
     }
