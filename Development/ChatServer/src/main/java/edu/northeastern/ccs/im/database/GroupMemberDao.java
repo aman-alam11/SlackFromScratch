@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 
 import edu.northeastern.ccs.im.ChatLogger;
 
+@SuppressWarnings("all")
 public class GroupMemberDao {
 
     public static final String GROUP_ID = "groupId";

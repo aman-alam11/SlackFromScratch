@@ -12,6 +12,7 @@ import edu.northeastern.ccs.im.ChatLogger;
 
 import java.util.List;
 
+@SuppressWarnings("all")
 public class GroupDao {
     SessionFactory mSessionFactory;
 
