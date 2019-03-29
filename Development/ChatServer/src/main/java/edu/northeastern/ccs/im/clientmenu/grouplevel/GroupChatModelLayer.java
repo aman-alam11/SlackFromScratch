@@ -7,6 +7,7 @@ import java.util.Scanner;
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
+import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentGroupName;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
@@ -17,11 +18,21 @@ import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class GroupChatModelLayer implements CoreOperation {
 
+
+
   private static final String QUIT = "\\q";
   private Connection connLocal;
   private Gson gson;
   private ChatModel chatModel;
   private boolean shouldListenForMessages = true;
+
+  public GroupChatModelLayer(String toGgroupChat) {
+    // Create Object
+    chatModel = new ChatModel();
+    chatModel.setFromUserName(GenerateLoginCredentials.getUsername());
+    chatModel.setGroupName(toGgroupChat);
+    chatModel.setToUserName(toGgroupChat);
+  }
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
@@ -54,7 +65,6 @@ public class GroupChatModelLayer implements CoreOperation {
         FrontEnd.getView().sendToView("INFO: Ending Chat.");
         breakFromConversation(connectionLayerModel);
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.GROUP_LEVEL);
-        FrontEnd.getView().showGroupLevelOptions();
         break;
       }
     }
@@ -89,12 +99,7 @@ public class GroupChatModelLayer implements CoreOperation {
   }
 
 
-  public GroupChatModelLayer(String toGgroupChat) {
-    // Create Object
-    chatModel = new ChatModel();
-    chatModel.setFromUserName(GenerateLoginCredentials.getUsername());
-    chatModel.setToUserName(toGgroupChat);
-  }
+
 
 
   /**
