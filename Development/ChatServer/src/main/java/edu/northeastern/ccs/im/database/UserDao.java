@@ -255,6 +255,41 @@ public class UserDao {
     return listUnreadChatRows;
   }
 
+
+  public int setRollbackMessage(String toUser, String fromUser, int numberOfMessages) {
+    Session session = null;
+    int res = 0;
+    try {
+      session = mSessionFactory.openSession();
+      Transaction transaction = session.beginTransaction();
+      BigInteger toUserId = this.getUserIdFromUserName(toUser);
+      BigInteger fromUserID = this.getUserIdFromUserName(fromUser);
+
+      if (toUserId.intValue() <= 0 || fromUserID.intValue() <= 0 ) {
+        ChatLogger.info(this.getClass().getName() + "User not found to user : " + toUser);
+        ChatLogger.info(this.getClass().getName() + "User not found  from user : " + fromUser);
+        return res;
+      }
+      String sql = "update chat set chat.isDelivered = true where To_id =? and From_user_id=? " +
+              "and isDelivered = false order by Creation_date desc limit ?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, toUserId.intValue());
+      query.setParameter(2, fromUserID.intValue());
+      query.setParameter(3, numberOfMessages);
+      res = query.executeUpdate();
+      ChatLogger.info("Rows Affected: " + res);
+      transaction.commit();
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return res;
+  }
+
   public boolean setDeliverAllUnreadMessages(String username) {
 
     Session session = null;

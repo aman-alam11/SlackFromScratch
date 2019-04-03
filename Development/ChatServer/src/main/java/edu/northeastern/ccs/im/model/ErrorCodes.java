@@ -11,7 +11,9 @@ public enum ErrorCodes {
 	G807("All Users Exists In Group"),
 	G808("All Users Invalid"),
 	G809("Requester Is Not a Member Of Group"),
-	DB000("Could not persist");
+	DB000("Could not persist"),
+	DB001("All messages seen by user");
+
 	
 	private String errorMessage;
 	private ErrorCodes(String errorMessage) {

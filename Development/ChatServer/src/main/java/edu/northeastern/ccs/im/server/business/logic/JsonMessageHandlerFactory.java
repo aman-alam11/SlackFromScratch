@@ -74,6 +74,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
         handler = new ToggleModeratorRightsHandler();
         break;
 
+      case CHAT_RECALL:
+        handler = new RecallUserChatHandler();
+        break;
+
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();

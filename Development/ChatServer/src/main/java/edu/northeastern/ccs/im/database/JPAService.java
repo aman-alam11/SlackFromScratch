@@ -272,12 +272,25 @@ public class JPAService {
 
   /**
    * Set all the messages to deliver by specific username.
-   * @param username - user name of the user you want to set delivery true;
+   * @param username - user name of the user you want to set delivery true.
    * @return - True or false according to the result.
    */
   public boolean setDeliveredUnreadMessages(String username) {
 
     return ud.setDeliverAllUnreadMessages(username);
+  }
+
+  /**
+   * Set number of messages from some user to user a user to isDelivered.
+   * So that other user cannot see the messages.
+   * @param toUserName - user name of the user you want to set delivery true.
+   * @param fromUserName - user name of the user from whom you want to set delivery true.
+   * @param numOfMessages - total number of messages to set delivered true.
+   * @return - True or false according to the result.
+   */
+  public int setRollBackMessages(String toUserName, String fromUserName, int numOfMessages) {
+
+    return ud.setRollbackMessage(toUserName, fromUserName, numOfMessages);
   }
 
 
