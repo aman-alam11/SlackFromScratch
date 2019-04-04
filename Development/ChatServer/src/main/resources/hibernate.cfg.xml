@@ -24,5 +24,6 @@
         <mapping class="edu.northeastern.ccs.im.database.Chat"/>
         <mapping class="edu.northeastern.ccs.im.database.Group"/>
         <mapping class="edu.northeastern.ccs.im.database.GroupMember"/>
+        <mapping class="edu.northeastern.ccs.im.database.UserFollow"/>
     </session-factory>
 </hibernate-configuration>

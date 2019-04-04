@@ -35,6 +35,8 @@ public class JPAService {
   private GroupDao gd;
 
   private GroupMemberDao gmd;
+
+  private UserFollwDao ufd;
   /**
    * Initialize the SessionFactory instance.
    */
@@ -71,6 +73,7 @@ public class JPAService {
           addAnnotatedClass(Chat.class).
           addAnnotatedClass(Group.class).
           addAnnotatedClass(GroupMember.class).
+          addAnnotatedClass(UserFollow.class).
           buildSessionFactory();
 
   /**
@@ -81,6 +84,7 @@ public class JPAService {
     cd = new ChatDao(mSessionFactory);
     gd = new GroupDao(mSessionFactory);
     gmd = new GroupMemberDao(mSessionFactory);
+    ufd = new UserFollwDao(mSessionFactory);
   }
 
   /**
@@ -92,6 +96,7 @@ public class JPAService {
     cd = new ChatDao(mSessionFactory);
     gd = new GroupDao(mSessionFactory);
     gmd = new GroupMemberDao(mSessionFactory);
+    ufd = new UserFollwDao(mSessionFactory);
   }
 
   /**
@@ -431,5 +436,9 @@ public class JPAService {
 
   public boolean userIsModerator(String uName, String gName){
     return gmd.userIsMember(uName,gName);
+  }
+
+  public boolean addFollower(String uName, String fName){
+    return ufd.addFollower(uName,fName);
   }
 }
