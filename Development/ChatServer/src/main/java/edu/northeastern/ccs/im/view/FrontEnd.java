@@ -6,7 +6,6 @@ public class FrontEnd {
   private static FrontEnd mFrontEnd;
 
 
-
   private FrontEnd() {
   }
 
@@ -45,16 +44,26 @@ public class FrontEnd {
   }
 
 
-  public void showUserLevelOptions() {
+  // Send false as default here
+
+  /**
+   * For normal purposes, send false here. This 4th option is only for super user here.
+   *
+   * @param isSuperUser This option is set only at login.
+   */
+  public void showUserLevelOptions(boolean isSuperUser) {
     System.out.println("1. Unread Messages");
     System.out.println("2. Chat user");
     System.out.println("3. Group Options");
+    if (isSuperUser) {
+      System.out.println("4. Tap into conversations");
+    }
     System.out.println("Or Enter \\q to quit");
     System.out.println("INPUT: Enter From above Options: ");
   }
 
   public void enterLines() {
-    for(int i = 0; i < 100; i++ ){
+    for (int i = 0; i < 100; i++) {
       System.out.print("*");
     }
     System.out.println("\n");
@@ -89,12 +98,18 @@ public class FrontEnd {
   }
 
 
-  private static void printToStream(String string){
+  private static void printToStream(String string) {
     System.out.println(string);
   }
 
-    public void showModeratorsOptions() {
-        System.out.println("1. Add Moderators.");
-        System.out.println("2. Delete Moderators.");
-    }
+  public void showModeratorsOptions() {
+    System.out.println("1. Add Moderators.");
+    System.out.println("2. Delete Moderators.");
+  }
+
+  public void showSuperUserOperations() {
+    System.out.println("1. Get All Conversations for a particular User for user to user chat");
+    System.out.println("2. Get All Conversations for a particular Group");
+    System.out.println("3. Get All Conversations for a user for both user to user chat and group");
+  }
 }

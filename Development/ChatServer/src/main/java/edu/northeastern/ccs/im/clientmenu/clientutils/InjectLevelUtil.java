@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
+import edu.northeastern.ccs.im.clientmenu.superuser.SuperUser;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.AddModeratorGroup;
@@ -29,6 +30,7 @@ public final class InjectLevelUtil {
   private ModuleFactory moduleFactory;
   private static Map<CurrentLevel,CurrentLevel> levelMap;
   private static CurrentLevel currentLevel;
+  private boolean isSuperUser = false;
 
 
   public static Map<Integer, Function<Scanner, CoreOperation>> getOptionsMap() {
@@ -110,8 +112,8 @@ public final class InjectLevelUtil {
         break;
 
       default:
-        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
+        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
     }
     // Feed the appropriate options
   }
@@ -136,10 +138,13 @@ public final class InjectLevelUtil {
   }
 
   private void injectUserLevel() {
-    FrontEnd.getView().showUserLevelOptions();
+    FrontEnd.getView().showUserLevelOptions(isSuperUser);
     mClientOptionsMap.put(1, scanner -> new UnreadMessages());
     mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
     mClientOptionsMap.put(3, scanner -> new GroupLayer());
+    if (isSuperUser) {
+      mClientOptionsMap.put(4, scanner -> new SuperUser());
+    }
   }
 
 
@@ -163,4 +168,7 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(2, scanner -> new DeleteModeratorGroup());
   }
 
+  public void setSuperUser(boolean superUser) {
+    isSuperUser = superUser;
+  }
 }

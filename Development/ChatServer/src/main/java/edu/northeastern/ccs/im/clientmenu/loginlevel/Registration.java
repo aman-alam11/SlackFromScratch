@@ -71,6 +71,7 @@ public class Registration extends CommonOperations {
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
     } else {
       FrontEnd.getView().sendToView("SUCCESS: Account Created Successfully!");
+      InjectLevelUtil.getInstance().setSuperUser(ackModel.getIsSuperUser());
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
     }
   }

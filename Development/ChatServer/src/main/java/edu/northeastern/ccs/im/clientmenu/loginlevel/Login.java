@@ -59,6 +59,7 @@ public class Login extends CommonOperations {
 
     if (!ackModel.isUserAuthenticated()) {
       FrontEnd.getView().sendToView("ERROR: Login Failed, " + ackModel.getErrorMessage());
+      InjectLevelUtil.getInstance().setSuperUser(ackModel.getIsSuperUser());
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
     } else {
 

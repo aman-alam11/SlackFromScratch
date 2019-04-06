@@ -54,7 +54,7 @@ public class UserChatModelLayer implements CoreOperation {
         shouldListenForMessages = false;
         FrontEnd.getView().sendToView("INFO: Ending Chat.");
         breakFromConversation(connectionLayerModel);
-        FrontEnd.getView().showUserLevelOptions();
+        FrontEnd.getView().showUserLevelOptions(false);
         break;
       }
       else if (message.equalsIgnoreCase(REVERSE)) {
