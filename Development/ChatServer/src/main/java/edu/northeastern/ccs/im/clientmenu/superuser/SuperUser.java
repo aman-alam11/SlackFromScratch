@@ -46,6 +46,7 @@ public class SuperUser implements CoreOperation {
       // TODO: Add comments
       // Get All Conversations for a particular User for user to user chat
       case 1:
+        FrontEnd.getView().sendToView("Enter the name of user to tap into his/her user2user chats:");
         username = scanner.nextLine().trim().toLowerCase();
         if (StringUtil.isBlank(username)) {
           FrontEnd.getView().sendToView(INVALID_USERNAME_GROUPNAME);
@@ -61,6 +62,7 @@ public class SuperUser implements CoreOperation {
 
       // Get All Conversations for a particular User for all group chats
       case 2:
+        FrontEnd.getView().sendToView("Enter the name of user to tap into his/her group2group chats:");
         username = scanner.nextLine().trim().toLowerCase();
 
         if (StringUtil.isBlank(username)) {
@@ -182,6 +184,12 @@ public class SuperUser implements CoreOperation {
     Type chatModelList = new TypeToken<List<UnreadMessageModel>>() {
     }.getType();
     List<UnreadMessageModel> listUnreadMessagesAll = new Gson().fromJson(resp, chatModelList);
+
+    if(listUnreadMessagesAll.isEmpty()) {
+      FrontEnd.getView().sendToView("No such results found. Sending you back");
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
+      return;
+    }
 
     for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
         FrontEnd.getView().sendToView(eachChat.toString());

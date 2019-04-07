@@ -248,22 +248,22 @@ public class JPAService {
       session = mSessionFactory.openSession();
       transaction = session.beginTransaction();
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
+      if(validIdMap.get(username) == null) {
         return unreadMessageModels;
       }
 
-      List<Chat> listRows = ud.getUnreadMessages(userId, dateMap, fetchLevel);
+      List<Chat> listRows = ud.getUnreadMessages(validIdMap.get(username), dateMap, fetchLevel);
       for (Chat listRow : listRows) {
         String fromPersonName = listRow.getFromId().getName();
         Date timestamp = listRow.getCreated();
         String message = listRow.getMsg();
         unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
       }
-      ud.setDeliverAllUnreadMessages(username);
+
+      if(fetchLevel == FetchLevel.UNREAD_MESSAGE_HANDLER) {
+        ud.setDeliverAllUnreadMessages(username);
+      }
 
       transaction.commit();
     } catch (HibernateException ex) {
@@ -274,6 +274,20 @@ public class JPAService {
     }
 
     return unreadMessageModels;
+  }
+
+  private Map<String, Integer> isValidIdForUsernameHelper(String username) {
+    Map<String, Integer> resultMap =  new HashMap<>();
+    // Get the userId for the user for which we need the username
+    BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+    int userId = userIdBigInt.intValue();
+    if (userId <= 0) {
+      ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      return resultMap;
+    }
+
+    resultMap.put(username, userId);
+    return resultMap;
   }
 
 
@@ -333,15 +347,12 @@ public class JPAService {
       session = mSessionFactory.openSession();
       transaction = session.beginTransaction();
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
+      if(validIdMap.get(username) == null) {
         return allGroupsForUser;
       }
 
-      allGroupsForUser = gmd.getAllGroupsForUser(userId);
+      allGroupsForUser = gmd.getAllGroupsForUser(validIdMap.get(username));
 
       // Commit the transaction
       transaction.commit();

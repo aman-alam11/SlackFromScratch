@@ -146,7 +146,7 @@ public final class InjectLevelUtil {
 
     if (isSuperUser) {
       mClientOptionsMap.put(99, scanner -> new SuperUser());
-      FrontEnd.getView().sendToView("99. Super User Options: Tap into conversations");
+      FrontEnd.getView().sendToView("\n \nPress 99 Super User Options: Tap into conversations\n \n");
     }
   }
 

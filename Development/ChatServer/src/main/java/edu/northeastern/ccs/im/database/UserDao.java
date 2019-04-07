@@ -249,7 +249,7 @@ public class UserDao {
     Session session = mSessionFactory.openSession();
     List<Chat> listUnreadChatRows = new ArrayList<>();
     StringBuilder sqlString = new StringBuilder(
-            "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered");
+            "SELECT * FROM chat WHERE chat.To_id =?");
     String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel);
 
     try {
@@ -269,10 +269,15 @@ public class UserDao {
   private String generateAppropriateSqlString(StringBuilder sqlString, FetchLevel fetchLevel) {
     switch (fetchLevel) {
       case FETCH_USER_LEVEL:
-
+        sqlString.append(" and NOT chat.isGrpMsg");
         break;
 
-        case FETCH_GROUP_LEVEL:
+      case FETCH_GROUP_LEVEL:
+        sqlString.append(" and chat.isGrpMsg");
+        break;
+
+      case UNREAD_MESSAGE_HANDLER:
+        sqlString.append(" AND NOT chat.isDelivered");
         break;
 
       case FETCH_BOTH_USER_GROUP_LEVEL:

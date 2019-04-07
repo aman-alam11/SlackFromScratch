@@ -97,6 +97,7 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
 
       case SUPER_USER:
         handler = new SuperUserHandler();
+        break;
 
       default:
         // Send to Login Page as default for safety

@@ -35,7 +35,7 @@ public class UnreadMessageHandler implements MessageHandler {
 				return false;
 			}
 			List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user, null,
-							FetchLevel.FETCH_BOTH_USER_GROUP_LEVEL);
+							FetchLevel.UNREAD_MESSAGE_HANDLER);
 			MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.UNREAD_MSG,
 					mGson.toJson(unreadMessages));
 			sendResponse(response, clientConnection);
