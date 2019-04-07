@@ -19,7 +19,9 @@ import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupSearchModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroupModelLayer;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
+import edu.northeastern.ccs.im.clientmenu.userlevel.UserFollowLayer;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
+import edu.northeastern.ccs.im.clientmenu.userlevel.CreateUserFollowLayer;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class InjectLevelUtil {
@@ -59,6 +61,7 @@ public final class InjectLevelUtil {
     levelMap.put(CurrentLevel.USER_LEVEL,CurrentLevel.USER_LEVEL);
     levelMap.put(CurrentLevel.GROUP_LEVEL,CurrentLevel.USER_LEVEL);
     levelMap.put(CurrentLevel.GROUP_USERS_CRUD_LEVEL,CurrentLevel.GROUP_LEVEL);
+    levelMap.put(CurrentLevel.FOLLOW_USER_LEVEL,CurrentLevel.USER_LEVEL);
   }
 
   /**
@@ -105,6 +108,11 @@ public final class InjectLevelUtil {
         injectUpdateModeratorsLevel();
         break;
 
+      case FOLLOW_USER_LEVEL:
+        setCurrentLevel(CurrentLevel.FOLLOW_USER_LEVEL);
+        injectFollwUserLevel();
+        break;
+
       case DEFAULT_LEVEL:
         injectDefaultLevel();
         break;
@@ -140,6 +148,7 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(1, scanner -> new UnreadMessages());
     mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
     mClientOptionsMap.put(3, scanner -> new GroupLayer());
+    mClientOptionsMap.put(4, scanner -> new UserFollowLayer());
   }
 
 
@@ -149,6 +158,12 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(2, scanner -> new UpdateGroupModelLayer());
     mClientOptionsMap.put(3, scanner -> new GroupSearchModelLayer());
     mClientOptionsMap.put(4, scanner -> new DeleteGroupModelLayer());
+  }
+
+  private void injectFollwUserLevel() {
+    FrontEnd.getView().showFollowUserLevelOptions();
+    mClientOptionsMap.put(1, scanner -> new CreateUserFollowLayer());
+    mClientOptionsMap.put(2, scanner -> new UpdateGroupModelLayer());
   }
 
   private void injectGroupUsersCrudLevel() {

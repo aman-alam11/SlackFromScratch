@@ -74,6 +74,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
         handler = new ToggleModeratorRightsHandler();
         break;
 
+      case FOLLOW_USER:
+        handler = new AddFollowerUserHandler();
+        break;
+
       default:
         // Send to Login Page as default for safety
         handler = new LoginHandler();

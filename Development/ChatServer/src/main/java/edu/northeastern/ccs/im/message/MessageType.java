@@ -117,8 +117,12 @@ public enum MessageType {
   /**
    * Delete User From Group.
    */
-  DELETER_USER_FROM_GROUP("DUG");
+  DELETER_USER_FROM_GROUP("DUG"),
 
+  /**
+   * Follow a User.
+   */
+  FOLLOW_USER("FOLU");
   /**
    * Store the short name of this message type.
    */

@@ -49,6 +49,7 @@ public class FrontEnd {
     System.out.println("1. Unread Messages");
     System.out.println("2. Chat user");
     System.out.println("3. Group Options");
+    System.out.println("4. Follow User options");
     System.out.println("Or Enter \\q to quit");
     System.out.println("INPUT: Enter From above Options: ");
   }
@@ -67,6 +68,18 @@ public class FrontEnd {
     System.out.println("4. Delete Group");
     System.out.println("Or Enter \\b to go back or \\q to quit");
     System.out.println("INPUT: Enter From above Options: ");
+  }
+
+  public void showFollowUserLevelOptions() {
+    System.out.println("1. Follow a User");
+    System.out.println("2. List my followers");
+    System.out.println("Or Enter \\b to go back or \\q to quit");
+    System.out.println("INPUT: Enter From above Options: ");
+  }
+
+  public void showFollwUserLevelOptions(){
+    System.out.println("1. Follow a user");
+    System.out.println("2. List my followers");
   }
 
   public void showGroupUsersCrudLevelOptions() {
