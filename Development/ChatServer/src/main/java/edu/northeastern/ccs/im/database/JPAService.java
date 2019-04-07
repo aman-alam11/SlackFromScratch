@@ -16,6 +16,7 @@ import java.util.Objects;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.model.FetchLevel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
 public class JPAService {
@@ -236,7 +237,7 @@ public class JPAService {
     return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
   }
 
-  public List<UnreadMessageModel> getUnreadMessages(String username) {
+  public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, Date> dateMap, FetchLevel fetchLevel) {
 
     Session session = null;
     Transaction transaction = null;
@@ -254,7 +255,7 @@ public class JPAService {
         return unreadMessageModels;
       }
 
-      List<Chat> listRows = ud.getUnreadMessages(userId);
+      List<Chat> listRows = ud.getUnreadMessages(userId, dateMap, fetchLevel);
       for (Chat listRow : listRows) {
         String fromPersonName = listRow.getFromId().getName();
         Date timestamp = listRow.getCreated();

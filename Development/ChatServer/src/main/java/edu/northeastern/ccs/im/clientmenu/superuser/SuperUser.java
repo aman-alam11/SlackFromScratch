@@ -17,7 +17,7 @@ import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
-import edu.northeastern.ccs.im.clientmenu.userlevel.SuperUserMessageModel;
+import edu.northeastern.ccs.im.model.SuperUserMessageModel;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
@@ -31,7 +31,7 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
 public class SuperUser implements CoreOperation {
 
   private static final String INVALID_USERNAME_GROUPNAME = "Input can't be blank. Sending you back";
-  SuperUserMessageModel superUserMessageModel;
+  private SuperUserMessageModel mSuperUserMessageModel;
   private String gsonSerialized;
 
   @Override
@@ -43,6 +43,7 @@ public class SuperUser implements CoreOperation {
     int choice = Integer.parseInt(scanner.nextLine());
     switch (choice) {
       // TODO: Break this big switch case into smaller methods for all TT, TF, FT, FF truth table cases
+      // TODO: Add comments
       // Get All Conversations for a particular User for user to user chat
       case 1:
         username = scanner.nextLine().trim().toLowerCase();
@@ -52,9 +53,9 @@ public class SuperUser implements CoreOperation {
           return;
         }
 
-        superUserMessageModel = new SuperUserMessageModel(true, false, username);
+        mSuperUserMessageModel = new SuperUserMessageModel(true, false, username);
         updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(superUserMessageModel);
+        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
         generateRequestForServer(connectionLayerModel);
         break;
 
@@ -68,9 +69,9 @@ public class SuperUser implements CoreOperation {
           return;
         }
 
-        superUserMessageModel = new SuperUserMessageModel(false, true, username);
+        mSuperUserMessageModel = new SuperUserMessageModel(false, true, username);
         updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(superUserMessageModel);
+        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
         break;
 
       // Get All Conversations for a user for both user to user chat and group
@@ -83,9 +84,9 @@ public class SuperUser implements CoreOperation {
           return;
         }
 
-        superUserMessageModel = new SuperUserMessageModel(true, true, username);
+        mSuperUserMessageModel = new SuperUserMessageModel(true, true, username);
         updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(superUserMessageModel);
+        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
         break;
 
       // Get All Conversations for a particular Group irrespective of user
@@ -97,9 +98,9 @@ public class SuperUser implements CoreOperation {
           return;
         }
 
-        superUserMessageModel = new SuperUserMessageModel(true, groupName);
+        mSuperUserMessageModel = new SuperUserMessageModel(true, groupName);
         updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(superUserMessageModel);
+        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
         break;
 
       default:
@@ -144,22 +145,22 @@ public class SuperUser implements CoreOperation {
     try {
       Date date = simpleDateFormat.parse(enteredDate);
       if(isStartDate) {
-        superUserMessageModel.setmStartDate(date);
+        mSuperUserMessageModel.setmStartDate(date);
       } else {
-        if (superUserMessageModel.getStartDate().after(date)) {
+        if (mSuperUserMessageModel.getStartDate().after(date)) {
           // End date is still invalid
           FrontEnd.getView().sendToView("Invalid date entered. Getting all chats of requested type");
-          superUserMessageModel.setAreDatesValid(false);
+          mSuperUserMessageModel.setAreDatesValid(false);
           return false;
         } else {
-          superUserMessageModel.setmEndDate(date);
+          mSuperUserMessageModel.setmEndDate(date);
           // Both start and end dates are valid now
-          superUserMessageModel.setAreDatesValid(true);
+          mSuperUserMessageModel.setAreDatesValid(true);
         }
       }
       return true;
     } catch (ParseException e) {
-      superUserMessageModel.setAreDatesValid(false);
+      mSuperUserMessageModel.setAreDatesValid(false);
       return false;
     }
   }

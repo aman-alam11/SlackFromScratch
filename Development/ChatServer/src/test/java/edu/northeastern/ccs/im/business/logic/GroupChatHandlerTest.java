@@ -14,7 +14,7 @@ import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.database.User;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.GroupChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupChatHandler;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;

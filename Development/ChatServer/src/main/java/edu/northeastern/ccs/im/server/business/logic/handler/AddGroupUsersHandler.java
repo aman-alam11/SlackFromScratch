@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.AddDeleteGroupUsers;
 import edu.northeastern.ccs.im.model.ErrorCodes;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 public class AddGroupUsersHandler implements MessageHandler {
 	

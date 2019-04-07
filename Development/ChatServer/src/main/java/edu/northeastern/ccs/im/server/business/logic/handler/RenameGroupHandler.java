@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -12,6 +12,7 @@ import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 public class RenameGroupHandler implements MessageHandler {
 

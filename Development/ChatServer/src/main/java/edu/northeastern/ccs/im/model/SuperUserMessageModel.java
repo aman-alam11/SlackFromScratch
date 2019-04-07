@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.clientmenu.userlevel;
+package edu.northeastern.ccs.im.model;
 
 import java.util.Date;
 
@@ -22,6 +22,7 @@ public class SuperUserMessageModel {
     this.mUsernameToTap = username;
     mGetOnlyUserChat = getOnlyUserChat;
     mGetOnlyGroupChat = getOnlyGroupChat;
+    mGetAllChats = mGetOnlyGroupChat && mGetOnlyUserChat;
   }
 
   public SuperUserMessageModel(boolean getAllChats, String username) {
@@ -60,11 +61,19 @@ public class SuperUserMessageModel {
     this.mEndDate = mEndDate;
   }
 
-  public boolean isAreDatesValid() {
+  public boolean areDatesValid() {
     return areDatesValid;
   }
 
   public void setAreDatesValid(boolean areDatesValid) {
     this.areDatesValid = areDatesValid;
+  }
+
+  public String getmUsernameToTap() {
+    return mUsernameToTap;
+  }
+
+  public String getmGroupToTap() {
+    return mGroupToTap;
   }
 }

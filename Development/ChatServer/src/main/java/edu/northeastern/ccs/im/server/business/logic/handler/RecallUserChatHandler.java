@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
 import edu.northeastern.ccs.im.database.JPAService;
@@ -9,6 +9,7 @@ import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.ErrorCodes;
 import edu.northeastern.ccs.im.model.RecallModel;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 public class RecallUserChatHandler implements MessageHandler {
 

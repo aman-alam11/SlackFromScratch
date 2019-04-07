@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.DeleteGroupHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.DeleteGroupHandler;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

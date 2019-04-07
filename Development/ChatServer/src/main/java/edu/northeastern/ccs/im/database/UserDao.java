@@ -6,14 +6,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import javax.persistence.NoResultException;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.persistence.NoResultException;
+
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.model.FetchLevel;
 
 @SuppressWarnings("all")
 public class UserDao {
@@ -236,13 +240,15 @@ public class UserDao {
    * @param userId The userId for which we need to get all the unread messages for.
    * @return A List of complete chat rows from which information will be extracted based on use case.
    */
-  public List<Chat> getUnreadMessages(int userId) {
+  public List<Chat> getUnreadMessages(int userId, Map<String, Date> dateMap, FetchLevel fetchLevel) {
     Session session = mSessionFactory.openSession();
     List<Chat> listUnreadChatRows = new ArrayList<>();
+    StringBuilder sqlString = new StringBuilder(
+            "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered");
+    String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel);
 
     try {
-      String sql = "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered";
-      Query query = session.createNativeQuery(sql, Chat.class);
+      Query query = session.createNativeQuery(genSqlString, Chat.class);
       query.setParameter(1, userId);
       listUnreadChatRows.addAll(query.getResultList());
     } catch (Exception ex) {
@@ -253,6 +259,26 @@ public class UserDao {
       session.close();
     }
     return listUnreadChatRows;
+  }
+
+  private String generateAppropriateSqlString(StringBuilder sqlString, FetchLevel fetchLevel) {
+    switch (fetchLevel) {
+      case FETCH_USER_LEVEL:
+
+        break;
+
+        case FETCH_GROUP_LEVEL:
+        break;
+
+      case FETCH_BOTH_USER_GROUP_LEVEL:
+        // Intentional fall through
+
+      default:
+        // Dont append anything
+        break;
+    }
+
+    return sqlString.toString();
   }
 
 

@@ -14,7 +14,7 @@ import edu.northeastern.ccs.im.clientmenu.models.DeleteUserFromGroupModel;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.ToggleModeratorRightsHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.ToggleModeratorRightsHandler;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
