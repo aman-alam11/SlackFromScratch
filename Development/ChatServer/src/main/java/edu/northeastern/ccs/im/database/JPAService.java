@@ -428,4 +428,8 @@ public class JPAService {
   public boolean addFollower(String uName, String fName){
     return ufd.addFollower(uName,fName);
   }
+
+  public List<User> getAllFollowers(String uName){
+    return ufd.getAllFollowers(uName);
+  }
 }

@@ -18,10 +18,7 @@ import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupSearchModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroupModelLayer;
-import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
-import edu.northeastern.ccs.im.clientmenu.userlevel.UserFollowLayer;
-import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
-import edu.northeastern.ccs.im.clientmenu.userlevel.CreateUserFollowLayer;
+import edu.northeastern.ccs.im.clientmenu.userlevel.*;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class InjectLevelUtil {
@@ -163,7 +160,7 @@ public final class InjectLevelUtil {
   private void injectFollwUserLevel() {
     FrontEnd.getView().showFollowUserLevelOptions();
     mClientOptionsMap.put(1, scanner -> new CreateUserFollowLayer());
-    mClientOptionsMap.put(2, scanner -> new UpdateGroupModelLayer());
+    mClientOptionsMap.put(2, scanner -> new ListUserFollowerLayer());
   }
 
   private void injectGroupUsersCrudLevel() {

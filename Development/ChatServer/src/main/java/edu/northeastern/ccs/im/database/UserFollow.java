@@ -20,6 +20,8 @@ public class UserFollow implements Serializable {
     @Column(name="follow_date", nullable=false)
     private Date followDate;
 
+    public UserFollow(){}
+
     public UserFollow(User followedUser, User followerUser) {
         this.followedUser = followedUser;
         this.followerUser = followerUser;

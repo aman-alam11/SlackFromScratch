@@ -1,7 +1,6 @@
 package edu.northeastern.ccs.im.clientmenu.userlevel;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
@@ -14,9 +13,7 @@ import edu.northeastern.ccs.im.model.UserFollow;
 import edu.northeastern.ccs.im.model.UserSearch;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class CreateUserFollowLayer implements CoreOperation {
