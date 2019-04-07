@@ -1,15 +1,12 @@
 package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import edu.northeastern.ccs.im.ChatLogger;
-import edu.northeastern.ccs.im.clientmenu.superuser.SuperUser;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
@@ -31,7 +28,6 @@ public class SuperUserHandler implements MessageHandler {
 
   private final Gson mGson;
   private final JPAService mJpaService;
-  private boolean areDatesValid;
   private SuperUserMessageModel superUserMessageModel;
   private HashMap<String, Date> dateMap;
   private Connection mConnection;
@@ -46,14 +42,9 @@ public class SuperUserHandler implements MessageHandler {
     try {
       this.mConnection = clientConnection;
       superUserMessageModel = new Gson().fromJson(message, SuperUserMessageModel.class);
-      areDatesValid = superUserMessageModel.areDatesValid();
       handleChatsHelper();
 
-      // TODO: Send Response back
       // TODO: Handle Dates in Database, the date queries are not written yet
-//      MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.UNREAD_MSG,
-//              mGson.toJson(unreadMessages));
-//      sendResponse(response, clientConnection);
       return true;
 
     } catch (Exception e) {
@@ -76,12 +67,14 @@ public class SuperUserHandler implements MessageHandler {
 
 
   private void handleGetOnlyGroupChatForDates(String userName) {
+    List<UnreadMessageModel> unreadMessageList;
     if (superUserMessageModel.areDatesValid()) {
       updateDateMap();
-      mJpaService.getUnreadMessages(userName, dateMap, FetchLevel.FETCH_GROUP_LEVEL);
+      unreadMessageList = mJpaService.getUnreadMessages(userName, dateMap, FetchLevel.FETCH_GROUP_LEVEL);
     } else {
-      mJpaService.getUnreadMessages(userName, null, FetchLevel.FETCH_GROUP_LEVEL);
+      unreadMessageList = mJpaService.getUnreadMessages(userName, null, FetchLevel.FETCH_GROUP_LEVEL);
     }
+    sendResponseBack(unreadMessageList);
   }
 
 
@@ -97,15 +90,21 @@ public class SuperUserHandler implements MessageHandler {
   }
 
   private void handleGetAllChats(String groupName) {
+    List<UnreadMessageModel> unreadMessageList;
     if (superUserMessageModel.areDatesValid()) {
       updateDateMap();
-
-      mJpaService.getUnreadMessagesForGroup(groupName, dateMap);
+      unreadMessageList = mJpaService.getUnreadMessagesForGroup(groupName, dateMap);
     } else {
-      mJpaService.getUnreadMessagesForGroup(groupName, null);
+      unreadMessageList = mJpaService.getUnreadMessagesForGroup(groupName, null);
     }
+    sendResponseBack(unreadMessageList);
   }
 
+  /**
+   * A helper method to simply get the start and end date from the passed model and add it to a map
+   * for passing. A simple way would have been to use a Pair here but since our jenkins has some
+   * issue and is unable to find it, we have shifted to Map (which is unnecessary here).
+   */
   private void updateDateMap() {
     Date startDate = superUserMessageModel.getStartDate();
     Date endDate = superUserMessageModel.getEndDate();

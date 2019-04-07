@@ -248,13 +248,13 @@ public class UserDao {
   public List<Chat> getUnreadMessages(int userId, Map<String, Date> dateMap, FetchLevel fetchLevel) {
     Session session = mSessionFactory.openSession();
     List<Chat> listUnreadChatRows = new ArrayList<>();
-    StringBuilder sqlString = new StringBuilder(
-            "SELECT * FROM chat WHERE chat.To_id =?");
+    StringBuilder sqlString = new StringBuilder("SELECT * FROM chat WHERE chat.To_id =?");
     String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel);
 
     try {
       Query query = session.createNativeQuery(genSqlString, Chat.class);
       query.setParameter(1, userId);
+      // TODO: Add params for dates if not null
       listUnreadChatRows.addAll(query.getResultList());
     } catch (Exception ex) {
       // If there are any exceptions, roll back the changes
@@ -266,6 +266,7 @@ public class UserDao {
     return listUnreadChatRows;
   }
 
+  // TODO: add date queries.
   private String generateAppropriateSqlString(StringBuilder sqlString, FetchLevel fetchLevel) {
     switch (fetchLevel) {
       case FETCH_USER_LEVEL:
@@ -360,6 +361,11 @@ public class UserDao {
   }
 
 
+  /**
+   * A simple method to upgrade the user as super user. This method cannot be called from client side
+   * and can called only from server side for special requests from government agencies.
+   * @param userId The userid of the super user.
+   */
   public void setAsSuperUser(long userId) {
     Session session = null;
     try {
@@ -373,7 +379,6 @@ public class UserDao {
       query.executeUpdate();
       transaction.commit();
     } catch (Exception e) {
-      System.out.println(LOG_TAG + "Unable to update as superUser");
       ChatLogger.info(LOG_TAG + "Unable to update as superUser");
     }
   }

@@ -237,6 +237,13 @@ public class JPAService {
     return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
   }
 
+  /**
+   * Get all messages based on Fetch Level.
+   * @param username The username to get unread messages for.
+   * @param dateMap The date constraint on the messages that we need to fetch.
+   * @param fetchLevel The multiple fetching details that we need to modify queries on.
+   * @return A list of Messages which are based on {@link UnreadMessageModel}.
+   */
   public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, Date> dateMap,
                                                     FetchLevel fetchLevel) {
 
@@ -252,6 +259,7 @@ public class JPAService {
       if(validIdMap.get(username) == null) {
         return unreadMessageModels;
       }
+
 
       List<Chat> listRows = ud.getUnreadMessages(validIdMap.get(username), dateMap, fetchLevel);
       for (Chat listRow : listRows) {
@@ -457,7 +465,7 @@ public class JPAService {
 
 
   public List<UnreadMessageModel> getUnreadMessagesForGroup(String groupname, Map<String, Date> dateMap) {
-
+    // TODO: CHeck if working
     Session session = null;
     Transaction transaction = null;
     List<UnreadMessageModel> unreadMessageModels = new ArrayList<>();
