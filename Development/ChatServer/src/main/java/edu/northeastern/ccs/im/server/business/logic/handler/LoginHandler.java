@@ -21,6 +21,7 @@ public class LoginHandler implements MessageHandler {
 
   private Gson gson;
   private static final String TAG = LoginHandler.class.getSimpleName();
+  private boolean isSuperUser;
 
   public LoginHandler() {
     gson = new Gson();
@@ -35,6 +36,8 @@ public class LoginHandler implements MessageHandler {
               JPAService.getInstance());
 
       boolean isAuthenticated = sessionFactory.login();
+      isSuperUser = JPAService.getInstance().findUserByName(lgn.getUserName()).isSuperUser();
+
       respond(isAuthenticated, conn);
       if (isAuthenticated) {
     	  isAuthenticated = conn.signInUser(lgn.getUserName());
@@ -50,7 +53,7 @@ public class LoginHandler implements MessageHandler {
   private void respond(boolean isAuthenticated, Connection conn) {
     String strMsg = isAuthenticated ? MessageConstants.LOGIN_SUCCESS :
             MessageConstants.LOGIN_FAILURE;
-    AckModel responseMessage = new AckModel(isAuthenticated, strMsg, true);
+    AckModel responseMessage = new AckModel(isAuthenticated, strMsg, true, isSuperUser);
     MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
             MessageType.AUTH_ACK,
             gson.toJson(responseMessage));

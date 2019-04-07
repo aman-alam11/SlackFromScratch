@@ -237,7 +237,8 @@ public class JPAService {
     return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
   }
 
-  public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, Date> dateMap, FetchLevel fetchLevel) {
+  public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, Date> dateMap,
+                                                    FetchLevel fetchLevel) {
 
     Session session = null;
     Transaction transaction = null;
@@ -442,4 +443,54 @@ public class JPAService {
   public boolean addFollower(String uName, String fName){
     return ufd.addFollower(uName,fName);
   }
+
+
+  public List<UnreadMessageModel> getUnreadMessagesForGroup(String groupname, Map<String, Date> dateMap) {
+
+    Session session = null;
+    Transaction transaction = null;
+    List<UnreadMessageModel> unreadMessageModels = new ArrayList<>();
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      Group validGroup = gd.findGroupByName(groupname);
+      long groupId = validGroup.getId();
+      if (groupId <= 0) {
+        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + groupname);
+        return unreadMessageModels;
+      }
+
+      List<Chat> listRows = gd.getUnreadMessagesForGroup(validGroup, dateMap);
+      for (Chat listRow : listRows) {
+        String fromPersonName = listRow.getFromId().getName();
+        Date timestamp = listRow.getCreated();
+        String message = listRow.getMsg();
+        unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
+      }
+
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return unreadMessageModels;
+  }
+
+  /**
+   * This is explicitly written so that only admin can call it from server side. This is not
+   * called from client side. This is called on special request from government.
+   *
+   * @param userName The username to be upgraded to superUser.
+   */
+  public void upgradeToSuperUser(String userName) {
+    long id = this.findUserByName(userName).getId();
+    ud.setAsSuperUser(id);
+  }
+
 }

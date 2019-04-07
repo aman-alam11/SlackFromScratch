@@ -71,6 +71,6 @@ public class UnreadMessages implements CoreOperation {
         }
 
 
-        FrontEnd.getView().showUserLevelOptions(false);
+        FrontEnd.getView().showUserLevelOptions();
     }
 }

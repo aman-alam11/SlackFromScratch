@@ -1,5 +1,7 @@
 package edu.northeastern.ccs.im.view;
 
+import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
+
 @SuppressWarnings("all")
 public class FrontEnd {
 
@@ -51,13 +53,10 @@ public class FrontEnd {
    *
    * @param isSuperUser This option is set only at login.
    */
-  public void showUserLevelOptions(boolean isSuperUser) {
+  public void showUserLevelOptions() {
     System.out.println("1. Unread Messages");
     System.out.println("2. Chat user");
     System.out.println("3. Group Options");
-    if (isSuperUser) {
-      System.out.println("4. Tap into conversations");
-    }
     System.out.println("Or Enter \\q to quit");
     System.out.println("INPUT: Enter From above Options: ");
   }

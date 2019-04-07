@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
-import edu.northeastern.ccs.im.clientmenu.superuser.SuperUser;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.factories.ModuleFactory;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.AddModeratorGroup;
@@ -19,6 +18,7 @@ import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupSearchModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroupModelLayer;
+import edu.northeastern.ccs.im.clientmenu.superuser.SuperUser;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -30,7 +30,8 @@ public final class InjectLevelUtil {
   private ModuleFactory moduleFactory;
   private static Map<CurrentLevel,CurrentLevel> levelMap;
   private static CurrentLevel currentLevel;
-  private boolean isSuperUser = false;
+  private boolean isSuperUser;
+  private int maxCount = -1;
 
 
   public static Map<Integer, Function<Scanner, CoreOperation>> getOptionsMap() {
@@ -138,12 +139,14 @@ public final class InjectLevelUtil {
   }
 
   private void injectUserLevel() {
-    FrontEnd.getView().showUserLevelOptions(isSuperUser);
+    FrontEnd.getView().showUserLevelOptions();
     mClientOptionsMap.put(1, scanner -> new UnreadMessages());
     mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
     mClientOptionsMap.put(3, scanner -> new GroupLayer());
+
     if (isSuperUser) {
-      mClientOptionsMap.put(4, scanner -> new SuperUser());
+      mClientOptionsMap.put(99, scanner -> new SuperUser());
+      FrontEnd.getView().sendToView("99. Super User Options: Tap into conversations");
     }
   }
 
@@ -169,6 +172,10 @@ public final class InjectLevelUtil {
   }
 
   public void setSuperUser(boolean superUser) {
-    isSuperUser = superUser;
+    // Allow Update only once during program
+    if(maxCount < 0){
+      maxCount++;
+      isSuperUser = superUser;
+    }
   }
 }

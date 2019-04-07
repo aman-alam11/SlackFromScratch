@@ -15,12 +15,17 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.FetchLevel;
 
 @SuppressWarnings("all")
 public class UserDao {
+
+  private static final String LOG_TAG = UserDao.class.getSimpleName();
 
   SessionFactory mSessionFactory;
 
@@ -347,5 +352,24 @@ public class UserDao {
       session.close();
     }
     return result;
+  }
+
+
+  public void setAsSuperUser(long userId) {
+    Session session = null;
+    try {
+      session = mSessionFactory.openSession();
+      Transaction transaction = session.beginTransaction();
+
+      String sql = "UPDATE new_test_hibernate.users SET users.is_super_user = true WHERE users.user_id =?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, userId);
+      session.createNativeQuery(sql);
+      query.executeUpdate();
+      transaction.commit();
+    } catch (Exception e) {
+      System.out.println(LOG_TAG + "Unable to update as superUser");
+      ChatLogger.info(LOG_TAG + "Unable to update as superUser");
+    }
   }
 }

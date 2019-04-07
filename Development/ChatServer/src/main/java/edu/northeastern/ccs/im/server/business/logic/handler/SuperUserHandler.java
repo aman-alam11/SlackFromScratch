@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.database.JPAService;
@@ -68,7 +67,6 @@ public class SuperUserHandler implements MessageHandler {
 
   private void handleGetOnlyGroupChatForDates(String userName) {
     if(superUserMessageModel.areDatesValid()) {
-
       updateDateMap();
       mJpaService.getUnreadMessages(userName, dateMap, FetchLevel.FETCH_GROUP_LEVEL);
     } else {
@@ -76,13 +74,7 @@ public class SuperUserHandler implements MessageHandler {
     }
   }
 
-  private void updateDateMap() {
-    Date startDate = superUserMessageModel.getStartDate();
-    Date endDate = superUserMessageModel.getEndDate();
-    dateMap = new HashMap<>();
-    dateMap.put(START_DATE, startDate);
-    dateMap.put(END_DATE, endDate);
-  }
+
 
   private void handleGetOnlyUserChats(String userName) {
     if(superUserMessageModel.areDatesValid()) {
@@ -96,9 +88,17 @@ public class SuperUserHandler implements MessageHandler {
   private void handleGetAllChats(String groupName) {
     if(superUserMessageModel.areDatesValid()) {
       updateDateMap();
-      mJpaService.getUnreadMessages(groupName, dateMap, FetchLevel.FETCH_BOTH_USER_GROUP_LEVEL);
+      mJpaService.getUnreadMessagesForGroup(groupName, dateMap);
     } else {
-      mJpaService.getUnreadMessages(groupName, null, FetchLevel.FETCH_BOTH_USER_GROUP_LEVEL);
+      mJpaService.getUnreadMessagesForGroup(groupName, null);
     }
+  }
+
+  private void updateDateMap() {
+    Date startDate = superUserMessageModel.getStartDate();
+    Date endDate = superUserMessageModel.getEndDate();
+    dateMap = new HashMap<>();
+    dateMap.put(START_DATE, startDate);
+    dateMap.put(END_DATE, endDate);
   }
 }
