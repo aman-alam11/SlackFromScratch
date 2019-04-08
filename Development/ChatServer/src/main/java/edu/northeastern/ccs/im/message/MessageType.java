@@ -122,7 +122,12 @@ public enum MessageType {
   /**
    * Follow a User.
    */
-  FOLLOW_USER("FOLU");
+  FOLLOW_USER("FLU"),
+
+  /**
+   * List all the followers of a user.
+   */
+  LIST_FOLLOWERS("LFO");
   /**
    * Store the short name of this message type.
    */
