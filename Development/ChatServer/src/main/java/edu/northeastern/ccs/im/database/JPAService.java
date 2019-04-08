@@ -463,7 +463,6 @@ public class JPAService {
     return ufd.addFollower(uName,fName);
   }
 
-
   public List<UnreadMessageModel> getUnreadMessagesForGroup(String groupname, Map<String, Date> dateMap) {
     // TODO: CHeck if working
     Session session = null;
@@ -512,4 +511,7 @@ public class JPAService {
     ud.setAsSuperUser(id);
   }
 
+  public List<User> getAllFollowers(String uName){
+    return ufd.getAllFollowers(uName);
+  }
 }

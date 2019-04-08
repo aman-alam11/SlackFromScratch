@@ -97,6 +97,13 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
 
       case SUPER_USER:
         handler = new SuperUserHandler();
+
+      case FOLLOW_USER:
+        handler = new AddFollowerUserHandler();
+        break;
+
+      case LIST_FOLLOWERS:
+        handler = new ListFollowerUserHandler();
         break;
 
       default:

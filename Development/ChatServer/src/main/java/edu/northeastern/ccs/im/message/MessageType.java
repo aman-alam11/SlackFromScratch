@@ -119,13 +119,20 @@ public enum MessageType {
    * Delete User From Group.
    */
   DELETER_USER_FROM_GROUP("DUG"),
-
-
   /**
    * Super User options for messages.
    */
-  SUPER_USER("SUP");
+  SUPER_USER("SUP"),
 
+  /**
+   * Follow a User.
+   */
+  FOLLOW_USER("FLU"),
+
+  /**
+   * List all the followers of a user.
+   */
+  LIST_FOLLOWERS("LFO");
   /**
    * Store the short name of this message type.
    */
