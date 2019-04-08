@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.UserSearchHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.UserSearchHandler;
 
 
 public class SearchHandlerTest {

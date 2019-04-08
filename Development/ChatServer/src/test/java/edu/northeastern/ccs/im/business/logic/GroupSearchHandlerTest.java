@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import edu.northeastern.ccs.im.model.GroupSearchModel;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.GroupSearchHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupSearchHandler;
 
 
 public class GroupSearchHandlerTest {

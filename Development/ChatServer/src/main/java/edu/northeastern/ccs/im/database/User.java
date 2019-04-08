@@ -32,12 +32,24 @@ public class User implements Serializable {
   @Column(name = "user_password", nullable = false)
   private String password;
 
+  @Column(name = "is_super_user", nullable = false)
+  private boolean isSuperUser;
 
   public User() {
 
   }
 
   public User(String username, String password, String email) {
+    if (username == null || password == null) {
+      throw new IllegalArgumentException("Username and Password can't be null");
+    }
+    this.name = username;
+    this.password = password;
+
+    this.email = (email != null) ? email : "";
+  }
+
+  public User(String username, String password, String email, boolean isSuperUser) {
     if (username == null || password == null) {
       throw new IllegalArgumentException("Username and Password can't be null");
     }
@@ -127,4 +139,9 @@ public class User implements Serializable {
   public String toString() {
     return id + "\t" + name;
   }
+
+  public boolean isSuperUser() {
+    return isSuperUser;
+  }
+
 }

@@ -1,29 +1,31 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
+
+import org.jsoup.helper.StringUtil;
+
+import java.util.Map;
+
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
-import org.jsoup.helper.StringUtil;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
-import java.util.Map;
+public class GetAllGroupsModHandler implements MessageHandler {
 
-public class GetAllUsersForGroup implements MessageHandler {
-
-    private static final String LOG_TAG = GetAllUsersForGroup.class.getSimpleName();
+    private static final String LOG_TAG = GetAllGroupsModHandler.class.getSimpleName();
     private JPAService mJpaService;
 
-    public GetAllUsersForGroup() {
+    public GetAllGroupsModHandler() {
         mJpaService = JPAService.getInstance();
     }
 
 
     @Override
     public boolean handleMessage(String user, String message, Connection clientConnection) {
-
         try {
             if(user == null || StringUtil.isBlank(user)){
                 return false;
@@ -32,14 +34,13 @@ public class GetAllUsersForGroup implements MessageHandler {
             Gson gson = new Gson();
 
             MessageJson messageJson = gson.fromJson(message, MessageJson.class);
-            if (messageJson.getMessageType().equals(MessageType.GET_ALL_USERS_FOR_GRP)) {
 
-                String groupName = messageJson.getMessage();
+            if (messageJson.getMessageType().equals(MessageType.GET_ALL_GROUPS_MOD)) {
 
-                Map<String, Boolean> mapUsersModeratorsMap = mJpaService.getAllUsersForGroup(groupName);
+                Map<String, Boolean> listAllGroupsForUser = mJpaService.getAllGroupsForUser(user);
 
                 MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
-                        MessageType.GET_ALL_USERS_FOR_GRP, gson.toJson(mapUsersModeratorsMap));
+                        MessageType.GET_ALL_GROUPS_MOD, gson.toJson(listAllGroupsForUser));
 
                 sendResponse(response, clientConnection);
                 return true;

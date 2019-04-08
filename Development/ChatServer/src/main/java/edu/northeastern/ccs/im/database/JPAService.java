@@ -16,6 +16,7 @@ import java.util.Objects;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.model.FetchLevel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
 public class JPAService {
@@ -236,7 +237,15 @@ public class JPAService {
     return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
   }
 
-  public List<UnreadMessageModel> getUnreadMessages(String username) {
+  /**
+   * Get all messages based on Fetch Level.
+   * @param username The username to get unread messages for.
+   * @param dateMap The date constraint on the messages that we need to fetch.
+   * @param fetchLevel The multiple fetching details that we need to modify queries on.
+   * @return A list of Messages which are based on {@link UnreadMessageModel}.
+   */
+  public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, Date> dateMap,
+                                                    FetchLevel fetchLevel) {
 
     Session session = null;
     Transaction transaction = null;
@@ -246,22 +255,23 @@ public class JPAService {
       session = mSessionFactory.openSession();
       transaction = session.beginTransaction();
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
+      if(validIdMap.get(username) == null) {
         return unreadMessageModels;
       }
 
-      List<Chat> listRows = ud.getUnreadMessages(userId);
+
+      List<Chat> listRows = ud.getUnreadMessages(validIdMap.get(username), dateMap, fetchLevel);
       for (Chat listRow : listRows) {
         String fromPersonName = listRow.getFromId().getName();
         Date timestamp = listRow.getCreated();
         String message = listRow.getMsg();
         unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
       }
-      ud.setDeliverAllUnreadMessages(username);
+
+      if(fetchLevel == FetchLevel.UNREAD_MESSAGE_HANDLER) {
+        ud.setDeliverAllUnreadMessages(username);
+      }
 
       transaction.commit();
     } catch (HibernateException ex) {
@@ -272,6 +282,20 @@ public class JPAService {
     }
 
     return unreadMessageModels;
+  }
+
+  private Map<String, Integer> isValidIdForUsernameHelper(String username) {
+    Map<String, Integer> resultMap =  new HashMap<>();
+    // Get the userId for the user for which we need the username
+    BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+    int userId = userIdBigInt.intValue();
+    if (userId <= 0) {
+      ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      return resultMap;
+    }
+
+    resultMap.put(username, userId);
+    return resultMap;
   }
 
 
@@ -331,15 +355,12 @@ public class JPAService {
       session = mSessionFactory.openSession();
       transaction = session.beginTransaction();
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
+      if(validIdMap.get(username) == null) {
         return allGroupsForUser;
       }
 
-      allGroupsForUser = gmd.getAllGroupsForUser(userId);
+      allGroupsForUser = gmd.getAllGroupsForUser(validIdMap.get(username));
 
       // Commit the transaction
       transaction.commit();
@@ -441,4 +462,54 @@ public class JPAService {
   public boolean addFollower(String uName, String fName){
     return ufd.addFollower(uName,fName);
   }
+
+
+  public List<UnreadMessageModel> getUnreadMessagesForGroup(String groupname, Map<String, Date> dateMap) {
+    // TODO: CHeck if working
+    Session session = null;
+    Transaction transaction = null;
+    List<UnreadMessageModel> unreadMessageModels = new ArrayList<>();
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      Group validGroup = gd.findGroupByName(groupname);
+      long groupId = validGroup.getId();
+      if (groupId <= 0) {
+        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + groupname);
+        return unreadMessageModels;
+      }
+
+      List<Chat> listRows = gd.getUnreadMessagesForGroup(validGroup, dateMap);
+      for (Chat listRow : listRows) {
+        String fromPersonName = listRow.getFromId().getName();
+        Date timestamp = listRow.getCreated();
+        String message = listRow.getMsg();
+        unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
+      }
+
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return unreadMessageModels;
+  }
+
+  /**
+   * This is explicitly written so that only admin can call it from server side. This is not
+   * called from client side. This is called on special request from government.
+   *
+   * @param userName The username to be upgraded to superUser.
+   */
+  public void upgradeToSuperUser(String userName) {
+    long id = this.findUserByName(userName).getId();
+    ud.setAsSuperUser(id);
+  }
+
 }

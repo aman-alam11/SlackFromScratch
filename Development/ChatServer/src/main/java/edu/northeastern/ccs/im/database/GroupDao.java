@@ -6,11 +6,19 @@ import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
+import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.model.FetchLevel;
+import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class GroupDao {
     SessionFactory mSessionFactory;
@@ -214,4 +222,33 @@ public class GroupDao {
         }
         return allGrps;
     }
+
+
+    /**
+     * Retrieves all unread messages for the user with the passed user id.
+     *
+     * @param userId The userId for which we need to get all the unread messages for.
+     * @return A List of complete chat rows from which information will be extracted based on use case.
+     */
+    public List<Chat> getUnreadMessagesForGroup(Group group, Map<String, Date> dateMap) {
+        Session session = mSessionFactory.openSession();
+        List<Chat> allGroupChats = null;
+        try {
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<Chat> query = builder.createQuery(Chat.class);
+            Root<Chat> rootChat = query.from(Chat.class);
+
+            query.select(rootChat).where(builder.equal(rootChat.get("groupId"), group));
+            Query<Chat> q = session.createQuery(query);
+            allGroupChats = q.getResultList();
+        } catch (HibernateException | IllegalArgumentException | NoResultException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+        } finally {
+            // Close the session
+            session.close();
+        }
+        return allGroupChats;
+    }
+
 }

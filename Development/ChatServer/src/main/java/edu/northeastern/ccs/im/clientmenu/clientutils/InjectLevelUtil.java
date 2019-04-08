@@ -18,6 +18,7 @@ import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupSearchModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroupModelLayer;
+import edu.northeastern.ccs.im.clientmenu.superuser.SuperUser;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
 import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -29,6 +30,8 @@ public final class InjectLevelUtil {
   private ModuleFactory moduleFactory;
   private static Map<CurrentLevel,CurrentLevel> levelMap;
   private static CurrentLevel currentLevel;
+  private boolean isSuperUser;
+  private int maxCount = -1;
 
 
   public static Map<Integer, Function<Scanner, CoreOperation>> getOptionsMap() {
@@ -110,8 +113,8 @@ public final class InjectLevelUtil {
         break;
 
       default:
-        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
+        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
     }
     // Feed the appropriate options
   }
@@ -136,10 +139,15 @@ public final class InjectLevelUtil {
   }
 
   private void injectUserLevel() {
-    FrontEnd.getView().showUserLevelOptions();
-    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
-    mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
-    mClientOptionsMap.put(3, scanner -> new GroupLayer());
+    if (isSuperUser) {
+      FrontEnd.getView().sendToView("\n \nPress 99 Super User Options: Tap into conversations\n \n");
+      mClientOptionsMap.put(99, scanner -> new SuperUser());
+    } else {
+      FrontEnd.getView().showUserLevelOptions();
+      mClientOptionsMap.put(1, scanner -> new UnreadMessages());
+      mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
+      mClientOptionsMap.put(3, scanner -> new GroupLayer());
+    }
   }
 
 
@@ -163,4 +171,11 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(2, scanner -> new DeleteModeratorGroup());
   }
 
+  public void setSuperUser(boolean superUser) {
+    // Allow Update only once during program
+    if(maxCount < 0){
+      maxCount++;
+      isSuperUser = superUser;
+    }
+  }
 }

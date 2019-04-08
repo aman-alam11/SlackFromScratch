@@ -6,19 +6,27 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import javax.persistence.NoResultException;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import edu.northeastern.ccs.im.ChatLogger;
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
-@SuppressWarnings("all")
+import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.model.FetchLevel;
+
 public class UserDao {
 
-  SessionFactory mSessionFactory;
+  private static final String LOG_TAG = UserDao.class.getSimpleName();
+
+  private SessionFactory mSessionFactory;
 
   public UserDao(SessionFactory sf) {
     mSessionFactory = sf;
@@ -98,7 +106,7 @@ public class UserDao {
       // Begin a transaction
       transaction = session.beginTransaction();
       // Get the User from the database.
-      User user = session.get(User.class, Integer.valueOf(id));
+      User user = session.get(User.class, id);
       // Delete the User
       session.delete(user);
       // Commit the transaction
@@ -236,14 +244,16 @@ public class UserDao {
    * @param userId The userId for which we need to get all the unread messages for.
    * @return A List of complete chat rows from which information will be extracted based on use case.
    */
-  public List<Chat> getUnreadMessages(int userId) {
+  public List<Chat> getUnreadMessages(int userId, Map<String, Date> dateMap, FetchLevel fetchLevel) {
     Session session = mSessionFactory.openSession();
     List<Chat> listUnreadChatRows = new ArrayList<>();
+    StringBuilder sqlString = new StringBuilder("SELECT * FROM chat WHERE chat.To_id =?");
+    String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel);
 
     try {
-      String sql = "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered";
-      Query query = session.createNativeQuery(sql, Chat.class);
+      Query query = session.createNativeQuery(genSqlString, Chat.class);
       query.setParameter(1, userId);
+      // TODO: Add params for dates if not null
       listUnreadChatRows.addAll(query.getResultList());
     } catch (Exception ex) {
       // If there are any exceptions, roll back the changes
@@ -253,6 +263,32 @@ public class UserDao {
       session.close();
     }
     return listUnreadChatRows;
+  }
+
+  // TODO: add date queries.
+  private String generateAppropriateSqlString(StringBuilder sqlString, FetchLevel fetchLevel) {
+    switch (fetchLevel) {
+      case FETCH_USER_LEVEL:
+        sqlString.append(" and NOT chat.isGrpMsg");
+        break;
+
+      case FETCH_GROUP_LEVEL:
+        sqlString.append(" and chat.isGrpMsg");
+        break;
+
+      case UNREAD_MESSAGE_HANDLER:
+        sqlString.append(" AND NOT chat.isDelivered");
+        break;
+
+      case FETCH_BOTH_USER_GROUP_LEVEL:
+        // Intentional fall through
+
+      default:
+        // Dont append anything
+        break;
+    }
+
+    return sqlString.toString();
   }
 
 
@@ -321,5 +357,28 @@ public class UserDao {
       session.close();
     }
     return result;
+  }
+
+
+  /**
+   * A simple method to upgrade the user as super user. This method cannot be called from client side
+   * and can called only from server side for special requests from government agencies.
+   * @param userId The userid of the super user.
+   */
+  public void setAsSuperUser(long userId) {
+    Session session = null;
+    try {
+      session = mSessionFactory.openSession();
+      Transaction transaction = session.beginTransaction();
+
+      String sql = "UPDATE new_test_hibernate.users SET users.is_super_user = true WHERE users.user_id =?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, userId);
+      session.createNativeQuery(sql);
+      query.executeUpdate();
+      transaction.commit();
+    } catch (Exception e) {
+      ChatLogger.info(LOG_TAG + "Unable to update as superUser");
+    }
   }
 }

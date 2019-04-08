@@ -1,6 +1,23 @@
 package edu.northeastern.ccs.im.server.business.logic;
 
+import edu.northeastern.ccs.im.clientmenu.superuser.SuperUser;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.server.business.logic.handler.AddGroupUsersHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.ChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.DeleteGroupHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GetAllGroupsModHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GetAllUsersForGroup;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupSearchHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.LoginHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.RecallUserChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.RenameGroupHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.ToggleModeratorRightsHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.UnreadMessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.UserCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.UserSearchHandler;
 
 /**
  * MessageHandler Factory which returns new instance of MessageHandler depending on the MessageType.
@@ -76,6 +93,10 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
 
       case CHAT_RECALL:
         handler = new RecallUserChatHandler();
+        break;
+
+      case SUPER_USER:
+        handler = new SuperUserHandler();
         break;
 
       default:

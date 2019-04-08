@@ -63,7 +63,7 @@ public class Login extends CommonOperations {
     } else {
 
       FrontEnd.getView().sendToView("WELCOME: " + GenerateLoginCredentials.getUsername());
-
+      InjectLevelUtil.getInstance().setSuperUser(ackModel.getIsSuperUser());
       // User is authenticated by server
       // Send user forward
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);

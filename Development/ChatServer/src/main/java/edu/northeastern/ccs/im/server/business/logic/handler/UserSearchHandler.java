@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,12 @@ import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.UserSearch;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
-public class UserSearchHandler implements MessageHandler{
+public class UserSearchHandler implements MessageHandler {
 	
-	Gson gson;
-	JPAService jpaService;
+	private Gson gson;
+	private JPAService jpaService;
 	
 	public UserSearchHandler() {
 		gson =  new Gson();

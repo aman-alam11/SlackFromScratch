@@ -6,10 +6,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -21,7 +19,7 @@ import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.database.User;
 import edu.northeastern.ccs.im.model.AddDeleteGroupUsers;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.AddGroupUsersHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.AddGroupUsersHandler;
 
 public class AddGroupUsersHandlerTest {
 	

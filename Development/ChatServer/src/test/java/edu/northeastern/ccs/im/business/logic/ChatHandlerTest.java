@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.ChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.ChatHandler;
 
 
 public class ChatHandlerTest {

@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.database.User;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 public class GroupChatHandler implements MessageHandler {
 	
