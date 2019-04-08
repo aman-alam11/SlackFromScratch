@@ -9,9 +9,11 @@ import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class handles listing of the followers for a logged in user.
+ */
 public class ListFollowerUserHandler implements MessageHandler {
     private Gson gson;
     private JPAService jpaService;
