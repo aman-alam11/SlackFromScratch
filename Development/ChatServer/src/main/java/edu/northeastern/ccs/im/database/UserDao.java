@@ -22,12 +22,11 @@ import javax.persistence.criteria.Root;
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.FetchLevel;
 
-@SuppressWarnings("all")
 public class UserDao {
 
   private static final String LOG_TAG = UserDao.class.getSimpleName();
 
-  SessionFactory mSessionFactory;
+  private SessionFactory mSessionFactory;
 
   public UserDao(SessionFactory sf) {
     mSessionFactory = sf;
@@ -107,7 +106,7 @@ public class UserDao {
       // Begin a transaction
       transaction = session.beginTransaction();
       // Get the User from the database.
-      User user = session.get(User.class, Integer.valueOf(id));
+      User user = session.get(User.class, id);
       // Delete the User
       session.delete(user);
       // Commit the transaction

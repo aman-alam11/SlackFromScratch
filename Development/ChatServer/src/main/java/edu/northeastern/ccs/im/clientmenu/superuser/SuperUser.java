@@ -17,9 +17,9 @@ import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
-import edu.northeastern.ccs.im.model.SuperUserMessageModel;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.SuperUserMessageModel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
@@ -42,6 +42,7 @@ public class SuperUser implements CoreOperation {
     FrontEnd.getView().showSuperUserOperations();
     int choice = Integer.parseInt(scanner.nextLine());
     switch (choice) {
+
       // TODO: Break this big switch case into smaller methods for all TT, TF, FT, FF truth table cases
       // TODO: Add comments
       // Get All Conversations for a particular User for user to user chat
@@ -118,13 +119,13 @@ public class SuperUser implements CoreOperation {
             "or do you want to get all dates of the requested types?");
     FrontEnd.getView().sendToView("Press 1 to get all requested chats irrespective of dates");
     FrontEnd.getView().sendToView("Press 2 to enter specific dates and get chats for those time frames");
-    int choice  = Integer.parseInt(scanner.nextLine());
+    int choice = Integer.parseInt(scanner.nextLine());
     if (choice == 2) {
       // Get Dates from user
       getDatesFromUser(scanner);
     }
 
-    if(choice != 1 && choice != 2) {
+    if (choice != 1 && choice != 2) {
       FrontEnd.getView().sendToView("Invalid input. Getting all chats as default.");
     }
   }
@@ -133,9 +134,9 @@ public class SuperUser implements CoreOperation {
     FrontEnd.getView().sendToView("Dates entered should be of type: MM/DD/YYYY");
     FrontEnd.getView().sendToView("Please enter the start date to get chats:");
     String startDate = scanner.nextLine().trim();
-     if(invalidDateCheck(startDate, true)) {
-       return;
-     }
+    if (invalidDateCheck(startDate, true)) {
+      return;
+    }
 
     FrontEnd.getView().sendToView("Please enter the end date to get chats:");
     String endDate = scanner.nextLine().trim();
@@ -146,7 +147,7 @@ public class SuperUser implements CoreOperation {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     try {
       Date date = simpleDateFormat.parse(enteredDate);
-      if(isStartDate) {
+      if (isStartDate) {
         mSuperUserMessageModel.setmStartDate(date);
       } else {
         if (mSuperUserMessageModel.getStartDate().after(date)) {
@@ -185,22 +186,18 @@ public class SuperUser implements CoreOperation {
     }.getType();
     List<UnreadMessageModel> listUnreadMessagesAll = new Gson().fromJson(resp, chatModelList);
 
-    if(listUnreadMessagesAll.isEmpty()) {
+    if (listUnreadMessagesAll.isEmpty()) {
       FrontEnd.getView().sendToView("No such results found. Sending you back");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
       return;
     }
 
     for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
-        FrontEnd.getView().sendToView(eachChat.toString());
+      FrontEnd.getView().sendToView(eachChat.toString());
     }
 
+    InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
     // TODO: Display each case properly
-//    if (!listUnreadMessagesAll.isEmpty()) {
-//
-//    } else {
-//      FrontEnd.getView().sendToView("INFO: No new messages");
-//    }
   }
 
 }

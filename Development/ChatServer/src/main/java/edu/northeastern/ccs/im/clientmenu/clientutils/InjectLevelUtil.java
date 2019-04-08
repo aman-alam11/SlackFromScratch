@@ -139,14 +139,14 @@ public final class InjectLevelUtil {
   }
 
   private void injectUserLevel() {
-    FrontEnd.getView().showUserLevelOptions();
-    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
-    mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
-    mClientOptionsMap.put(3, scanner -> new GroupLayer());
-
     if (isSuperUser) {
-      mClientOptionsMap.put(99, scanner -> new SuperUser());
       FrontEnd.getView().sendToView("\n \nPress 99 Super User Options: Tap into conversations\n \n");
+      mClientOptionsMap.put(99, scanner -> new SuperUser());
+    } else {
+      FrontEnd.getView().showUserLevelOptions();
+      mClientOptionsMap.put(1, scanner -> new UnreadMessages());
+      mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
+      mClientOptionsMap.put(3, scanner -> new GroupLayer());
     }
   }
 
