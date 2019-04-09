@@ -45,7 +45,7 @@ public class NetworkConnection implements Iterable<MessageJson> {
 	private static final String MESSAGE_END_KEY = "}#";
 
 	/** The default character set. */
-	private static final String CHARSET_NAME = "us-ascii";
+	private static final String CHARSET_NAME = "utf-8";
 
 	/**
 	 * Number of times to try sending a message before we give up in frustration.

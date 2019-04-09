@@ -16,6 +16,14 @@ public class UnreadMessageModel {
     this.isGroupMessage = isGroupMessage;
   }
 
+  public String getMessage() {
+    return this.message;
+  }
+
+  public void setMessage(String message) {
+     this.message = message;
+  }
+
   public boolean isGroupMessage() {
     return isGroupMessage;
   }

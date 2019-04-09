@@ -26,7 +26,6 @@ public class UnreadMessages implements CoreOperation {
     @Override
     public void passControl(Scanner scanner, Connection connectionModelLayer) {
 
-
         MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.UNREAD_MSG, "");
         connectionModelLayer.sendMessage(messageJson);
 

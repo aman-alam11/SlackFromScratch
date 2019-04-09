@@ -6,11 +6,22 @@ import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
+import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.model.FetchLevel;
+import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.END_DATE;
+import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.START_DATE;
 
 public class GroupDao {
     SessionFactory mSessionFactory;
@@ -254,4 +265,37 @@ public class GroupDao {
         }
         return allGrps;
     }
+
+
+    /**
+     * Retrieves all unread messages for the user with the passed user id.
+     *
+     * @param userId The userId for which we need to get all the unread messages for.
+     * @return A List of complete chat rows from which information will be extracted based on use case.
+     */
+    public List<Chat> getUnreadMessagesForGroup(Group group, Map<String, String> dateMap) {
+        Session session = mSessionFactory.openSession();
+        List<Chat> allGroupChats = null;
+        StringBuilder sqlQueryBuilder = new StringBuilder("SELECT * FROM new_test_hibernate.chat WHERE chat.Group_id=?");
+        try {
+            if(dateMap != null) {
+                sqlQueryBuilder.append(" and chat.Creation_date >= \"");
+                sqlQueryBuilder.append(dateMap.get(START_DATE));
+                sqlQueryBuilder.append("\" AND chat.Creation_date <= \"");
+                sqlQueryBuilder.append(dateMap.get(END_DATE));
+                sqlQueryBuilder.append("\"");
+            }
+            Query query = session.createNativeQuery(sqlQueryBuilder.toString(), Chat.class);
+            query.setParameter(1, group.getId());
+            allGroupChats = query.getResultList();
+        } catch (HibernateException | IllegalArgumentException | NoResultException ex) {
+            // Print the Exception
+            ChatLogger.error(ex.getMessage());
+        } finally {
+            // Close the session
+            session.close();
+        }
+        return allGroupChats;
+    }
+
 }

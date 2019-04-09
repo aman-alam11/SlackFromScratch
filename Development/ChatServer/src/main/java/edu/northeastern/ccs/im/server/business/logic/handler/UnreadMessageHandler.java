@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
 
@@ -11,8 +11,11 @@ import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.FetchLevel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.ProfanityFilter;
 
 public class UnreadMessageHandler implements MessageHandler {
 
@@ -32,7 +35,17 @@ public class UnreadMessageHandler implements MessageHandler {
 			if (user == null || StringUtil.isBlank(user)) {
 				return false;
 			}
-			List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user);
+			List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user, null,
+							FetchLevel.UNREAD_MESSAGE_HANDLER);
+
+
+			for (UnreadMessageModel messageModel: unreadMessages) {
+				String messageRaw = messageModel.getMessage();
+				String messageFiltered = ProfanityFilter.getInstance().filterMessage(messageRaw);
+				messageModel.setMessage(messageFiltered);
+			}
+
+
 			MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.UNREAD_MSG,
 					mGson.toJson(unreadMessages));
 			sendResponse(response, clientConnection);

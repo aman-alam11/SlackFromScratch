@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
 import edu.northeastern.ccs.im.database.JPAService;
@@ -7,6 +7,8 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.Prattle;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.ProfanityFilter;
 
 /**
  * This is the handler for chat.
@@ -44,7 +46,15 @@ public class ChatHandler implements MessageHandler {
         		if (chatModel.getGroupName() != null && chatModel.getGroupName().length() > 0) {
         			msgType = MessageType.GROUP_CHAT;
         		}
-            MessageJson msg = new MessageJson(chatModel.getFromUserName(), msgType, message);
+        		//Filtering message
+        		ChatModel chatModelFilter = mGson.fromJson(message, ChatModel.class);
+        		String messageRaw = chatModelFilter.getMsg();
+        		String messageFiltered = ProfanityFilter.getInstance().filterMessage(messageRaw);
+        		chatModelFilter.setMsg(messageFiltered);
+
+        		String newMessage = mGson.toJson(chatModelFilter, ChatModel.class);
+
+            MessageJson msg = new MessageJson(chatModel.getFromUserName(), msgType, newMessage);
             msg.setSendToUser(chatModel.getToUserName());
             if (Prattle.sendMessageTo(chatModel.getToUserName(), msg)) {
                 isSuccessfull = jpaService.updateChatStatus(id, true);

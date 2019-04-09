@@ -14,7 +14,7 @@ import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.GetAllGroupsModHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GetAllGroupsModHandler;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;

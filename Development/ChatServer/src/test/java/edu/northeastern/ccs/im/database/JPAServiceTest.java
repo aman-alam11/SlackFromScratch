@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import edu.northeastern.ccs.im.model.FetchLevel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
 import static org.junit.Assert.assertNull;
@@ -387,7 +388,7 @@ public class JPAServiceTest {
   @Test
   public void testUnreadMessage(){
     List<UnreadMessageModel> listUnreadMessages = jpaService
-            .getUnreadMessages("kumar");
+            .getUnreadMessages("kumar", null, FetchLevel.FETCH_BOTH_USER_GROUP_LEVEL);
 
     assertTrue(listUnreadMessages.size() >= 0);
   }

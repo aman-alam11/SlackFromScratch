@@ -51,6 +51,11 @@ public enum MessageType {
   GROUP_CHAT("GCT"),
 
   /**
+   * Message whose contents are user to group chat
+   */
+  CHAT_RECALL("CTR"),
+
+  /**
    * Message whose contents are for user creation
    */
   CREATE_USER("CUR"),
@@ -82,10 +87,6 @@ public enum MessageType {
    */
   UNREAD_MSG("UNM"),
 
-  /**
-   * To set all undelivered messages as delivered
-   */
-  DELIVER_UNREAD_MSG("DUR"),
 
   /**
    * Get all groups for a user and the moderators.
@@ -118,6 +119,10 @@ public enum MessageType {
    * Delete User From Group.
    */
   DELETER_USER_FROM_GROUP("DUG"),
+  /**
+   * Super User options for messages.
+   */
+  SUPER_USER("SUP"),
 
   /**
    * Follow a User.

@@ -11,15 +11,20 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.model.RecallModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class UserChatModelLayer implements CoreOperation {
 
   private static final String QUIT = "\\q";
+  private static final String REVERSE = "\\r";
   private Connection connLocal;
   private Gson gson;
   private ChatModel chatModel;
+  private RecallModel recallModel;
+  private String userToChat;
   private boolean shouldListenForMessages = true;
 
 
@@ -40,19 +45,42 @@ public class UserChatModelLayer implements CoreOperation {
     while (scanner.hasNext()) {
 
       String message = scanner.nextLine().trim();
+      if (message.isEmpty()) {
+        continue;
+      }
 
-      if (!message.equals(QUIT)) {
+      if (message.equalsIgnoreCase(QUIT)) {
+        // Quitting the chat
+        shouldListenForMessages = false;
+        FrontEnd.getView().sendToView("INFO: Ending Chat.");
+        breakFromConversation(connectionLayerModel);
+        FrontEnd.getView().showUserLevelOptions();
+        return;
+      }
+      else if (message.equalsIgnoreCase(REVERSE)) {
+        FrontEnd.getView().sendToView("INPUT: Enter Number of messages you want to unsend.");
+        FrontEnd.getView().sendToView("CAUTION: Only unseen messages can be unsend.");
+        try {
+          int num = Integer.parseInt(scanner.next());
+          FrontEnd.getView().sendToView(String.valueOf(num));
+          recallModel = new RecallModel(userToChat, num);
+          MessageJson messageJs = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_RECALL,
+                  gson.toJson(recallModel));
+          connectionLayerModel.sendMessage(messageJs);
+
+        }
+        catch (NumberFormatException ex) {
+          FrontEnd.getView().sendToView("ERROR: Not a number, try again by entering \\r.");
+        }
+      }
+
+      else {
+        // Send chat to server
         chatModel.setMsg(message);
         MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
                 gson.toJson(chatModel));
         connectionLayerModel.sendMessage(messageJson);
         initReaderThread();
-      } else {
-        shouldListenForMessages = false;
-        FrontEnd.getView().sendToView("INFO: Ending Chat.");
-        breakFromConversation(connectionLayerModel);
-        FrontEnd.getView().showUserLevelOptions();
-        break;
       }
     }
   }
@@ -88,6 +116,7 @@ public class UserChatModelLayer implements CoreOperation {
 
   public UserChatModelLayer(String userToChat) {
     // Create Object
+    this.userToChat = userToChat;
     chatModel = new ChatModel();
     chatModel.setFromUserName(GenerateLoginCredentials.getUsername());
     chatModel.setToUserName(userToChat);
@@ -108,6 +137,13 @@ public class UserChatModelLayer implements CoreOperation {
 
       ChatModel chat = gson.fromJson(response.getMessage(), ChatModel.class);
       String messageToDisplay = response.getMessageType().name() + "-" + response.getFromUser() + ": " + chat.getMsg();
+      FrontEnd.getView().sendToView(messageToDisplay);
+    }
+
+    else if (response.getMessageType().equals(MessageType.AUTH_ACK)){
+
+      AckModel ackModel = gson.fromJson(response.getMessage(), AckModel.class);
+      String messageToDisplay = response.getMessageType().name() + " " + ackModel.getErrorMessage();
       FrontEnd.getView().sendToView(messageToDisplay);
     }
   }

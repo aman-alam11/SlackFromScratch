@@ -4,22 +4,22 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import edu.northeastern.ccs.im.message.MessageType;
-import edu.northeastern.ccs.im.server.business.logic.AddGroupUsersHandler;
-import edu.northeastern.ccs.im.server.business.logic.ChatHandler;
-import edu.northeastern.ccs.im.server.business.logic.DeleteGroupHandler;
-import edu.northeastern.ccs.im.server.business.logic.GetAllGroupsModHandler;
-import edu.northeastern.ccs.im.server.business.logic.GetAllUsersForGroup;
-import edu.northeastern.ccs.im.server.business.logic.GroupChatHandler;
-import edu.northeastern.ccs.im.server.business.logic.GroupCreationHandler;
-import edu.northeastern.ccs.im.server.business.logic.GroupSearchHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.AddGroupUsersHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.ChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.DeleteGroupHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GetAllGroupsModHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GetAllUsersForGroup;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupChatHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupSearchHandler;
 import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
-import edu.northeastern.ccs.im.server.business.logic.LoginHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.LoginHandler;
 import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
-import edu.northeastern.ccs.im.server.business.logic.RenameGroupHandler;
-import edu.northeastern.ccs.im.server.business.logic.ToggleModeratorRightsHandler;
-import edu.northeastern.ccs.im.server.business.logic.UnreadMessageHandler;
-import edu.northeastern.ccs.im.server.business.logic.UserCreationHandler;
-import edu.northeastern.ccs.im.server.business.logic.UserSearchHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.RenameGroupHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.ToggleModeratorRightsHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.UnreadMessageHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.UserCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.UserSearchHandler;
 
 public class JsonMessageHandlerFactoryTest {
 
