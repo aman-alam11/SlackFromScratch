@@ -39,11 +39,6 @@ public class TransLateHandler implements MessageHandler {
 
     ChatHandler chatHandler = new ChatHandler();
     chatHandler.handleMessage(user,mGson.toJson(chatModel),clientConnection);
-
-    System.out.printf("Text: %s%n", text);
-    System.out.printf("Translation: %s%n", translation.getTranslatedText());
-
-
     return false;
   }
 }

@@ -8,7 +8,7 @@ import com.google.cloud.translate.Translation;
 import org.junit.Test;
 
 import java.io.Console;
-
+import java.util.Map;
 
 
 public class TranslateTest {
@@ -16,21 +16,24 @@ public class TranslateTest {
   @Test
   public void test() {
     // Instantiates a client
-    Translate translate = TranslateOptions.getDefaultInstance().getService();
+//    Translate translate = TranslateOptions.getDefaultInstance().getService();
+//
+//    // The text to translate
+//    String text = "Hello, world!";
+//
+//    // Translates some text into Russian
+//    Translation translation =
+//            translate.translate(
+//                    text,
+//                    TranslateOption.targetLanguage("ru"));
+//
+//
+//    System.out.printf("Text: %s%n", text);
+//    System.out.printf("Translation: %s%n", translation.getTranslatedText());
 
-    // The text to translate
-    String text = "Hello, world!";
-
-    // Translates some text into Russian
-    Translation translation =
-            translate.translate(
-                    text,
-                    TranslateOption.targetLanguage("ru"));
-
-
-    System.out.printf("Text: %s%n", text);
-    System.out.printf("Translation: %s%n", translation.getTranslatedText());
-
+    for (Map.Entry<String, String> str: System.getenv().entrySet()) {
+      System.out.println(str.getKey() + " " + str.getValue());
+    }
 
   }
 }

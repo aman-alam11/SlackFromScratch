@@ -11,7 +11,7 @@
         <!-- Indicate the database to generate suitable SQL -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
         <!-- The JDBC URL to the database instance -->
-        <property name="hibernate.connection.url">jdbc:mysql://team212instance.c1wqnkcqbuje.us-east-2.rds.amazonaws.com:3306/new_test_hibernate</property>
+        <property name="hibernate.connection.url">jdbc:mysql://team212instance.c1wqnkcqbuje.us-east-2.rds.amazonaws.com:3306/utf_hibernate?UseUnicode=true&amp;characterEncoding=utf8</property>
         <!-- The database username -->
         <property name="hibernate.connection.username">team212</property>
         <!-- The database password -->
@@ -19,6 +19,12 @@
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="use_sql_comments">true</property>
+
+        <!--encoding for utf-8-->
+        <property name="hibernate.connection.CharSet">utf8</property>
+        <property name="hibernate.connection.characterEncoding">utf8</property>
+        <property name="hibernate.connection.useUnicode">true</property>
+        <property name="hbm2ddl.auto">update</property>
         <!-- Mapping class -->
         <mapping class="edu.northeastern.ccs.im.database.User"/>
         <mapping class="edu.northeastern.ccs.im.database.Chat"/>
