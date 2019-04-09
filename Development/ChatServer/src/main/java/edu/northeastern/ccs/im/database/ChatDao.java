@@ -25,11 +25,7 @@ public class ChatDao {
      * Create a new chat message.
      * @param fromId
      * @param toId
-     * @param msg
-     * @param replyTo
-     * @param expiry
-     * @param grpMsg
-     * @param isDelivered
+     * @param chatModel
      */
     public long create(User fromId, User toId, ChatModel chatModel) {
 		// Create a session
@@ -161,6 +157,13 @@ public class ChatDao {
        }
    }
 
+    /**
+     * This method updtes the delivery status of a message from unread to read once the user logs in and
+     * check the unread messages.
+     * @param id The long id of a message in chat table.
+     * @param status Boolean status
+     * @return
+     */
 	public boolean updateDeliveryStatus(long id, boolean status) {
 
 		Transaction tx = null;

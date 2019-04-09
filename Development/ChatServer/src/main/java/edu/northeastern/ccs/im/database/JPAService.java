@@ -32,10 +32,19 @@ public class JPAService {
    */
   private ChatDao cd;
 
+  /**
+   * Creating an object of GroupDao to call the methods to perform operations on group.
+   */
   private GroupDao gd;
 
+  /**
+   * Creating an object of GroupMemberDao to call the methods to perform operations on group member.
+   */
   private GroupMemberDao gmd;
 
+  /**
+   * Creating an object of UserFollowDao to call the methods to perform operations on followers.
+   */
   private UserFollwDao ufd;
   /**
    * Initialize the SessionFactory instance.
