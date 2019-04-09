@@ -25,11 +25,11 @@ public class SuperUserMessageModel {
     mGetAllChats = mGetOnlyGroupChat && mGetOnlyUserChat;
   }
 
-  public SuperUserMessageModel(boolean getAllChats, String username) {
+  public SuperUserMessageModel(String username) {
     this.mGroupToTap = username;
     mGetOnlyUserChat = false;
     mGetOnlyGroupChat = false;
-    mGetAllChats = getAllChats;
+    mGetAllChats = false;
   }
 
 

@@ -45,7 +45,6 @@ public class JPAService {
   private static JPAService instance;
 
 
-
   /**
    * This method returns the instance of JPASercice, since its a singleton object
    *
@@ -58,13 +57,12 @@ public class JPAService {
     }
     return instance;
   }
-  
+
   /**
    * Only for testing purpose
-   * @param jpa
    */
   public static synchronized void setJPAService(JPAService jpa) {
-      instance = jpa;
+    instance = jpa;
   }
 
   // Create the SessionFactory using the ServiceRegistry
@@ -239,12 +237,13 @@ public class JPAService {
 
   /**
    * Get all messages based on Fetch Level.
-   * @param username The username to get unread messages for.
-   * @param dateMap The date constraint on the messages that we need to fetch.
+   *
+   * @param username   The username to get unread messages for.
+   * @param dateMap    The date constraint on the messages that we need to fetch.
    * @param fetchLevel The multiple fetching details that we need to modify queries on.
    * @return A list of Messages which are based on {@link UnreadMessageModel}.
    */
-  public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, Date> dateMap,
+  public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, String> dateMap,
                                                     FetchLevel fetchLevel) {
 
     Session session = null;
@@ -256,7 +255,7 @@ public class JPAService {
       transaction = session.beginTransaction();
 
       Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
-      if(validIdMap.get(username) == null) {
+      if (validIdMap.get(username) == null) {
         return unreadMessageModels;
       }
 
@@ -269,7 +268,7 @@ public class JPAService {
         unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
       }
 
-      if(fetchLevel == FetchLevel.UNREAD_MESSAGE_HANDLER) {
+      if (fetchLevel == FetchLevel.UNREAD_MESSAGE_HANDLER) {
         ud.setDeliverAllUnreadMessages(username);
       }
 
@@ -285,7 +284,7 @@ public class JPAService {
   }
 
   private Map<String, Integer> isValidIdForUsernameHelper(String username) {
-    Map<String, Integer> resultMap =  new HashMap<>();
+    Map<String, Integer> resultMap = new HashMap<>();
     // Get the userId for the user for which we need the username
     BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
     int userId = userIdBigInt.intValue();
@@ -301,6 +300,7 @@ public class JPAService {
 
   /**
    * Set all the messages to deliver by specific username.
+   *
    * @param username - user name of the user you want to set delivery true.
    * @return - True or false according to the result.
    */
@@ -310,10 +310,11 @@ public class JPAService {
   }
 
   /**
-   * Set number of messages from some user to user a user to isDelivered.
-   * So that other user cannot see the messages.
-   * @param toUserName - user name of the user you want to set delivery true.
-   * @param fromUserName - user name of the user from whom you want to set delivery true.
+   * Set number of messages from some user to user a user to isDelivered. So that other user cannot
+   * see the messages.
+   *
+   * @param toUserName    - user name of the user you want to set delivery true.
+   * @param fromUserName  - user name of the user from whom you want to set delivery true.
    * @param numOfMessages - total number of messages to set delivered true.
    * @return - True or false according to the result.
    */
@@ -335,8 +336,8 @@ public class JPAService {
     return gmd.findNonMembers(names, gName);
   }
 
-  public List<Group> allGroupsForUser(String uName, String gName){
-    return gd.allGroupsOfUser(uName,gName);
+  public List<Group> allGroupsForUser(String uName, String gName) {
+    return gd.allGroupsOfUser(uName, gName);
   }
 
 
@@ -344,8 +345,8 @@ public class JPAService {
    * Get all the groups for a particular user that s/he is in.
    *
    * @param username The username of the user for which we want to extract all the groups for.
-   * @return A List of Pair where the key is the group name and the value is a boolean that represents
-   * whether s/he is a moderator in that particular group or not.
+   * @return A List of Pair where the key is the group name and the value is a boolean that
+   * represents whether s/he is a moderator in that particular group or not.
    */
   public Map<String, Boolean> getAllGroupsForUser(String username) {
     Session session = null;
@@ -356,7 +357,7 @@ public class JPAService {
       transaction = session.beginTransaction();
 
       Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
-      if(validIdMap.get(username) == null) {
+      if (validIdMap.get(username) == null) {
         return allGroupsForUser;
       }
 
@@ -379,8 +380,8 @@ public class JPAService {
    * Gets all the users in a particular group.
    *
    * @param groupName The group name for which we need yo get all the users for.
-   * @return A Map where the key is the userName of members of the group and the value is a boolean representing if
-   * s/he is a moderator in that group.
+   * @return A Map where the key is the userName of members of the group and the value is a boolean
+   * representing if s/he is a moderator in that group.
    */
   public Map<String, Boolean> getAllUsersForGroup(String groupName) {
     Session session = null;
@@ -413,8 +414,7 @@ public class JPAService {
   }
 
 
-
-  public boolean toggleAdminRights(String username, String groupName){
+  public boolean toggleAdminRights(String username, String groupName) {
     Session session = null;
     Transaction transaction = null;
     boolean isOperationSuccessful = false;
@@ -451,20 +451,26 @@ public class JPAService {
     return isOperationSuccessful;
   }
 
-  public boolean renameUpdateGroup(String oldName, String newName){
+  public boolean renameUpdateGroup(String oldName, String newName) {
     return gd.updateGroupName(oldName, newName);
   }
 
-  public boolean userIsModerator(String uName, String gName){
-    return gmd.userIsMember(uName,gName);
+  public boolean userIsModerator(String uName, String gName) {
+    return gmd.userIsMember(uName, gName);
   }
 
-  public boolean addFollower(String uName, String fName){
-    return ufd.addFollower(uName,fName);
+  public boolean addFollower(String uName, String fName) {
+    return ufd.addFollower(uName, fName);
   }
 
-  public List<UnreadMessageModel> getUnreadMessagesForGroup(String groupname, Map<String, Date> dateMap) {
-    // TODO: CHeck if working
+  /**
+   * Get all messages for a group.
+   *
+   * @param groupname The group for which we need to fetch messages.
+   * @param dateMap   The HashMap that contains the start and end date.
+   * @return The List of messages parsed according to the mode  {@link UnreadMessageModel}.
+   */
+  public List<UnreadMessageModel> getUnreadMessagesForGroup(String groupname, Map<String, String> dateMap) {
     Session session = null;
     Transaction transaction = null;
     List<UnreadMessageModel> unreadMessageModels = new ArrayList<>();
@@ -501,8 +507,8 @@ public class JPAService {
   }
 
   /**
-   * This is explicitly written so that only admin can call it from server side. This is not
-   * called from client side. This is called on special request from government.
+   * This is explicitly written so that only admin can call it from server side. This is not called
+   * from client side. This is called on special request from government.
    *
    * @param userName The username to be upgraded to superUser.
    */
@@ -511,7 +517,7 @@ public class JPAService {
     ud.setAsSuperUser(id);
   }
 
-  public List<User> getAllFollowers(String uName){
+  public List<User> getAllFollowers(String uName) {
     return ufd.getAllFollowers(uName);
   }
 }
