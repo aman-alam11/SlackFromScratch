@@ -2,6 +2,8 @@ package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,8 @@ import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
+import edu.northeastern.ccs.im.model.ErrorCodes;
 import edu.northeastern.ccs.im.model.FetchLevel;
 import edu.northeastern.ccs.im.model.SuperUserMessageModel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
@@ -29,7 +33,7 @@ public class SuperUserHandler implements MessageHandler {
   private final Gson mGson;
   private final JPAService mJpaService;
   private SuperUserMessageModel superUserMessageModel;
-  private HashMap<String, Date> dateMap;
+  private HashMap<String, String> dateMap;
   private Connection mConnection;
 
   public SuperUserHandler() {
@@ -42,9 +46,19 @@ public class SuperUserHandler implements MessageHandler {
     try {
       this.mConnection = clientConnection;
       superUserMessageModel = new Gson().fromJson(message, SuperUserMessageModel.class);
+
+      // First check if the sender is a super user
+      if (!mJpaService.findUserByName(user).isSuperUser()) {
+        // If not a super user, simply send blank response
+        AckModel ackModel = new AckModel();
+        ackModel.addErrorCode(ErrorCodes.ILGL);
+        MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.SUPER_USER,
+                mGson.toJson(ackModel));
+        sendResponse(response, clientConnection);
+        return false;
+      }
       handleChatsHelper();
 
-      // TODO: Handle Dates in Database, the date queries are not written yet
       return true;
 
     } catch (Exception e) {
@@ -57,39 +71,35 @@ public class SuperUserHandler implements MessageHandler {
   // user2user chats group chats for user
   private void handleChatsHelper() {
     if (superUserMessageModel.isGetAllChats()) {
-      handleGetAllChats(superUserMessageModel.getmGroupToTap());
+      handleChatsUsername(superUserMessageModel.getmUsernameToTap(), FetchLevel.FETCH_BOTH_USER_GROUP_LEVEL);
     } else if (superUserMessageModel.isGetOnlyUserChat()) {
-      handleGetOnlyUserChats(superUserMessageModel.getmUsernameToTap());
+      handleChatsUsername(superUserMessageModel.getmUsernameToTap(), FetchLevel.FETCH_USER_LEVEL);
     } else if (superUserMessageModel.isGetOnlyGroupChat()) {
-      handleGetOnlyGroupChatForDates(superUserMessageModel.getmUsernameToTap());
+      handleChatsUsername(superUserMessageModel.getmUsernameToTap(), FetchLevel.FETCH_GROUP_LEVEL);
+    } else {
+      handleGetAllChatsForGroupName(superUserMessageModel.getmGroupToTap());
     }
   }
 
 
-  private void handleGetOnlyGroupChatForDates(String userName) {
+  private void handleChatsUsername(String userName, FetchLevel fetchLevel) {
     List<UnreadMessageModel> unreadMessageList;
     if (superUserMessageModel.areDatesValid()) {
       updateDateMap();
-      unreadMessageList = mJpaService.getUnreadMessages(userName, dateMap, FetchLevel.FETCH_GROUP_LEVEL);
+      unreadMessageList = mJpaService.getUnreadMessages(userName, dateMap, fetchLevel);
     } else {
-      unreadMessageList = mJpaService.getUnreadMessages(userName, null, FetchLevel.FETCH_GROUP_LEVEL);
+      unreadMessageList = mJpaService.getUnreadMessages(userName, null, fetchLevel);
     }
     sendResponseBack(unreadMessageList);
   }
 
 
-  private void handleGetOnlyUserChats(String userName) {
-    List<UnreadMessageModel> unreadMessageList;
-    if (superUserMessageModel.areDatesValid()) {
-      updateDateMap();
-      unreadMessageList = mJpaService.getUnreadMessages(userName, dateMap, FetchLevel.FETCH_USER_LEVEL);
-    } else {
-      unreadMessageList = mJpaService.getUnreadMessages(userName, null, FetchLevel.FETCH_USER_LEVEL);
-    }
-    sendResponseBack(unreadMessageList);
-  }
-
-  private void handleGetAllChats(String groupName) {
+  /**
+   * Get all chats for a group irrespective of user.
+   *
+   * @param groupName The group for which we need to fetch messages for.
+   */
+  private void handleGetAllChatsForGroupName(String groupName) {
     List<UnreadMessageModel> unreadMessageList;
     if (superUserMessageModel.areDatesValid()) {
       updateDateMap();
@@ -106,11 +116,16 @@ public class SuperUserHandler implements MessageHandler {
    * issue and is unable to find it, we have shifted to Map (which is unnecessary here).
    */
   private void updateDateMap() {
-    Date startDate = superUserMessageModel.getStartDate();
-    Date endDate = superUserMessageModel.getEndDate();
     dateMap = new HashMap<>();
-    dateMap.put(START_DATE, startDate);
-    dateMap.put(END_DATE, endDate);
+    try {
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      Date startDate = simpleDateFormat.parse(simpleDateFormat.format(superUserMessageModel.getStartDate()));
+      Date endDate = simpleDateFormat.parse(simpleDateFormat.format(superUserMessageModel.getEndDate()));
+      dateMap.put(START_DATE, String.valueOf(startDate.toInstant().atZone(ZoneId.of("America/Montreal")).toLocalDate()));
+      dateMap.put(END_DATE, String.valueOf(endDate.toInstant().atZone(ZoneId.of("America/Montreal")).toLocalDate()));
+    } catch (Exception e) {
+      ChatLogger.error("Unable to parse dates in " + LOG_TAG + " updateDateMap");
+    }
   }
 
   private void sendResponseBack(List<UnreadMessageModel> resp) {
