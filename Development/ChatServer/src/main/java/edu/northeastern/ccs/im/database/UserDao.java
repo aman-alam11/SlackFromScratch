@@ -214,7 +214,7 @@ public class UserDao {
 
   public BigInteger getUserIdFromUserName(String username) {
     Session session = mSessionFactory.openSession();
-    BigInteger userId = new BigInteger("-1");
+    BigInteger userId = BigInteger.valueOf(-1);
     try {
       String sql = "SELECT users.user_id FROM new_test_hibernate.users WHERE new_test_hibernate.users.user_name =?";
 
