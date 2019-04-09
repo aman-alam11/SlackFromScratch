@@ -8,7 +8,6 @@ import org.hibernate.query.Query;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -39,10 +38,11 @@ public class UserDao {
     // Create a session
     Session session = null;
     Transaction transaction = null;
+
+    session = mSessionFactory.openSession();
+    // Begin a transaction
+    transaction = session.beginTransaction();
     try {
-      session = mSessionFactory.openSession();
-      // Begin a transaction
-      transaction = session.beginTransaction();
       User user = new User(name, password, email);
 
       // Save the User
@@ -74,10 +74,10 @@ public class UserDao {
     // Create a session
     Session session = null;
     Transaction transaction = null;
+    session = mSessionFactory.openSession();
+    // Begin a transaction
+    transaction = session.beginTransaction();
     try {
-      session = mSessionFactory.openSession();
-      // Begin a transaction
-      transaction = session.beginTransaction();
       users = session.createQuery("FROM User").list();
 
       // Commit the transaction
@@ -101,9 +101,9 @@ public class UserDao {
     // Create a session
     Session session = mSessionFactory.openSession();
     Transaction transaction = null;
+    // Begin a transaction
+    transaction = session.beginTransaction();
     try {
-      // Begin a transaction
-      transaction = session.beginTransaction();
       // Get the User from the database.
       User user = session.get(User.class, id);
       // Delete the User
@@ -128,11 +128,11 @@ public class UserDao {
     // Create a session
     Session session = null;
     Transaction transaction = null;
-    try {
-      session = mSessionFactory.openSession();
-      // Begin a transaction
-      transaction = session.beginTransaction();
 
+    session = mSessionFactory.openSession();
+    // Begin a transaction
+    transaction = session.beginTransaction();
+    try {
       // Get the User from the database.
       User user = session.get(User.class, id);
 
@@ -162,9 +162,9 @@ public class UserDao {
    */
   public User findUserByName(String name) {
     Session session = null;
+    session = mSessionFactory.openSession();
     User user = null;
-    try {
-      session = mSessionFactory.openSession();
+    try{
       String sql = "select * from users where users.user_name = ?";
 
       Query query = session.createNativeQuery(sql, User.class);
@@ -182,19 +182,20 @@ public class UserDao {
    * Search user with keyword given
    */
   public List<String> searchUserByName(String name) {
-    Session session = mSessionFactory.openSession();
-    try {
-      String sql = "select users.user_name from users where users.user_name like ?";
-      Query query = session.createNativeQuery(sql);
-      query.setParameter(1, "%" + name + "%");
-      return query.getResultList();
-    } catch (Exception ex) {
-      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
-    } finally {
-      session.close();
-    }
-    return null;
-  }
+    List<String> allUsers = new ArrayList<>();
+	    Session session = mSessionFactory.openSession();
+	    try{
+	      String sql = "select users.user_name from users where users.user_name like ?";
+	      Query query = session.createNativeQuery(sql);
+	      query.setParameter(1, "%"+ name+ "%");
+	      allUsers = query.getResultList();
+	    }catch (Exception ex){
+	      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+	    }finally {
+	      session.close();
+	    }
+	    return allUsers;
+	  }
 
   public String findHashForUsername(String username) {
     Session session = mSessionFactory.openSession();
@@ -218,7 +219,7 @@ public class UserDao {
 
   public BigInteger getUserIdFromUserName(String username) {
     Session session = mSessionFactory.openSession();
-    BigInteger userId = new BigInteger("-1");
+    BigInteger userId = BigInteger.valueOf(-1);
     try {
       String sql = "SELECT users.user_id FROM new_test_hibernate.users WHERE new_test_hibernate.users.user_name =?";
 
@@ -310,10 +311,9 @@ public class UserDao {
 
 
   public int setRollbackMessage(String toUser, String fromUser, int numberOfMessages) {
-    Session session = null;
+    Session session = mSessionFactory.openSession();
     int res = 0;
     try {
-      session = mSessionFactory.openSession();
       Transaction transaction = session.beginTransaction();
       BigInteger toUserId = this.getUserIdFromUserName(toUser);
       BigInteger fromUserID = this.getUserIdFromUserName(fromUser);
@@ -347,10 +347,10 @@ public class UserDao {
 
     Session session = null;
     boolean result = false;
-    try {
-      session = mSessionFactory.openSession();
-      Transaction transaction = session.beginTransaction();
 
+    session = mSessionFactory.openSession();
+    Transaction transaction = session.beginTransaction();
+    try {
       BigInteger userIdBigInt = this.getUserIdFromUserName(username);
       int userId = userIdBigInt.intValue();
       if (userId <= 0) {
@@ -384,9 +384,8 @@ public class UserDao {
    * @param userId The userid of the super user.
    */
   public void setAsSuperUser(long userId) {
-    Session session = null;
+    Session session = mSessionFactory.openSession();
     try {
-      session = mSessionFactory.openSession();
       Transaction transaction = session.beginTransaction();
 
       String sql = "UPDATE new_test_hibernate.users SET users.is_super_user = true WHERE users.user_id =?";
@@ -397,6 +396,8 @@ public class UserDao {
       transaction.commit();
     } catch (Exception e) {
       ChatLogger.info(LOG_TAG + "Unable to update as superUser");
+    } finally {
+        session.close();
     }
   }
 }

@@ -44,7 +44,7 @@ public class CreateUserFollowLayer implements CoreOperation {
     private void parseResponse(String userNameList) {
         UserSearch searchResults = gson.fromJson(userNameList, UserSearch.class);
         List<String> listAllUsers = searchResults.getListUserString();
-
+        listAllUsers.remove(GenerateLoginCredentials.getUsername());
         if (listAllUsers.isEmpty()) {
             FrontEnd.getView().sendToView("ERROR: Illegal Name Entered. Sending you back");
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.FOLLOW_USER_LEVEL);

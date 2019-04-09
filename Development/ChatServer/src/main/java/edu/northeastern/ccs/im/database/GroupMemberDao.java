@@ -21,6 +21,9 @@ import edu.northeastern.ccs.im.ChatLogger;
 
 public class GroupMemberDao {
 
+    /**
+     * Constants to reuse in place of similar string throughout the code.
+     */
     public static final String GROUP_ID = "groupId";
     public static final String GROUP_USER = "groupUser";
     public static final String GROUP_NOT_FOUND = "Group not found :";
@@ -32,6 +35,13 @@ public class GroupMemberDao {
         mSessionFactory = sf;
     }
 
+    /**
+     * This method adds a new member to a group.
+     * @param gName
+     * @param uName
+     * @param isModerator
+     * @return
+     */
     public boolean addMemberToGroup(String gName, String uName, boolean isModerator){
         boolean isTransactionSuccessful = false;
         // Create a session
@@ -68,6 +78,12 @@ public class GroupMemberDao {
         return isTransactionSuccessful;
     }
 
+    /**
+     * This method deletes a user from the given group.
+     * @param gName
+     * @param uName
+     * @return
+     */
     public boolean deleteMemberFromGroup(String gName, String uName){
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -102,6 +118,11 @@ public class GroupMemberDao {
         return isTransactionSuccessful;
     }
 
+    /**
+     * This is a helper method, which takes in a group name and checks whether or not that group exists.
+     * @param gName
+     * @return
+     */
     private Group getGroup(String gName) {
         Group grp = JPAService.getInstance().findGroupByName(gName);
         if (grp == null) {
@@ -111,6 +132,10 @@ public class GroupMemberDao {
         return grp;
     }
 
+    /**
+     * This method deletes all the members form the group.
+     * @param gName
+     */
     public void deleteAllMembersFromGroup(String gName){
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -139,6 +164,12 @@ public class GroupMemberDao {
         }
     }
 
+    /**
+     * This method is used to add bunch of users to the group as members.
+     * @param users
+     * @param gName
+     * @return
+     */
     public boolean addMultipleUsersToGroup(List<String> users, String gName){
         boolean isTransactionSuccessful = false;
         // Create a session
@@ -163,6 +194,11 @@ public class GroupMemberDao {
         return isTransactionSuccessful;
     }
 
+    /**
+     * This method finds out all the members of a group and returns a list of them.
+     * @param gName
+     * @return
+     */
     public List<User> findAllMembersOfGroup(String gName){
         List<User> allMembers = new ArrayList<>();
         Session session = mSessionFactory.openSession();
@@ -192,6 +228,12 @@ public class GroupMemberDao {
         return allMembers;
     }
 
+    /**
+     * This method changes a moderator status of a user in the group.
+     * @param uName
+     * @param gName
+     * @param moderatorStatus
+     */
     public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus){
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -221,6 +263,11 @@ public class GroupMemberDao {
         }
     }
 
+    /**
+     * This is a helper method which takes in a user name and see if that user exists or not.
+     * @param uName
+     * @return
+     */
     private User getUser(String uName) {
         User user = JPAService.getInstance().findUserByName(uName);
         if (user == null) {
@@ -230,6 +277,12 @@ public class GroupMemberDao {
         return user;
     }
 
+    /**
+     * This method returns the list of users from given who are not member of the provided group.
+     * @param names
+     * @param gName
+     * @return
+     */
     public List<User> findNonMembers(List<String> names, String gName){
         List<User> nonMembers = new ArrayList<>();
         Session session = mSessionFactory.openSession();
@@ -334,6 +387,12 @@ public class GroupMemberDao {
         return allMembers;
     }
 
+    /**
+     * This method is used to toggle the admin rights of a specified user in the group.
+     * @param userId
+     * @param groupId
+     * @return
+     */
     public boolean toggleAdminRightsOfUser(int userId, long groupId){
         Session session = null;
         Transaction transaction = null;
@@ -363,6 +422,12 @@ public class GroupMemberDao {
         return isTransSuccess;
     }
 
+    /**
+     * Thie method checks if a provided user is a member of a group or not.
+     * @param uName
+     * @param gName
+     * @return
+     */
     public boolean userIsMember(String uName, String gName){
         boolean isTransactionSuccessful = false;
         // Create a session
