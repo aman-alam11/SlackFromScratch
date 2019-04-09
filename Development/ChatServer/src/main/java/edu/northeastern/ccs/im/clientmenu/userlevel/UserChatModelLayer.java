@@ -14,16 +14,17 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.RecallModel;
+import edu.northeastern.ccs.im.model.TranslateModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class UserChatModelLayer implements CoreOperation {
 
   private static final String QUIT = "\\q";
   private static final String REVERSE = "\\r";
+  private static final String TRANSLATE = "\\t";
   private Connection connLocal;
   private Gson gson;
   private ChatModel chatModel;
-  private RecallModel recallModel;
   private String userToChat;
   private boolean shouldListenForMessages = true;
 
@@ -63,7 +64,7 @@ public class UserChatModelLayer implements CoreOperation {
         try {
           int num = Integer.parseInt(scanner.next());
           FrontEnd.getView().sendToView(String.valueOf(num));
-          recallModel = new RecallModel(userToChat, num);
+          RecallModel recallModel = new RecallModel(userToChat, num);
           MessageJson messageJs = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_RECALL,
                   gson.toJson(recallModel));
           connectionLayerModel.sendMessage(messageJs);
@@ -71,6 +72,25 @@ public class UserChatModelLayer implements CoreOperation {
         }
         catch (NumberFormatException ex) {
           FrontEnd.getView().sendToView("ERROR: Not a number, try again by entering \\r.");
+        }
+      }
+
+      else if (message.equalsIgnoreCase(TRANSLATE)) {
+        FrontEnd.getView().sendToView("INPUT: Enter the language you want to translate to.");
+
+        try {
+          String language = scanner.nextLine();
+          FrontEnd.getView().sendToView("INPUT: Enter the message");
+          String messageConvert = scanner.nextLine();
+          TranslateModel translateModel = new TranslateModel(messageConvert, language);
+          translateModel.setFromUser(GenerateLoginCredentials.getUsername());
+          translateModel.setToUser(this.userToChat);
+          MessageJson messageTranslate = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TRANSLATE_MESSAGE,
+                  gson.toJson(translateModel));
+          connectionLayerModel.sendMessage(messageTranslate);
+        }
+        catch (Exception ex) {
+          FrontEnd.getView().sendToView("ERROR: error sending message \\r.");
         }
       }
 

@@ -130,6 +130,11 @@ public enum MessageType {
   FOLLOW_USER("FLU"),
 
   /**
+   * Follow a User.
+   */
+  TRANSLATE_MESSAGE("TRN"),
+
+  /**
    * List all the followers of a user.
    */
   LIST_FOLLOWERS("LFO");
