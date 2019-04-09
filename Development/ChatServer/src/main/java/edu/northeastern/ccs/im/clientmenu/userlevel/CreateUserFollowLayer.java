@@ -46,7 +46,7 @@ public class CreateUserFollowLayer implements CoreOperation {
         List<String> listAllUsers = searchResults.getListUserString();
 
         if (listAllUsers.isEmpty()) {
-            FrontEnd.getView().sendToView("ERROR: Illegal Name Entered. Sending you back");
+            FrontEnd.getView().sendToView("No Users Found");
             InjectLevelUtil.getInstance().injectLevel(CurrentLevel.FOLLOW_USER_LEVEL);
         } else {
             handleUserResponsevalidString(listAllUsers);
