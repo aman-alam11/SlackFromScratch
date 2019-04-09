@@ -72,11 +72,11 @@ public class UserFollwDao {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<UserFollow> query = builder.createQuery(UserFollow.class);
             Root<UserFollow> root = query.from(UserFollow.class);
-            query.select(root).where(builder.equal(root.get("followedUser"), user));
+            query.select(root).where(builder.equal(root.get("followerUser"), user));
             Query<UserFollow> q = session.createQuery(query);
             List<UserFollow> followers = q.getResultList();
             for(UserFollow followerUser: followers){
-                allFollowerUsers.add(followerUser.getFollowerUser());
+                allFollowerUsers.add(followerUser.getFollowedUser());
             }
         } catch (HibernateException ex) {
             // Print the Exception

@@ -34,6 +34,8 @@ public class UserSearchHandler implements MessageHandler {
 			UserSearch results = new UserSearch(userSearch.getUsername());
 			results.setUsersList(listUser);
 			listUser.addAll(queryRes);
+			//Remove itself from search list
+			listUser.remove(user);
 			MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
 		            MessageType.USER_SEARCH, gson.toJson(results));
 		    sendResponse(responsePacket, clientConnection);
