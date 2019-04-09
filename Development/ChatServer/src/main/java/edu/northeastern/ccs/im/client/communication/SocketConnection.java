@@ -23,7 +23,7 @@ public class SocketConnection implements Connection {
   private static Connection instance;
   private static SocketChannel channel;
   private static final int BUFFER_SIZE = 64 * 1024;
-  private static final String CHARSET_NAME = "us-ascii";
+  private static final String CHARSET_NAME = "utf-8";
   private static final String MESSAGE_START_KEY = "#{";
   private static final String MESSAGE_END_KEY = "}#";
   private static final String MESSAGE_SEPARATOR = "#";

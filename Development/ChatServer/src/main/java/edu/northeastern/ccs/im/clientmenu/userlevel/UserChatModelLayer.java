@@ -55,7 +55,7 @@ public class UserChatModelLayer implements CoreOperation {
         FrontEnd.getView().sendToView("INFO: Ending Chat.");
         breakFromConversation(connectionLayerModel);
         FrontEnd.getView().showUserLevelOptions();
-        break;
+        return;
       }
       else if (message.equalsIgnoreCase(REVERSE)) {
         FrontEnd.getView().sendToView("INPUT: Enter Number of messages you want to unsend.");
