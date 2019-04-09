@@ -14,12 +14,18 @@ public class ProfanityFilterTest {
 
   @Before
   public void init() {
-    profanityFilter = ProfanityFilter.getInstace();
+    profanityFilter = ProfanityFilter.getInstance();
   }
 
   @Test
   public void filterTest() {
     String testStr = "hey ass clown";
     Assert.assertEquals("hey *** clown ", profanityFilter.filterMessage(testStr));
+  }
+
+  @Test
+  public void filterWordTest() {
+    String testStr =  "fuck man";
+    Assert.assertEquals("**** man ", profanityFilter.filterMessage(testStr));
   }
 }

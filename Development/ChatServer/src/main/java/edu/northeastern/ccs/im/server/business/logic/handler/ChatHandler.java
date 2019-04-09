@@ -49,7 +49,7 @@ public class ChatHandler implements MessageHandler {
         		//Filtering message
         		ChatModel chatModelFilter = mGson.fromJson(message, ChatModel.class);
         		String messageRaw = chatModelFilter.getMsg();
-        		String messageFiltered = ProfanityFilter.getInstace().filterMessage(messageRaw);
+        		String messageFiltered = ProfanityFilter.getInstance().filterMessage(messageRaw);
         		chatModelFilter.setMsg(messageFiltered);
 
         		String newMessage = mGson.toJson(chatModelFilter, ChatModel.class);

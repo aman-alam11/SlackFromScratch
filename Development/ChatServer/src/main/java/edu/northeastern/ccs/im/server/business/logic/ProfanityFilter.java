@@ -4,18 +4,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProfanityFilter {
-  private final static String SINGLESPACE = " ";
+  private static final String SINGLESPACE = " ";
 
   private static ProfanityFilter profanityFilter;
   private static Set<String> wordSet;
 
   private ProfanityFilter() {
-    addWords();
+    initProfaneSet();
   }
 
-  public static ProfanityFilter getInstace() {
+  public static ProfanityFilter getInstance() {
     if (profanityFilter == null) {
-      wordSet = new HashSet<>();
       profanityFilter = new ProfanityFilter();
     }
     return profanityFilter;
@@ -41,10 +40,11 @@ public class ProfanityFilter {
     return stringBuilder.toString();
   }
 
-  private void addWords() {
+  private static void initProfaneSet() {
+    wordSet = new HashSet<>();
     wordSet.add("fuck");
     wordSet.add("ass");
-    wordSet.add("bitch");
+    wordSet.add("dick");
   }
 
   private static String countAndReplace(String str)  {
