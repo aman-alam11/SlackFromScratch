@@ -9,18 +9,17 @@ import org.hibernate.query.Query;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.FetchLevel;
+
+import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.END_DATE;
+import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.START_DATE;
 
 public class UserDao {
 
@@ -164,16 +163,16 @@ public class UserDao {
   public User findUserByName(String name) {
     Session session = null;
     User user = null;
-    try{
+    try {
       session = mSessionFactory.openSession();
       String sql = "select * from users where users.user_name = ?";
 
       Query query = session.createNativeQuery(sql, User.class);
       query.setParameter(1, name);
       user = (User) query.getSingleResult();
-    }catch (HibernateException | NoResultException ex){
+    } catch (HibernateException | NoResultException ex) {
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
-    }finally {
+    } finally {
       session.close();
     }
     return user;
@@ -181,23 +180,21 @@ public class UserDao {
 
   /**
    * Search user with keyword given
-   * @param name
-   * @return
    */
   public List<String> searchUserByName(String name) {
-	    Session session = mSessionFactory.openSession();
-	    try{
-	      String sql = "select users.user_name from users where users.user_name like ?";
-	      Query query = session.createNativeQuery(sql);
-	      query.setParameter(1, "%"+ name+ "%");
-	      return query.getResultList();
-	    }catch (Exception ex){
-	      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
-	    }finally {
-	      session.close();
-	    }
-	    return null;
-	  }
+    Session session = mSessionFactory.openSession();
+    try {
+      String sql = "select users.user_name from users where users.user_name like ?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, "%" + name + "%");
+      return query.getResultList();
+    } catch (Exception ex) {
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+    } finally {
+      session.close();
+    }
+    return null;
+  }
 
   public String findHashForUsername(String username) {
     Session session = mSessionFactory.openSession();
@@ -242,18 +239,18 @@ public class UserDao {
    * Retrieves all unread messages for the user with the passed user id.
    *
    * @param userId The userId for which we need to get all the unread messages for.
-   * @return A List of complete chat rows from which information will be extracted based on use case.
+   * @return A List of complete chat rows from which information will be extracted based on use
+   * case.
    */
-  public List<Chat> getUnreadMessages(int userId, Map<String, Date> dateMap, FetchLevel fetchLevel) {
+  public List<Chat> getUnreadMessages(int userId, Map<String, String> dateMap, FetchLevel fetchLevel) {
     Session session = mSessionFactory.openSession();
     List<Chat> listUnreadChatRows = new ArrayList<>();
     StringBuilder sqlString = new StringBuilder("SELECT * FROM chat WHERE chat.To_id =?");
-    String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel);
+    String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel, dateMap);
 
     try {
       Query query = session.createNativeQuery(genSqlString, Chat.class);
       query.setParameter(1, userId);
-      // TODO: Add params for dates if not null
       listUnreadChatRows.addAll(query.getResultList());
     } catch (Exception ex) {
       // If there are any exceptions, roll back the changes
@@ -265,22 +262,25 @@ public class UserDao {
     return listUnreadChatRows;
   }
 
-  // TODO: add date queries.
-  private String generateAppropriateSqlString(StringBuilder sqlString, FetchLevel fetchLevel) {
+  private String generateAppropriateSqlString(StringBuilder sqlString, FetchLevel fetchLevel, Map<String, String> dateMap) {
     switch (fetchLevel) {
       case FETCH_USER_LEVEL:
+        appendDatesIfAvailable(sqlString, dateMap);
         sqlString.append(" and NOT chat.isGrpMsg");
         break;
 
       case FETCH_GROUP_LEVEL:
+        appendDatesIfAvailable(sqlString, dateMap);
         sqlString.append(" and chat.isGrpMsg");
         break;
 
       case UNREAD_MESSAGE_HANDLER:
+        appendDatesIfAvailable(sqlString, dateMap);
         sqlString.append(" AND NOT chat.isDelivered");
         break;
 
       case FETCH_BOTH_USER_GROUP_LEVEL:
+        appendDatesIfAvailable(sqlString, dateMap);
         // Intentional fall through
 
       default:
@@ -289,6 +289,23 @@ public class UserDao {
     }
 
     return sqlString.toString();
+  }
+
+  /**
+   * Update the StringBuilder Object that ultimately leads to Sql String.
+   * @param sqlQueryString The stringbuilder object that contains parts of query.
+   * @param dateMap The date map that contains start and end date.
+   */
+  private void appendDatesIfAvailable(StringBuilder sqlQueryString, Map<String, String> dateMap) {
+    if (dateMap == null) {
+      System.out.println("Dates Invalid.");
+      return;
+    }
+    sqlQueryString.append(" and chat.Creation_date >= \"");
+    sqlQueryString.append(dateMap.get(START_DATE));
+    sqlQueryString.append("\" AND chat.Creation_date <= \"");
+    sqlQueryString.append(dateMap.get(END_DATE));
+    sqlQueryString.append("\"");
   }
 
 
@@ -301,7 +318,7 @@ public class UserDao {
       BigInteger toUserId = this.getUserIdFromUserName(toUser);
       BigInteger fromUserID = this.getUserIdFromUserName(fromUser);
 
-      if (toUserId.intValue() <= 0 || fromUserID.intValue() <= 0 ) {
+      if (toUserId.intValue() <= 0 || fromUserID.intValue() <= 0) {
         ChatLogger.info(this.getClass().getName() + "User not found to user : " + toUser);
         ChatLogger.info(this.getClass().getName() + "User not found  from user : " + fromUser);
         return res;
@@ -361,8 +378,9 @@ public class UserDao {
 
 
   /**
-   * A simple method to upgrade the user as super user. This method cannot be called from client side
-   * and can called only from server side for special requests from government agencies.
+   * A simple method to upgrade the user as super user. This method cannot be called from client
+   * side and can called only from server side for special requests from government agencies.
+   *
    * @param userId The userid of the super user.
    */
   public void setAsSuperUser(long userId) {

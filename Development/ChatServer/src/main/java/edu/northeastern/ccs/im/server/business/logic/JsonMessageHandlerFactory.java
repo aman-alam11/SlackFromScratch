@@ -15,6 +15,7 @@ import edu.northeastern.ccs.im.server.business.logic.handler.RecallUserChatHandl
 import edu.northeastern.ccs.im.server.business.logic.handler.RenameGroupHandler;
 import edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler;
 import edu.northeastern.ccs.im.server.business.logic.handler.ToggleModeratorRightsHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.TransLateHandler;
 import edu.northeastern.ccs.im.server.business.logic.handler.UnreadMessageHandler;
 import edu.northeastern.ccs.im.server.business.logic.handler.UserCreationHandler;
 import edu.northeastern.ccs.im.server.business.logic.handler.UserSearchHandler;
@@ -97,6 +98,7 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
 
       case SUPER_USER:
         handler = new SuperUserHandler();
+        break;
 
       case FOLLOW_USER:
         handler = new AddFollowerUserHandler();
@@ -104,6 +106,9 @@ public class JsonMessageHandlerFactory implements MessageHandlerFactory {
 
       case LIST_FOLLOWERS:
         handler = new ListFollowerUserHandler();
+        break;
+      case TRANSLATE_MESSAGE:
+        handler = new TransLateHandler();
         break;
 
       default:

@@ -19,6 +19,7 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.SuperUserMessageModel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -33,6 +34,7 @@ public class SuperUser implements CoreOperation {
   private static final String INVALID_USERNAME_GROUPNAME = "Input can't be blank. Sending you back";
   private SuperUserMessageModel mSuperUserMessageModel;
   private String gsonSerialized;
+  private String guideUserString;
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
@@ -59,6 +61,7 @@ public class SuperUser implements CoreOperation {
         updateDatesForRequest(scanner);
         gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
         generateRequestForServer(connectionLayerModel);
+        guideUserString = "Conversations for a particular User for user to user chat";
         break;
 
       // Get All Conversations for a particular User for all group chats
@@ -75,11 +78,14 @@ public class SuperUser implements CoreOperation {
         mSuperUserMessageModel = new SuperUserMessageModel(false, true, username);
         updateDatesForRequest(scanner);
         gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
+        guideUserString = "Conversations for a particular User for all group chats";
+        generateRequestForServer(connectionLayerModel);
         break;
 
       // Get All Conversations for a user for both user to user chat and group
       // Basically all unread messages
       case 3:
+        FrontEnd.getView().sendToView("Enter the name of user to tap into his/her user and group chats:");
         username = scanner.nextLine().trim().toLowerCase();
         if (StringUtil.isBlank(username)) {
           FrontEnd.getView().sendToView(INVALID_USERNAME_GROUPNAME);
@@ -90,10 +96,13 @@ public class SuperUser implements CoreOperation {
         mSuperUserMessageModel = new SuperUserMessageModel(true, true, username);
         updateDatesForRequest(scanner);
         gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
+        guideUserString = "Conversations for a user for both user to user chat and group";
+        generateRequestForServer(connectionLayerModel);
         break;
 
       // Get All Conversations for a particular Group irrespective of user
       case 4:
+        FrontEnd.getView().sendToView("Enter the group name for which you want to get all the conversations from:");
         String groupName = scanner.nextLine().trim().toLowerCase();
         if (StringUtil.isBlank(groupName)) {
           FrontEnd.getView().sendToView(INVALID_USERNAME_GROUPNAME);
@@ -101,9 +110,11 @@ public class SuperUser implements CoreOperation {
           return;
         }
 
-        mSuperUserMessageModel = new SuperUserMessageModel(true, groupName);
+        mSuperUserMessageModel = new SuperUserMessageModel(groupName);
         updateDatesForRequest(scanner);
         gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
+        guideUserString = "Conversations for a particular Group irrespective of user";
+        generateRequestForServer(connectionLayerModel);
         break;
 
       default:
@@ -119,22 +130,22 @@ public class SuperUser implements CoreOperation {
             "or do you want to get all dates of the requested types?");
     FrontEnd.getView().sendToView("Press 1 to get all requested chats irrespective of dates");
     FrontEnd.getView().sendToView("Press 2 to enter specific dates and get chats for those time frames");
-    int choice = Integer.parseInt(scanner.nextLine());
+    int choice = Integer.parseInt(scanner.nextLine().trim());
     if (choice == 2) {
       // Get Dates from user
       getDatesFromUser(scanner);
     }
 
-    if (choice != 1 && choice != 2) {
+    if (choice < 1 || choice > 2) {
       FrontEnd.getView().sendToView("Invalid input. Getting all chats as default.");
     }
   }
 
   private void getDatesFromUser(Scanner scanner) {
-    FrontEnd.getView().sendToView("Dates entered should be of type: MM/DD/YYYY");
+    FrontEnd.getView().sendToView("Dates entered should be of type: MM/DD/YYYY . You have to include \\/ in the date");
     FrontEnd.getView().sendToView("Please enter the start date to get chats:");
     String startDate = scanner.nextLine().trim();
-    if (invalidDateCheck(startDate, true)) {
+    if (!invalidDateCheck(startDate, true)) {
       return;
     }
 
@@ -181,10 +192,26 @@ public class SuperUser implements CoreOperation {
     }
   }
 
+  /**
+   * Display the response or error code appropriately.
+   *
+   * @param resp The response recieved by server. This can either be of type {@code
+   *             List<UnreadMessageModel>} or a string which can be accessed via {@link
+   *             AckModel#getErrorMessage()}.
+   */
   private void displayResponse(String resp) {
     Type chatModelList = new TypeToken<List<UnreadMessageModel>>() {
     }.getType();
-    List<UnreadMessageModel> listUnreadMessagesAll = new Gson().fromJson(resp, chatModelList);
+    List<UnreadMessageModel> listUnreadMessagesAll;
+
+    try {
+      listUnreadMessagesAll = new Gson().fromJson(resp, chatModelList);
+    } catch (Exception e) {
+      //
+      AckModel ackModel = new Gson().fromJson(resp, AckModel.class);
+      FrontEnd.getView().sendToView(ackModel.getErrorMessage());
+      return;
+    }
 
     if (listUnreadMessagesAll.isEmpty()) {
       FrontEnd.getView().sendToView("No such results found. Sending you back");
@@ -192,12 +219,13 @@ public class SuperUser implements CoreOperation {
       return;
     }
 
+    FrontEnd.getView().sendToView(guideUserString);
+
     for (UnreadMessageModel eachChat : listUnreadMessagesAll) {
       FrontEnd.getView().sendToView(eachChat.toString());
     }
 
     InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
-    // TODO: Display each case properly
   }
 
 }
