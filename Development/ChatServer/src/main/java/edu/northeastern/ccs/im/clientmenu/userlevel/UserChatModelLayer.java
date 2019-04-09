@@ -78,6 +78,7 @@ public class UserChatModelLayer implements CoreOperation {
       else if (message.equalsIgnoreCase(TRANSLATE)) {
         FrontEnd.getView().sendToView("INPUT: Enter the language you want to translate to.");
 
+
         try {
           String language = scanner.nextLine();
           FrontEnd.getView().sendToView("INPUT: Enter the message");
