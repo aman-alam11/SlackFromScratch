@@ -139,6 +139,7 @@ public abstract class Prattle {
     // can remove it.
 	if (client.isAuthenticated() && authenticatedActiveUsers.containsKey(client.getUserName())) {
 		Connection c = authenticatedActiveUsers.remove(client);
+		chattingUsers.remove(client.getUserName());
 		ChatLogger.info("Terminated authenticated client " + c.getUserName());
 		
 	} else if (unAuthenticatedActiveUsers.contains(client)) {
