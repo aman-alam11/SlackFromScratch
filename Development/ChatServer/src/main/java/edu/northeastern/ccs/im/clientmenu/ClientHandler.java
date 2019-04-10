@@ -35,7 +35,6 @@ public final class ClientHandler {
     InjectLevelUtil.getInstance().injectLevel(CurrentLevel.LOGIN_LEVEL);
   }
 
-  @SuppressWarnings("squid:S3776")
   public void initClientOperations(Scanner scanner) {
     while (scanner.hasNext()) {
       int userChoice = 0;
@@ -59,15 +58,7 @@ public final class ClientHandler {
           }
 
         else if(choiceString.equalsIgnoreCase(BACK)) {
-          Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();
-          CurrentLevel currentLevel = InjectLevelUtil.getInstance().getCurrentLevel();
-          if(currentLevel == CurrentLevel.LOGIN_LEVEL || currentLevel == CurrentLevel.USER_LEVEL) {
-            FrontEnd.getView().sendToView("INFO: Cannot go back from this level!");
-          }
-          else {
-            CurrentLevel level = map.get(currentLevel);
-            InjectLevelUtil.getInstance().injectLevel(level);
-          }
+          onBackPressed();
         }
 
         else {
@@ -91,6 +82,21 @@ public final class ClientHandler {
           initialCoreOperation.passControl(scanner, modelLayer);
         }
       }
+    }
+  }
+
+  /**
+   * Handle levels when back pressed.
+   */
+  private void onBackPressed() {
+    Map<CurrentLevel,CurrentLevel> map = InjectLevelUtil.getInstance().getLevelMap();
+    CurrentLevel currentLevel = InjectLevelUtil.getInstance().getCurrentLevel();
+    if(currentLevel == CurrentLevel.LOGIN_LEVEL || currentLevel == CurrentLevel.USER_LEVEL) {
+      FrontEnd.getView().sendToView("INFO: Cannot go back from this level!");
+    }
+    else {
+      CurrentLevel level = map.get(currentLevel);
+      InjectLevelUtil.getInstance().injectLevel(level);
     }
   }
 }

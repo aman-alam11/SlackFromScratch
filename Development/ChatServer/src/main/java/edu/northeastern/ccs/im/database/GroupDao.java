@@ -1,24 +1,20 @@
 package edu.northeastern.ccs.im.database;
 
-import org.hibernate.*;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
-
 import edu.northeastern.ccs.im.ChatLogger;
-import edu.northeastern.ccs.im.model.FetchLevel;
-import edu.northeastern.ccs.im.model.UnreadMessageModel;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
 
 import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.END_DATE;
 import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.START_DATE;

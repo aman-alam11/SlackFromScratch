@@ -34,7 +34,7 @@ public class AddUserToGroupModelLayer implements CoreOperation {
     FrontEnd.getView().sendToView("INPUT: Enter name of users to be added split by \",\"");
     String scr = scanner.nextLine();
     String[] users = scr.split(",");
-    List<String> userList = Arrays.stream(users).map(u -> u.trim()).collect(Collectors.toList());
+    List<String> userList = Arrays.stream(users).map(String::trim).collect(Collectors.toList());
 
 
     AddDeleteGroupUsers addDeleteGroupUsers = new AddDeleteGroupUsers();
