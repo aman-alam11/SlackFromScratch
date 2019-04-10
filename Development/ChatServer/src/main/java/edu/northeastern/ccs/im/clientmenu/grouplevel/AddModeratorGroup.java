@@ -22,7 +22,13 @@ public class AddModeratorGroup implements CoreOperation {
     public void passControl(Scanner scanner, Connection connectionLayerModel) {
         mScanner = scanner;
         mConnectionLayerModel = connectionLayerModel;
-        parseResponse(getAllUserGroup(connectionLayerModel));
+
+        Map<String, Boolean> userMap = getAllUserGroup(connectionLayerModel);
+        if (userMap != null) {
+            parseResponse(userMap);
+        } else {
+            FrontEnd.getView().sendToView("ERROR: Operation Failed. Please try again");
+        }
     }
 
     private void parseResponse(Map<String, Boolean> userModMap) {

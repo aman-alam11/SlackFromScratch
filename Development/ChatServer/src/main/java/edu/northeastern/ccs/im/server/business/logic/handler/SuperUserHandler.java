@@ -52,7 +52,7 @@ public class SuperUserHandler implements MessageHandler {
       if (!mJpaService.findUserByName(user).isSuperUser()) {
         // If not a super user, simply send blank response
         AckModel ackModel = new AckModel();
-        ackModel.addErrorCode(ErrorCodes.ILGL);
+        ackModel.addErrorCode(ErrorCodes.IL001);
         MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.SUPER_USER,
                 mGson.toJson(ackModel));
         sendResponse(response, clientConnection);

@@ -1,11 +1,11 @@
 package edu.northeastern.ccs.im.view;
 
-import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 
-@SuppressWarnings("all")
 public class FrontEnd {
 
+  private static final String ENTER_BACK_QUIT = "Or Enter \\b to go back or \\q to quit";
   private static FrontEnd mFrontEnd;
+  private static final String INPUT_ABOVE_OPTIONS = "INPUT: Enter From above Options: ";
 
 
   private FrontEnd() {
@@ -36,13 +36,12 @@ public class FrontEnd {
 
 
   public void showMainMenu() {
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("Welcome to Chatter Application \n");
-    stringBuilder.append("1. Login \n");
-    stringBuilder.append("2. Registration \n");
-    stringBuilder.append("Or Enter \\q to quit \n");
-    stringBuilder.append("INPUT: Enter From above Options: \n");
-    printToStream(stringBuilder.toString());
+    String stringBuilder = "Welcome to Chatter Application \n" +
+            "1. Login \n" +
+            "2. Registration \n" +
+            "Or Enter \\q to quit \n" +
+            "INPUT: Enter From above Options: \n";
+    printToStream(stringBuilder);
   }
 
 
@@ -51,7 +50,6 @@ public class FrontEnd {
   /**
    * For normal purposes, send false here. This 4th option is only for super user here.
    *
-   * @param isSuperUser This option is set only at login.
    */
   public void showUserLevelOptions() {
     System.out.println("1. Unread Messages");
@@ -59,7 +57,7 @@ public class FrontEnd {
     System.out.println("3. Group Options");
     System.out.println("4. Follow User options");
     System.out.println("Or Enter \\q to quit");
-    System.out.println("INPUT: Enter From above Options: ");
+    System.out.println(INPUT_ABOVE_OPTIONS);
   }
 
   public void enterLines() {
@@ -74,15 +72,15 @@ public class FrontEnd {
     System.out.println("2. Update Group");
     System.out.println("3. Group Chat");
     System.out.println("4. Delete Group");
-    System.out.println("Or Enter \\b to go back or \\q to quit");
-    System.out.println("INPUT: Enter From above Options: ");
+    System.out.println(ENTER_BACK_QUIT);
+    System.out.println(INPUT_ABOVE_OPTIONS);
   }
 
   public void showFollowUserLevelOptions() {
     System.out.println("1. Follow a User");
     System.out.println("2. List my followers");
-    System.out.println("Or Enter \\b to go back or \\q to quit");
-    System.out.println("INPUT: Enter From above Options: ");
+    System.out.println(ENTER_BACK_QUIT);
+    System.out.println(INPUT_ABOVE_OPTIONS);
   }
 
   public void showFollwUserLevelOptions(){
@@ -93,8 +91,8 @@ public class FrontEnd {
   public void showGroupUsersCrudLevelOptions() {
     System.out.println("1. Add Users");
     System.out.println("2. Delete Users");
-    System.out.println("Or Enter \\b to go back or \\q to quit");
-    System.out.println("INPUT: Enter From above Options: ");
+    System.out.println(ENTER_BACK_QUIT);
+    System.out.println(INPUT_ABOVE_OPTIONS);
   }
 
   public void showUpdateGroupOptions() {
