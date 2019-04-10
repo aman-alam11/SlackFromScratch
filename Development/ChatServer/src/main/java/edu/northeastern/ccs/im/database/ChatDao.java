@@ -12,7 +12,6 @@ import org.hibernate.query.Query;
 
 import edu.northeastern.ccs.im.model.ChatModel;
 
-@SuppressWarnings("all")
 public class ChatDao {
 
 	SessionFactory mSessionFactory;
@@ -25,21 +24,16 @@ public class ChatDao {
      * Create a new chat message.
      * @param fromId
      * @param toId
-     * @param msg
-     * @param replyTo
-     * @param expiry
-     * @param grpMsg
-     * @param isDelivered
+     * @param chatModel
      */
     public long create(User fromId, User toId, ChatModel chatModel) {
 		// Create a session
 		Session session = mSessionFactory.openSession();
 		Group  group = null;
 		Transaction transaction = null;
+        transaction = session.beginTransaction();
 		long returnId = 0;
 		try {
-			// Begin a transaction
-			transaction = session.beginTransaction();
 			Chat chat = new Chat();
 			chat.setFromId(fromId);
 			chat.setToId(toId);
@@ -79,11 +73,11 @@ public class ChatDao {
    public List<Chat> findByReceiver(long receiverId) {
 	Session session = null;
 	Transaction transaction = null;
+	session = mSessionFactory.openSession();
+	// Begin a transaction
+    transaction = session.beginTransaction();
 	List<Chat> chat = null;
        try {
-           session = mSessionFactory.openSession();
-           // Begin a transaction
-           transaction = session.beginTransaction();
            String sql = "select *from chat where chat.To_id = ?";
 
            Query query = session.createNativeQuery(sql, Chat.class);
@@ -110,10 +104,11 @@ public class ChatDao {
    public void deleteChatByReceiver(long receiverId) {
 	   Session session = null;
        Transaction transaction = null;
+
+       session = mSessionFactory.openSession();
+       // Begin a transaction
+       transaction = session.beginTransaction();
        try {
-           session = mSessionFactory.openSession();
-           // Begin a transaction
-           transaction = session.beginTransaction();
            String sql = "delete from chat where chat.To_id = ?";
 
 	   	   	Query query = session.createNativeQuery(sql, Chat.class);
@@ -142,10 +137,11 @@ public class ChatDao {
        // Create a session
        Session session = null;
        Transaction transaction = null;
+
+       session = mSessionFactory.openSession();
+       // Begin a transaction
+       transaction = session.beginTransaction();
        try {
-           session = mSessionFactory.openSession();
-           // Begin a transaction
-           transaction = session.beginTransaction();
            // Get the User from the database.
            Chat chat = session.get(Chat.class, id);
            // Delete the User
@@ -163,20 +159,30 @@ public class ChatDao {
        }
    }
 
+    /**
+     * This method updtes the delivery status of a message from unread to read once the user logs in and
+     * check the unread messages.
+     * @param id The long id of a message in chat table.
+     * @param status Boolean status
+     * @return
+     */
 	public boolean updateDeliveryStatus(long id, boolean status) {
-
+        Session session = mSessionFactory.openSession();
 		Transaction tx = null;
-		try (Session session = mSessionFactory.openSession()) {
-			tx = session.beginTransaction();
-			Chat chat = (Chat) session.get(Chat.class, id);
+        tx = session.beginTransaction();
+		try {
+			Chat chat = session.get(Chat.class, id);
 			chat.setIsDelivered(status);
 			 session.update(chat);
 			tx.commit();
-      return true;
+            return true;
 		} catch (Exception e) {
             Logger.getLogger(this.getClass().getSimpleName()).info(e.getMessage());
             tx.rollback();
             return false;
-		}
+		} finally {
+		    //Close the session.
+		    session.close();
+        }
 	}
 }
