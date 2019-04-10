@@ -58,7 +58,7 @@ public class CreateUserFollowLayer implements CoreOperation {
         boolean success = false;
 
         for (int i = 0; i < userNameList.size(); i++) {
-            System.out.println(userNameList.get(i));
+        	FrontEnd.getView().sendToView(userNameList.get(i));
         }
 
         FrontEnd.getView().sendToView("INPUT: Which user from above do you want to follow?");
@@ -70,17 +70,14 @@ public class CreateUserFollowLayer implements CoreOperation {
             MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
                     MessageType.FOLLOW_USER, gson.toJson(userFollow));
             success = model.sendMessage(messageJson);
+            if (success) {
+            	 FrontEnd.getView().sendToView("You are now a follower of " + userNameToFollow);
+            } else {
+            	FrontEnd.getView().sendToView("Oops! Something bad happened while adding you as a follower of " + userNameToFollow);
+            }
         }else{
             FrontEnd.getView().sendToView("ERROR: Illegal Name Entered. Sending you back");
-            InjectLevelUtil.getInstance().injectLevel(CurrentLevel.FOLLOW_USER_LEVEL);
         }
-
-        if(success){
-            FrontEnd.getView().sendToView("You are now a follower of " + userNameToFollow);
-            InjectLevelUtil.getInstance().injectLevel(CurrentLevel.FOLLOW_USER_LEVEL);
-        }else{
-            FrontEnd.getView().sendToView("Oops! Something bad happened while adding you as a follower of " + userNameToFollow);
-            InjectLevelUtil.getInstance().injectLevel(CurrentLevel.FOLLOW_USER_LEVEL);
-        }
+        InjectLevelUtil.getInstance().injectLevel(CurrentLevel.FOLLOW_USER_LEVEL);
     }
 }
