@@ -10,6 +10,7 @@ import edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse;
 import edu.northeastern.ccs.im.database.User;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.UserFollwingList;
 import edu.northeastern.ccs.im.model.UserSearch;
 import edu.northeastern.ccs.im.view.FrontEnd;
 import org.jsoup.helper.StringUtil;
@@ -23,6 +24,9 @@ public class ListUserFollowerLayer implements CoreOperation {
     private Gson gson;
     private Scanner mScanner;
     private Connection model;
+    private static final String DELIMITER = " --- ";
+    private static final String ONLINE = DELIMITER + "Online";
+    private static final String OFFLINE = DELIMITER + "Offline";
 
     @Override
     public void passControl(Scanner scanner, Connection connectionLayerModel) {
@@ -37,17 +41,19 @@ public class ListUserFollowerLayer implements CoreOperation {
 
         model.sendMessage(messageJson);
 
-        List<String> usernames = null;
-
         String resp = waitForResponseSocket(model);
+        
         if (!StringUtil.isBlank(resp)) {
-            User[] searchResults = gson.fromJson(resp, User[].class);
-            if (searchResults == null || searchResults.length == 0) {
+        		UserFollwingList searchResults = gson.fromJson(resp, UserFollwingList.class);
+            if (searchResults == null || searchResults.getUserList().isEmpty()) {
                 FrontEnd.getView().sendToView("ERROR: You have no followers.");
             } else {
                 FrontEnd.getView().sendToView("RESULTS: Following are your followers.");
-                for (int i = 0; i < searchResults.length; i++) {
-                    FrontEnd.getView().sendToView(i+1 + ": " + searchResults[i].getName());
+                int counter = 0 ;
+                for (edu.northeastern.ccs.im.model.User user : searchResults.getUserList()) {
+                    FrontEnd.getView().sendToView(++counter + ": " + 
+                    															user.getUserName() + 
+                    															(user.isOnline() ? ONLINE : OFFLINE));
                 }
                 FrontEnd.getView().sendToView("===================");
             }
