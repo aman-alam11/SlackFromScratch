@@ -16,6 +16,7 @@ import javax.persistence.NoResultException;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.FetchLevel;
+import edu.northeastern.ccs.im.view.FrontEnd;
 
 import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.END_DATE;
 import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.START_DATE;
@@ -299,7 +300,7 @@ public class UserDao {
    */
   private void appendDatesIfAvailable(StringBuilder sqlQueryString, Map<String, String> dateMap) {
     if (dateMap == null) {
-      System.out.println("Dates Invalid.");
+      FrontEnd.getView().sendToView("Dates Invalid.");
       return;
     }
     sqlQueryString.append(" and chat.Creation_date >= \"");
