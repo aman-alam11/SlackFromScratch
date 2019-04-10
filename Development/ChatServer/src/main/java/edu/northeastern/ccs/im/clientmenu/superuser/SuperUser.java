@@ -31,90 +31,60 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
  */
 public class SuperUser implements CoreOperation {
 
-  private static final String INVALID_USERNAME_GROUPNAME = "Input can't be blank. Sending you back";
+  private static final String INVALID_USERNAME_GROUP_NAME = "Input can't be blank. Sending you back";
+  private static final String USER_2_USER_USERNAME_REQUEST = "Enter the name of user to tap into his/her user2user chats:";
+  private static final String GROUP_CHAT_USERNAME_REQUEST = "Enter the name of user to tap into his/her group2group chats:";
+  private static final String USER_GROUP_CHAT_USERNAME_REQUEST = "Enter the name of user to tap into his/her user and group chats:";
+  private static final String GROUP_CHAT_GROUPNAME_REQUEST = "Enter the group name for which you want to get all the conversations from:";
+
+  private static final String GUIDE_STRING_USER_2_USER = "Conversations for a particular User for user to user chat";
+  private static final String GUIDE_STRING_USERNAME_GROUP = "Conversations for a particular User for all group chats";
+  private static final String GUIDE_STRING_USER_AND_GROUP = "Conversations for a user for both user to user chat and group";
+  private static final String GUIDE_STRING_GROUPNAME_CRITERIA = "Conversations for a particular Group irrespective of user";
+
   private SuperUserMessageModel mSuperUserMessageModel;
-  private String gsonSerialized;
+  private String mGsonSerialized;
   private String guideUserString;
+  private Scanner mScanner;
+  private Connection mConnectionLayer;
 
   @Override
   public void passControl(Scanner scanner, Connection connectionLayerModel) {
 
-    String username;
+    mScanner = scanner;
+    this.mConnectionLayer = connectionLayerModel;
 
     FrontEnd.getView().showSuperUserOperations();
     int choice = Integer.parseInt(scanner.nextLine());
     switch (choice) {
 
-      // TODO: Break this big switch case into smaller methods for all TT, TF, FT, FF truth table cases
-      // TODO: Add comments
       // Get All Conversations for a particular User for user to user chat
       case 1:
-        FrontEnd.getView().sendToView("Enter the name of user to tap into his/her user2user chats:");
-        username = scanner.nextLine().trim().toLowerCase();
-        if (StringUtil.isBlank(username)) {
-          FrontEnd.getView().sendToView(INVALID_USERNAME_GROUPNAME);
-          InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
-          return;
-        }
-
-        mSuperUserMessageModel = new SuperUserMessageModel(true, false, username);
-        updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
-        generateRequestForServer(connectionLayerModel);
-        guideUserString = "Conversations for a particular User for user to user chat";
+        guideUserString = GUIDE_STRING_USER_2_USER;
+        requestChatsForUsernameCriteria(USER_2_USER_USERNAME_REQUEST,
+                true, false, false);
         break;
 
       // Get All Conversations for a particular User for all group chats
       case 2:
-        FrontEnd.getView().sendToView("Enter the name of user to tap into his/her group2group chats:");
-        username = scanner.nextLine().trim().toLowerCase();
-
-        if (StringUtil.isBlank(username)) {
-          FrontEnd.getView().sendToView(INVALID_USERNAME_GROUPNAME);
-          InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
-          return;
-        }
-
-        mSuperUserMessageModel = new SuperUserMessageModel(false, true, username);
-        updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
-        guideUserString = "Conversations for a particular User for all group chats";
-        generateRequestForServer(connectionLayerModel);
+        guideUserString = GUIDE_STRING_USERNAME_GROUP;
+        requestChatsForUsernameCriteria(GROUP_CHAT_USERNAME_REQUEST,
+                false, true, false);
         break;
 
       // Get All Conversations for a user for both user to user chat and group
       // Basically all unread messages
       case 3:
-        FrontEnd.getView().sendToView("Enter the name of user to tap into his/her user and group chats:");
-        username = scanner.nextLine().trim().toLowerCase();
-        if (StringUtil.isBlank(username)) {
-          FrontEnd.getView().sendToView(INVALID_USERNAME_GROUPNAME);
-          InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
-          return;
-        }
-
-        mSuperUserMessageModel = new SuperUserMessageModel(true, true, username);
-        updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
-        guideUserString = "Conversations for a user for both user to user chat and group";
-        generateRequestForServer(connectionLayerModel);
+        guideUserString = GUIDE_STRING_USER_AND_GROUP;
+        requestChatsForUsernameCriteria(USER_GROUP_CHAT_USERNAME_REQUEST,
+                true, true, false);
         break;
 
       // Get All Conversations for a particular Group irrespective of user
       case 4:
-        FrontEnd.getView().sendToView("Enter the group name for which you want to get all the conversations from:");
-        String groupName = scanner.nextLine().trim().toLowerCase();
-        if (StringUtil.isBlank(groupName)) {
-          FrontEnd.getView().sendToView(INVALID_USERNAME_GROUPNAME);
-          InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
-          return;
-        }
-
-        mSuperUserMessageModel = new SuperUserMessageModel(groupName);
-        updateDatesForRequest(scanner);
-        gsonSerialized = new Gson().toJson(mSuperUserMessageModel);
-        guideUserString = "Conversations for a particular Group irrespective of user";
-        generateRequestForServer(connectionLayerModel);
+        guideUserString = GUIDE_STRING_GROUPNAME_CRITERIA;
+        requestChatsForUsernameCriteria(GROUP_CHAT_GROUPNAME_REQUEST,
+                true, true, true);
         break;
 
       default:
@@ -124,16 +94,55 @@ public class SuperUser implements CoreOperation {
     }
   }
 
+  /**
+   * Request messages when a username is involved in the message requests. This includes 3 of the 4
+   * cases.
+   *
+   * @param frontEndMessageInitial  The Initial front end message that we want to show the user and
+   *                                ask for username.
+   * @param getOnlyUserChat         The criteria based on the case whether we just want user 2 user
+   *                                chats.
+   * @param getOnlyGroupChat        The criteria based on the case whether we just want group chats
+   *                                for a particular user.
+   * @param isGroupCriteriaInvolved The criteria which decides whether we have to fetch based on
+   *                                username or group name and calls a different super user
+   *                                constructor.
+   */
+  private void requestChatsForUsernameCriteria(String frontEndMessageInitial, boolean getOnlyUserChat,
+                                               boolean getOnlyGroupChat, boolean isGroupCriteriaInvolved) {
+    String nameInvolved;
+    FrontEnd.getView().sendToView(frontEndMessageInitial);
+    nameInvolved = mScanner.nextLine().trim().toLowerCase();
 
-  private void updateDatesForRequest(Scanner scanner) {
+    if (StringUtil.isBlank(nameInvolved)) {
+      FrontEnd.getView().sendToView(INVALID_USERNAME_GROUP_NAME);
+      InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
+      return;
+    }
+
+    if (isGroupCriteriaInvolved) {
+      mSuperUserMessageModel = new SuperUserMessageModel(nameInvolved);
+    } else {
+      mSuperUserMessageModel = new SuperUserMessageModel(getOnlyUserChat, getOnlyGroupChat, nameInvolved);
+    }
+    updateDatesForRequest();
+    mGsonSerialized = new Gson().toJson(mSuperUserMessageModel);
+    generateRequestForServer();
+  }
+
+
+  /**
+   * If a user wants to get messages for a time frame, request the start and end date.
+   */
+  private void updateDatesForRequest() {
     FrontEnd.getView().sendToView("Do you want to get requested chats for specific dates " +
             "or do you want to get all dates of the requested types?");
     FrontEnd.getView().sendToView("Press 1 to get all requested chats irrespective of dates");
     FrontEnd.getView().sendToView("Press 2 to enter specific dates and get chats for those time frames");
-    int choice = Integer.parseInt(scanner.nextLine().trim());
+    int choice = Integer.parseInt(mScanner.nextLine().trim());
     if (choice == 2) {
       // Get Dates from user
-      getDatesFromUser(scanner);
+      getDatesFromUser();
     }
 
     if (choice < 1 || choice > 2) {
@@ -141,19 +150,34 @@ public class SuperUser implements CoreOperation {
     }
   }
 
-  private void getDatesFromUser(Scanner scanner) {
-    FrontEnd.getView().sendToView("Dates entered should be of type: MM/DD/YYYY . You have to include \\/ in the date");
+  /**
+   * Request user for start and end date if user wants messages for a certain time period.
+   */
+  private void getDatesFromUser() {
+    FrontEnd.getView().sendToView("Dates entered should be of type: MM/DD/YYYY ." +
+            " You have to include \\/ in the date. 2 things to note: \n 1) The start date is " +
+            "inclusive and end date is exclusive \n 2) Adding invalid dates lead to removal of date " +
+            "criteria.");
     FrontEnd.getView().sendToView("Please enter the start date to get chats:");
-    String startDate = scanner.nextLine().trim();
+    String startDate = mScanner.nextLine().trim();
     if (!invalidDateCheck(startDate, true)) {
       return;
     }
 
     FrontEnd.getView().sendToView("Please enter the end date to get chats:");
-    String endDate = scanner.nextLine().trim();
+    String endDate = mScanner.nextLine().trim();
     invalidDateCheck(endDate, false);
   }
 
+  /**
+   * A check for valid date. This check includes whether the date is entered in correct format. This
+   * also checks whether the start date is before end date.
+   *
+   * @param enteredDate The date which can be start date as well as end date.
+   * @param isStartDate The criteria which tells if the date entered is a start date or end date.
+   *                    More checks are added if it is an end date.
+   * @return A boolean which tells if all criteria for dates are met.
+   */
   private boolean invalidDateCheck(String enteredDate, boolean isStartDate) {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     try {
@@ -179,12 +203,15 @@ public class SuperUser implements CoreOperation {
     }
   }
 
-  private void generateRequestForServer(Connection connectionLayerModel) {
+  /**
+   * Send the request for messages to server and wait.
+   */
+  private void generateRequestForServer() {
     MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
-            MessageType.SUPER_USER, gsonSerialized);
-    connectionLayerModel.sendMessage(messageJson);
+            MessageType.SUPER_USER, mGsonSerialized);
+    mConnectionLayer.sendMessage(messageJson);
 
-    String resp = waitForResponseSocket(connectionLayerModel);
+    String resp = waitForResponseSocket(mConnectionLayer);
     if (!StringUtil.isBlank(resp)) {
       this.displayResponse(resp);
     } else {
@@ -195,7 +222,7 @@ public class SuperUser implements CoreOperation {
   /**
    * Display the response or error code appropriately.
    *
-   * @param resp The response recieved by server. This can either be of type {@code
+   * @param resp The response received by server. This can either be of type {@code
    *             List<UnreadMessageModel>} or a string which can be accessed via {@link
    *             AckModel#getErrorMessage()}.
    */
