@@ -37,7 +37,6 @@ public class UnreadMessageHandler implements MessageHandler {
 			List<UnreadMessageModel> unreadMessages = mJpaService.getUnreadMessages(user, null,
 							FetchLevel.UNREAD_MESSAGE_HANDLER);
 
-
 			for (UnreadMessageModel messageModel: unreadMessages) {
 				String messageRaw = messageModel.getMessage();
 				String messageFiltered = ProfanityFilter.getInstance().filterMessage(messageRaw);

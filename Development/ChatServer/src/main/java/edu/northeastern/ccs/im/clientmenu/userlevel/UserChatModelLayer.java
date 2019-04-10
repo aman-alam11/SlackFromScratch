@@ -50,60 +50,76 @@ public class UserChatModelLayer implements CoreOperation {
         continue;
       }
 
-      if (message.equalsIgnoreCase(QUIT)) {
-        // Quitting the chat
-        shouldListenForMessages = false;
-        FrontEnd.getView().sendToView("INFO: Ending Chat.");
-        breakFromConversation(connectionLayerModel);
-        FrontEnd.getView().showUserLevelOptions();
-        return;
-      }
-      else if (message.equalsIgnoreCase(REVERSE)) {
-        FrontEnd.getView().sendToView("INPUT: Enter Number of messages you want to unsend.");
-        FrontEnd.getView().sendToView("CAUTION: Only unseen messages can be unsend.");
-        try {
-          int num = Integer.parseInt(scanner.next());
-          FrontEnd.getView().sendToView(String.valueOf(num));
-          RecallModel recallModel = new RecallModel(userToChat, num);
-          MessageJson messageJs = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_RECALL,
-                  gson.toJson(recallModel));
-          connectionLayerModel.sendMessage(messageJs);
+      switch (message) {
 
-        }
-        catch (NumberFormatException ex) {
-          FrontEnd.getView().sendToView("ERROR: Not a number, try again by entering \\r.");
-        }
-      }
-
-      else if (message.equalsIgnoreCase(TRANSLATE)) {
-        FrontEnd.getView().sendToView("INPUT: Enter the language you want to translate to.");
+        case QUIT:
+          // Quitting the chat
+          shouldListenForMessages = false;
+          FrontEnd.getView().sendToView("INFO: Ending Chat.");
+          breakFromConversation(connectionLayerModel);
+          FrontEnd.getView().showUserLevelOptions();
+          return;
 
 
-        try {
-          String language = scanner.nextLine();
-          FrontEnd.getView().sendToView("INPUT: Enter the message");
-          String messageConvert = scanner.nextLine();
-          TranslateModel translateModel = new TranslateModel(messageConvert, language);
-          translateModel.setFromUser(GenerateLoginCredentials.getUsername());
-          translateModel.setToUser(this.userToChat);
-          MessageJson messageTranslate = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TRANSLATE_MESSAGE,
-                  gson.toJson(translateModel));
-          connectionLayerModel.sendMessage(messageTranslate);
-        }
-        catch (Exception ex) {
-          FrontEnd.getView().sendToView("ERROR: error sending message \\r.");
-        }
-      }
+        case REVERSE:
+          FrontEnd.getView().sendToView("INPUT: Enter Number of messages you want to unsend.");
+          FrontEnd.getView().sendToView("CAUTION: Only unseen messages can be unsend.");
+          try {
+            int num = Integer.parseInt(scanner.next());
+            FrontEnd.getView().sendToView(String.valueOf(num));
+            RecallModel recallModel = new RecallModel(userToChat, num);
+            MessageJson messageJs = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_RECALL,
+                    gson.toJson(recallModel));
+            connectionLayerModel.sendMessage(messageJs);
 
-      else {
-        // Send chat to server
-        chatModel.setMsg(message);
-        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
-                gson.toJson(chatModel));
-        connectionLayerModel.sendMessage(messageJson);
-        initReaderThread();
+          }
+          catch (NumberFormatException ex) {
+            FrontEnd.getView().sendToView("ERROR: Not a number, try again by entering \\r.");
+          }
+          break;
+
+
+        case TRANSLATE:
+          FrontEnd.getView().sendToView("INPUT: Enter the language you want to translate to, e.g en for english, es for spanish");
+
+
+          try {
+            String language = scanner.nextLine();
+            if (language.length()>2) {
+
+              FrontEnd.getView().sendToView("ERROR: Invalid language type, please refer Google Translate language codes.");
+              FrontEnd.getView().sendToView("LINK: https://cloud.google.com/translate/docs/languages");
+            }
+            else  {
+              FrontEnd.getView().sendToView("INPUT: Enter the message");
+              String messageConvert = scanner.nextLine();
+              TranslateModel translateModel = new TranslateModel(messageConvert, language);
+              translateModel.setFromUser(GenerateLoginCredentials.getUsername());
+              translateModel.setToUser(this.userToChat);
+              MessageJson messageTranslate = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TRANSLATE_MESSAGE,
+                      gson.toJson(translateModel));
+              connectionLayerModel.sendMessage(messageTranslate);
+            }
+
+          }
+          catch (Exception ex) {
+            FrontEnd.getView().sendToView("ERROR: error sending message \\r.");
+          }
+          break;
+
+          default:
+            // Send chat to server
+            chatModel.setMsg(message);
+            MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
+                    gson.toJson(chatModel));
+            connectionLayerModel.sendMessage(messageJson);
+            initReaderThread();
       }
     }
+  }
+
+  private void checkRemainingMessages() {
+
   }
 
   private void initReaderThread() {
