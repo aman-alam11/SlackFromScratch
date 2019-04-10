@@ -8,7 +8,6 @@ import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.Prattle;
 import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
-import edu.northeastern.ccs.im.server.business.logic.ProfanityFilter;
 
 /**
  * This is the handler for chat.

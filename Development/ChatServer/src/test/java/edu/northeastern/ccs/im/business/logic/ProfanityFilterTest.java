@@ -3,7 +3,7 @@ package edu.northeastern.ccs.im.business.logic;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import edu.northeastern.ccs.im.server.business.logic.ProfanityFilter;
+import edu.northeastern.ccs.im.server.business.logic.handler.ProfanityFilter;
 
 
 public class ProfanityFilterTest {

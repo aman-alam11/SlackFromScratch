@@ -15,7 +15,6 @@ import edu.northeastern.ccs.im.model.FetchLevel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
-import edu.northeastern.ccs.im.server.business.logic.ProfanityFilter;
 
 public class UnreadMessageHandler implements MessageHandler {
 

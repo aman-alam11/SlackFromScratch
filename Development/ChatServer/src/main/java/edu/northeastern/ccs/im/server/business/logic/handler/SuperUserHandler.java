@@ -48,6 +48,7 @@ public class SuperUserHandler implements MessageHandler {
       superUserMessageModel = new Gson().fromJson(message, SuperUserMessageModel.class);
 
       // First check if the sender is a super user
+      // This is important if someone somehow fakes that s/he is a superuser on client side.
       if (!mJpaService.findUserByName(user).isSuperUser()) {
         // If not a super user, simply send blank response
         AckModel ackModel = new AckModel();
@@ -57,6 +58,8 @@ public class SuperUserHandler implements MessageHandler {
         sendResponse(response, clientConnection);
         return false;
       }
+
+
       handleChatsHelper();
 
       return true;
@@ -67,8 +70,10 @@ public class SuperUserHandler implements MessageHandler {
     }
   }
 
-  // A helper to dispatch work to appropriate method depending on whether we want all chats or just
-  // user2user chats group chats for user
+  /**
+   * A helper to dispatch work to appropriate method depending on whether we want all chats or just
+   * user2user chats group chats for user.
+   */
   private void handleChatsHelper() {
     if (superUserMessageModel.isGetAllChats()) {
       handleChatsUsername(superUserMessageModel.getmUsernameToTap(), FetchLevel.FETCH_BOTH_USER_GROUP_LEVEL);
@@ -81,7 +86,15 @@ public class SuperUserHandler implements MessageHandler {
     }
   }
 
-
+  /**
+   * Handle messages of type related to usernames. This includes 3 types: User 2 User chats, all
+   * Group chats for a user for all the groups s/he might be in and lastly all messages irrespective
+   * of the message is of type user 2 user or group message for a particular user.
+   *
+   * @param userName   The username of the user we want to fetch messages for.
+   * @param fetchLevel The type of messages we want to fetch is based on the Fetch Levels. The types
+   *                   are as described in Javadoc description of this method.
+   */
   private void handleChatsUsername(String userName, FetchLevel fetchLevel) {
     List<UnreadMessageModel> unreadMessageList;
     if (superUserMessageModel.areDatesValid()) {
@@ -128,6 +141,11 @@ public class SuperUserHandler implements MessageHandler {
     }
   }
 
+  /**
+   * A helper method to send response back to client.
+   *
+   * @param resp the list of messages according to the request made by superuser.
+   */
   private void sendResponseBack(List<UnreadMessageModel> resp) {
     MessageJson response = new MessageJson(MessageConstants.SYSTEM_MESSAGE, MessageType.SUPER_USER,
             mGson.toJson(resp));
