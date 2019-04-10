@@ -7,9 +7,11 @@ import com.google.cloud.translate.Translation;
 import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.TranslateModel;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
 import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 /**
@@ -41,9 +43,8 @@ public class TransLateHandler implements MessageHandler {
       chatModel.setToUserName(translateModel.getToUser());
       chatModel.setFromUserName(translateModel.getFromUser());
 
-      //TODO FACOTRY
-      ChatHandler chatHandler = new ChatHandler();
-      chatHandler.handleMessage(user,mGson.toJson(chatModel),clientConnection);
+      new JsonMessageHandlerFactory().getMessageHandler(MessageType.USER_CHAT)
+              .handleMessage(user,mGson.toJson(chatModel),clientConnection);
       return true;
     }
     catch (Exception ex ){
