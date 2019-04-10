@@ -57,8 +57,8 @@ public class CreateUserFollowLayer implements CoreOperation {
 
         boolean success = false;
 
-        for (int i = 0; i < userNameList.size(); i++) {
-            System.out.println(userNameList.get(i));
+        for (String s : userNameList) {
+            FrontEnd.getView().sendToView(s);
         }
 
         FrontEnd.getView().sendToView("INPUT: Which user from above do you want to follow?");

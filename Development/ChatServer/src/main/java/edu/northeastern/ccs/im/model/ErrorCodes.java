@@ -13,7 +13,7 @@ public enum ErrorCodes {
   G809("Requester Is Not a Member Of Group"),
   DB000("Could not persist"),
   DB001("All messages seen by user"),
-  ILGL("Not a super user. Illegal Access");
+  IL001("Not a super user. Illegal Access");
 
 
   private String errorMessage;
