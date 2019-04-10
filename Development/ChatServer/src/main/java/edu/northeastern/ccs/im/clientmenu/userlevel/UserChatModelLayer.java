@@ -81,8 +81,6 @@ public class UserChatModelLayer implements CoreOperation {
 
         case TRANSLATE:
           FrontEnd.getView().sendToView("INPUT: Enter the language you want to translate to, e.g en for english, es for spanish");
-
-
           try {
             String language = scanner.nextLine();
             if (language.length()>2) {
@@ -113,13 +111,8 @@ public class UserChatModelLayer implements CoreOperation {
             MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
                     gson.toJson(chatModel));
             connectionLayerModel.sendMessage(messageJson);
-            initReaderThread();
       }
     }
-  }
-
-  private void checkRemainingMessages() {
-
   }
 
   private void initReaderThread() {
