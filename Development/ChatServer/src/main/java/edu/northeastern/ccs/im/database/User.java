@@ -23,7 +23,7 @@ public class User implements Serializable {
   @Column(name = "user_id", unique = true)
   private long id;
 
-  @Column(name = "user_name", nullable = false, unique = true)
+  @Column(name = "user_name", nullable = false, unique = true, length = 100)
   private String name;
 
   @Column(name = "user_email", nullable = false)

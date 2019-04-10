@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import edu.northeastern.ccs.im.auth.AuthModulesImpl;
@@ -118,7 +119,7 @@ public class AuthTest {
 //    assertFalse(authModules.loginIn("user","pass",mockedJPAService));
   }
 
-  @Test
+  //@Test
   public void createUserTest() {
     // Try to create a user with a username
     String username = "cheetahaknd";
@@ -127,5 +128,4 @@ public class AuthTest {
     // Now create another account with same username
     assertFalse(SessionFactory.getInstance(username, "pwd123", mJpaService).createAccount());
   }
-
 }

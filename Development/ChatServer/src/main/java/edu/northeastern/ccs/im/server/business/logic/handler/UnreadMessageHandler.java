@@ -39,7 +39,7 @@ public class UnreadMessageHandler implements MessageHandler {
 
 			for (UnreadMessageModel messageModel: unreadMessages) {
 				String messageRaw = messageModel.getMessage();
-				String messageFiltered = ProfanityFilter.getInstance().filterMessage(messageRaw);
+				String messageFiltered = ProfanityFilter.filterMessage(messageRaw);
 				messageModel.setMessage(messageFiltered);
 			}
 
