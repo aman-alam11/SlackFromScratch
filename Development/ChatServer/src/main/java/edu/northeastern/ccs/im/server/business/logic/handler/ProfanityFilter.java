@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,21 +6,16 @@ import java.util.Set;
 public class ProfanityFilter {
   private static final String SINGLESPACE = " ";
 
-  private static ProfanityFilter profanityFilter;
+  private ProfanityFilter() {
+    // Private Constructor for safety
+  }
+
   private static Set<String> wordSet;
 
-  private ProfanityFilter() {
-    initProfaneSet();
-  }
-
-  public static ProfanityFilter getInstance() {
-    if (profanityFilter == null) {
-      profanityFilter = new ProfanityFilter();
-    }
-    return profanityFilter;
-  }
-
   private static boolean containsWord(String word) {
+    if (wordSet == null) {
+      initProfaneSet();
+    }
     return wordSet.contains(word.toLowerCase());
   }
 

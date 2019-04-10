@@ -3,7 +3,6 @@ package edu.northeastern.ccs.im.clientmenu.models;
 import edu.northeastern.ccs.im.message.MessageType;
 
 import java.util.Date;
-import java.util.List;
 
 public class DeleteUserFromGroupModel {
 

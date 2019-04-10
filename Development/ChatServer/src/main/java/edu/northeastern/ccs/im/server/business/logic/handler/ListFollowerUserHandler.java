@@ -1,6 +1,10 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.database.JPAService;
 import edu.northeastern.ccs.im.database.User;
@@ -10,10 +14,7 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.UserFollwingList;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.Prattle;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 /**
  * This class handles listing of the followers for a logged in user.

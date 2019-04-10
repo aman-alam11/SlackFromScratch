@@ -15,7 +15,7 @@ public class MessageJsonTest {
   @Test
   public void testCreateUserTest() {
     CreateUserMessage createUserMessage = new CreateUserMessage();
-    MessageConstants messageConstants = new MessageConstants();
+    //MessageConstants messageConstants = new MessageConstants();
 
     MessageJson messageJson = new MessageJson(MessageType.USER_CHAT);
     messageJson.setMessageType(MessageType.HELLO);

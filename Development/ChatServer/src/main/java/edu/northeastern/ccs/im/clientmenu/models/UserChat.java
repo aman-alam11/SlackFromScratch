@@ -62,8 +62,6 @@ public class UserChat {
   
   @Override
   public String toString() {
-  	StringBuilder sb = new StringBuilder(fromUserName);
-  	sb.append(": ").append(msg);
-  	return sb.toString();
+    return fromUserName + ": " + msg;
   }
 }

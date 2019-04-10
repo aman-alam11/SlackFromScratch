@@ -13,18 +13,14 @@ import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 public class RecallUserChatHandler implements MessageHandler {
 
-  private Gson mGson;
-  private JPAService jpaService;
-  private AckModel ackModel;
-
   @Override
   public boolean handleMessage(String user, String message, Connection clientConnection) {
 
-    mGson = new Gson();
-    ackModel = new AckModel();
+    Gson mGson = new Gson();
+    AckModel ackModel = new AckModel();
     RecallModel recallModel = mGson.fromJson(message, RecallModel.class);
 
-    jpaService = JPAService.getInstance();
+    JPAService jpaService = JPAService.getInstance();
 
 
     int rowsAffected  = jpaService.setRollBackMessages(recallModel.getToUser(), user, recallModel.getNum());

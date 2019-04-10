@@ -6,39 +6,50 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import com.google.gson.Gson;
 
+import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.TranslateModel;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.JsonMessageHandlerFactory;
 import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
+/**
+ * https://cloud.google.com/translate/docs/reference/libraries
+ * https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/translate/cloud-client/src/main/java/com/example/translate/QuickstartSample.java
+ */
 public class TransLateHandler implements MessageHandler {
 
 
   @Override
   public boolean handleMessage(String user, String message, Connection clientConnection) {
-    Gson mGson = new Gson();
-    TranslateModel translateModel = mGson.fromJson(message, TranslateModel.class);
+    try {
+      Gson mGson = new Gson();
+      TranslateModel translateModel = mGson.fromJson(message, TranslateModel.class);
 
 
-    Translate translate = TranslateOptions.getDefaultInstance().getService();
+      Translate translate = TranslateOptions.getDefaultInstance().getService();
 
-    // The text to translate
-    String text = translateModel.getMessage();
-    String language = translateModel.getToLanguage();
+      String text = translateModel.getMessage();
+      String language = translateModel.getToLanguage();
 
-    // Translates some text into Russian
-    Translation translation =
-            translate.translate(
-                    text,
-                    TranslateOption.targetLanguage(language));
-    ChatModel chatModel = new ChatModel();
+      Translation translation =
+              translate.translate(
+                      text,
+                      TranslateOption.targetLanguage(language));
+      ChatModel chatModel = new ChatModel();
 
-    chatModel.setMsg(translation.getTranslatedText());
-    chatModel.setToUserName(translateModel.getToUser());
-    chatModel.setFromUserName(translateModel.getFromUser());
+      chatModel.setMsg(translation.getTranslatedText());
+      chatModel.setToUserName(translateModel.getToUser());
+      chatModel.setFromUserName(translateModel.getFromUser());
 
-    ChatHandler chatHandler = new ChatHandler();
-    chatHandler.handleMessage(user,mGson.toJson(chatModel),clientConnection);
-    return false;
+      new JsonMessageHandlerFactory().getMessageHandler(MessageType.USER_CHAT)
+              .handleMessage(user,mGson.toJson(chatModel),clientConnection);
+      return true;
+    }
+    catch (Exception ex ){
+      ChatLogger.info("Error in translating the string");
+      return false;
+    }
   }
 }

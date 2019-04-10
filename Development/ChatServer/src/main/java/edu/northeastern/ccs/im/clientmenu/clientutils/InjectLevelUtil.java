@@ -110,7 +110,7 @@ public final class InjectLevelUtil {
 
       case FOLLOW_USER_LEVEL:
         setCurrentLevel(CurrentLevel.FOLLOW_USER_LEVEL);
-        injectFollwUserLevel();
+        injectFollowUserLevel();
         break;
 
       case DEFAULT_LEVEL:
@@ -164,7 +164,7 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(4, scanner -> new DeleteGroupModelLayer());
   }
 
-  private void injectFollwUserLevel() {
+  private void injectFollowUserLevel() {
     FrontEnd.getView().showFollowUserLevelOptions();
     mClientOptionsMap.put(1, scanner -> new CreateUserFollowLayer());
     mClientOptionsMap.put(2, scanner -> new ListUserFollowerLayer());
