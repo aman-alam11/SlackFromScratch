@@ -120,19 +120,20 @@ public class UserChatModelLayer implements CoreOperation {
       return;
     }
 
-    new Thread(() -> {
-      while (shouldListenForMessages) {
-        try {
-          Thread.sleep(500);
-          if(connLocal.hasNext()){
-            displayResponse(connLocal.next());
-          }
-        } catch (Exception e) {
-          ChatLogger.error("Unable to make the Thread sleep");
-        }
-      }
-    }).start();
+    new Thread(this::displayMessagesFromQueue).start();
+  }
 
+  private void displayMessagesFromQueue() {
+    while (shouldListenForMessages) {
+      try {
+        Thread.sleep(500);
+        if(connLocal.hasNext()){
+          displayResponse(connLocal.next());
+        }
+      } catch (Exception e) {
+        ChatLogger.error("Unable to make the Thread sleep");
+      }
+    }
   }
 
 
