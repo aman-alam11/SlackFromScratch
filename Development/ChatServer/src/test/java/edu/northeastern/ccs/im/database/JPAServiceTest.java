@@ -44,7 +44,7 @@ public class JPAServiceTest {
   @Test
   public void testA() {
     try {
-//      JPAService jpaS = new JPAService(sessionFactory);
+//      JPAService jpaS = new JPAService(sessionFactoryMock);
 
       jpaService.createUser("Alice", "a@a.com", "alice");
       jpaService.createUser("Bob","b@b.com","bob");
@@ -61,7 +61,7 @@ public class JPAServiceTest {
   @Test
   public void testZ() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
 
       jpaService.deleteUser(1);
       assertEquals(7, jpaService.readAllUsers().size());
@@ -73,7 +73,7 @@ public class JPAServiceTest {
   @Test
   public void testCreateUserWithNullName() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
       jpaService.createUser(null, "a@a.com", "asdf");
     } catch (Exception e) {
       assertTrue(e.getMessage().contains("Username and Password can't be null"));
@@ -82,7 +82,7 @@ public class JPAServiceTest {
 
   @Test
   public void testCreateUserWithNullEmail() {
-//      JPAService jpaS = new JPAService(sessionFactory);
+//      JPAService jpaS = new JPAService(sessionFactoryMock);
     jpaService.createUser("a", null, "asdf");
       assertEquals("",jpaService.findUserByName("a").getEmail());
     jpaService.deleteUser((int)jpaService.findUserByName("a").getId());
@@ -91,7 +91,7 @@ public class JPAServiceTest {
   @Test
   public void testCreateUserWithNullPassword() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
       jpaService.createUser("alices", "a@a.com", null);
     } catch (Exception e) {
       assertTrue(e.getMessage().contains("Username and Password can't be null"));
@@ -101,7 +101,7 @@ public class JPAServiceTest {
   @Test
   public void testFindUser() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
       User alice = jpaService.findUserByName("Alice");
       assertEquals("a@a.com", alice.getEmail());
     } catch (Exception e) {
@@ -111,7 +111,7 @@ public class JPAServiceTest {
 
   @Test
   public void testD(){
-//    JPAService jpaService = new JPAService(sessionFactory);
+//    JPAService jpaService = new JPAService(sessionFactoryMock);
     jpaService.createGroup("grp_1","Charlie",false);
     assertEquals("grp_1",jpaService.findGroupByName("grp_1").getgName());
     assertEquals("Charlie",jpaService.findGroupByName("grp_1").getgCreator().getName());
@@ -151,7 +151,7 @@ public class JPAServiceTest {
   @Test
   public void testX() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
 
       User alice = jpaService.findUserByName("Alice");
       assertEquals("a@a.com", alice.getEmail());
@@ -164,7 +164,7 @@ public class JPAServiceTest {
   @Test
   public void testHashForUser() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
       assertEquals("", jpaService.getHashFromUsername(null));
     } catch (Exception e) {
       assertEquals("", e.getMessage());
@@ -175,7 +175,7 @@ public class JPAServiceTest {
 //  public void testW() {
 //    try {
 //
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
 //
 //      User alice = jpaService.findUserByName("Alice");
 //      assertEquals("a@a.com", alice.getEmail());
@@ -208,7 +208,7 @@ public class JPAServiceTest {
 
     @Test
     public void testCreateChatMessage(){
-//        JPAService jpaS = new JPAService(sessionFactory);
+//        JPAService jpaS = new JPAService(sessionFactoryMock);
         ChatModel chatModel = new ChatModel();
         chatModel.setFromUserName("Alice");
         chatModel.setToUserName("Bob");
@@ -221,7 +221,7 @@ public class JPAServiceTest {
 
     @Test
     public void testFindAllMessagesOfUser(){
-//        JPAService jpaS = new JPAService(sessionFactory);
+//        JPAService jpaS = new JPAService(sessionFactoryMock);
         ChatModel chatModel = new ChatModel();
         chatModel.setFromUserName("Alice");
         chatModel.setToUserName("Bob");
@@ -245,7 +245,7 @@ public class JPAServiceTest {
 
     @Test
     public void testDeleteParticularMessage(){
-//        JPAService jpaS = new JPAService(sessionFactory);
+//        JPAService jpaS = new JPAService(sessionFactoryMock);
         assertEquals(1,jpaService.findByReceiver("Bob").size());
       jpaService.deleteMessage(1);
         assertEquals(0,jpaService.findByReceiver("Bob").size());
@@ -254,7 +254,7 @@ public class JPAServiceTest {
   @Test
   public void testChatGetters() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
 
       User alice = jpaService.findUserByName("Alice");
       User bob = jpaService.findUserByName("Bob");
@@ -286,7 +286,7 @@ public class JPAServiceTest {
   @Test
   public void testY() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
       jpaService.deleteUser(1);
     } catch (Exception e) {
       //assertEquals("", e.getMessage());
@@ -296,7 +296,7 @@ public class JPAServiceTest {
   @Test
   public void testException() {
     try {
-//      JPAService jpaService = new JPAService(sessionFactory);
+//      JPAService jpaService = new JPAService(sessionFactoryMock);
       jpaService.updateUser(1, "a", "a", "a");
       jpaService.readAllUsers();
       jpaService.searchUserbyUserName("s");
@@ -348,7 +348,7 @@ public class JPAServiceTest {
   @Test
   public void testSearchUser() {
     try {
-//      JPAService jpaS = new JPAService(sessionFactory);
+//      JPAService jpaS = new JPAService(sessionFactoryMock);
 
       assertEquals(3, jpaService.searchUserbyUserName("Ali").size());
     } catch (Exception e) {
@@ -359,7 +359,7 @@ public class JPAServiceTest {
   @Test
   public void testEmptyUserSearch() {
     try {
-//      JPAService jpaS = new JPAService(sessionFactory);
+//      JPAService jpaS = new JPAService(sessionFactoryMock);
       assertEquals(0, jpaService.searchUserbyUserName("f").size());
     } catch (Exception e) {
       assertEquals("", e.getMessage());
@@ -368,7 +368,7 @@ public class JPAServiceTest {
 
 //    @Test
 //    public void testUpdateChatStatus(){
-//        JPAService jpaS = new JPAService(sessionFactory);
+//        JPAService jpaS = new JPAService(sessionFactoryMock);
 //        jpaS.createChatMessage("Alice", "Bob", "hey there",0, new Date(), false, false);
 //        jpaS.updateChatStatus(jpaS.findByReceiver("Bob").get(0).getId(),true);
 //        assertEquals(true,jpaS.findByReceiver("Bob").get(0).getIsDelivered());
@@ -377,7 +377,7 @@ public class JPAServiceTest {
   @Test
   public void testCheck() {
     try {
-//      JPAService jpaS = new JPAService(sessionFactory);
+//      JPAService jpaS = new JPAService(sessionFactoryMock);
       User u = jpaService.findUserByName("Alice");
     assertEquals("a@a.com", u.getEmail());
     } catch (Exception e) {
