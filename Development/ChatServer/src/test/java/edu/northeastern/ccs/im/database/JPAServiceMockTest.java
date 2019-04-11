@@ -789,7 +789,6 @@ public class JPAServiceMockTest {
 
 
     Assert.assertEquals(0,JPAService.getInstance().getAllUsersForGroup("name").size());
-
   }
 
   @Test
