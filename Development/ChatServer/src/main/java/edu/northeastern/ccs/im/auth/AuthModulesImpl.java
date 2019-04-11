@@ -31,8 +31,6 @@ public class AuthModulesImpl implements AuthModules {
       return BCrypt.checkpw(password, hash);
     }
     return false;
-
-    //return BCrypt.checkpw(password, hash);
   }
 
 }
