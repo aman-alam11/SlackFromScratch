@@ -103,6 +103,7 @@ public class JPAService {
   /**
    * Only for testing purpose
    */
+  @SuppressWarnings({"squid:S3010"})
   public JPAService(SessionFactory sf) {
     instance = this;
     mSessionFactory = sf;
