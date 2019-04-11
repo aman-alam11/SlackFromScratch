@@ -25,7 +25,7 @@ public class UnreadMessageHandlerTest {
     unreadMessageHandler = new UnreadMessageHandler();
   }
 
-  //@Test
+  @Test
   public void handleMessageTest() {
     boolean flag = unreadMessageHandler.handleMessage("user","message",connection);
     assertTrue(flag);
