@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,15 +85,30 @@ public class JPAServiceMockTest {
     jpaService = new JPAService(sessionFactoryMock);
   }
 
+  @After
+  public void close() {
+    jpaService.closeSessionFactory();
+  }
+
+
 
   @Test
   public void jpaCreateUserTest() {
+    String name = "atti";
+    String pass = "atti";
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+    Assert.assertTrue(jpaService.createUser(name, pass));
+  }
+
+  @Test
+  public void jpaCreateUserEmailTest() {
     String name = "atti";
     String email = "email";
     String pass = "atti";
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
-    Assert.assertTrue(jpaService.createUser(name, pass));
+    jpaService.createUser(name, email, pass);
   }
 
   @Test
@@ -101,10 +117,8 @@ public class JPAServiceMockTest {
     User user = new User();
     user.setName("atti");
     list.add(user);
-    //Query query = new CommonQueryContract();
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
-    //when(session.createQuery(Matchers.anyString())).thenReturn().;
     Assert.assertNull(jpaService.readAllUsers());
   }
 
@@ -113,7 +127,6 @@ public class JPAServiceMockTest {
     User user = new User();
     user.setId(1);
     user.setName("atti");
-    //Query query = new CommonQueryContract();
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
     when(session.get(Matchers.anyString(), Matchers.any())).thenReturn(user);
@@ -128,7 +141,6 @@ public class JPAServiceMockTest {
     User user = new User();
     user.setId(1);
     user.setName("atti");
-    //Query query = new CommonQueryContract();
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
     when(session.get(Matchers.anyString(), Matchers.any())).thenReturn(user);
@@ -243,24 +255,21 @@ public class JPAServiceMockTest {
 
   @Test
   public void deleteMessageTest() {
-    User fromUser = new User();
     Chat chat = new Chat();
 
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
 
     //From user
-    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<User>>any())).thenReturn(nativeQuery);
+    when(session.get(Matchers.<Class<Object>>any(), Matchers.anyInt())).thenReturn(chat);
     when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
-    when(nativeQuery.getSingleResult()).thenReturn(fromUser);
-
-    JPAService.getInstance().deleteChatByReceiver("an");
+    Mockito.doNothing().when(session).delete(chat);
+    JPAService.getInstance().deleteMessage(1);
   }
 
   @Test
   public void createGroupTest() {
     User fromUser = new User();
-    Chat chat = new Chat();
 
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
