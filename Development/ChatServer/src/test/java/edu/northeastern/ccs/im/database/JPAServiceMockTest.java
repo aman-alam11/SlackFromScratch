@@ -1039,7 +1039,6 @@ public class JPAServiceMockTest {
     when(userFollowQuery.getResultList()).thenReturn(userFollowList);
 
     Assert.assertEquals(1,JPAService.getInstance().getAllFollowers("gro").size());
-
   }
 
 

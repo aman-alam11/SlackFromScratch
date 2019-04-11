@@ -27,8 +27,12 @@ public class AuthModulesImpl implements AuthModules {
 
     // Get the hash for the username from user and verify using BCrypt
     String hash = mJpaService.getHashFromUsername(username);
+    if (hash != null) {
+      return BCrypt.checkpw(password, hash);
+    }
+    return false;
 
-    return BCrypt.checkpw(password, hash);
+    //return BCrypt.checkpw(password, hash);
   }
 
 }
