@@ -1,6 +1,7 @@
 package edu.northeastern.ccs.im.database;
 
 
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.hibernate.SessionFactory;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +42,10 @@ public class JPAServiceMockTest {
   @Mock
   Root<Group> groupRoot;
 
+
+  @Mock
+  Root<UserFollow> userFollowRoot;
+
   @Mock
   Root<GroupMember> groupMemberRoot;
 
@@ -56,10 +62,16 @@ public class JPAServiceMockTest {
   CriteriaQuery<GroupMember> groupMemberCriteriaQuery;
 
   @Mock
+  CriteriaQuery<UserFollow> userFollowCriteriaQuery;
+
+  @Mock
   Query<Group> groupQuery;
 
   @Mock
   Query<GroupMember> groupMemberQuery;
+
+  @Mock
+  Query<UserFollow> userFollowQuery;
 
   @Mock
   Transaction transaction;
@@ -824,14 +836,211 @@ public class JPAServiceMockTest {
 
   @Test
   public void toggleAdminRightsTest() {
+    BigInteger userId = BigInteger.ONE;
+
+    Group group = new Group();
+    group.setId(1);
 
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
 
+    //Get usrId from user name from UserID
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+    when(session.createNativeQuery(Matchers.anyString())).thenReturn(nativeQuery);
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<GroupMember>>any())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.any())).thenReturn(query);
+    when(nativeQuery.getSingleResult()).thenReturn(userId);
+    when(query.executeUpdate()).thenReturn(1);
+
+
+    // Find Group Name
+    when(session.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+    when(criteriaBuilder.createQuery(Matchers.eq(Group.class))).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.from(Matchers.eq(Group.class))).thenReturn(groupRoot);
+    when(groupCriteriaQuery.select(Matchers.<Root<Group>>any())).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.where(Matchers.<Expression<Boolean>>any())).thenReturn(groupCriteriaQuery);
+    when(session.createQuery(Matchers.eq(groupCriteriaQuery))).thenReturn(groupQuery);
+    when(groupQuery.getSingleResult()).thenReturn(group);
+
+    Assert.assertTrue(JPAService.getInstance().toggleAdminRights("user", "group"));
 
   }
 
 
+  @Test
+  public void renameUpdateGroupTest() {
+    Group group = new Group();
+    group.setId(1);
+
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+    // Find Group Name
+    when(session.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+    when(criteriaBuilder.createQuery(Matchers.eq(Group.class))).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.from(Matchers.eq(Group.class))).thenReturn(groupRoot);
+    when(groupCriteriaQuery.select(Matchers.<Root<Group>>any())).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.where(Matchers.<Expression<Boolean>>any())).thenReturn(groupCriteriaQuery);
+    when(session.createQuery(Matchers.eq(groupCriteriaQuery))).thenReturn(groupQuery);
+    when(groupQuery.getSingleResult()).thenReturn(group);
+
+
+    Assert.assertFalse(JPAService.getInstance().renameUpdateGroup("gro", "group"));
+  }
+
+
+  @Test
+  public void userIsModeratorTest() {
+    User user = new User();
+    Group group = new Group();
+    GroupMember groupMember = new GroupMember();
+
+    List<GroupMember> groupMemberList = new ArrayList<>();
+    groupMemberList.add(groupMember);
+
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+    //Find user by user name
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<User>>any())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(nativeQuery.getSingleResult()).thenReturn(user);
+
+    // Find Group Name
+    when(session.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+    when(criteriaBuilder.createQuery(Matchers.eq(Group.class))).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.from(Matchers.eq(Group.class))).thenReturn(groupRoot);
+    when(groupCriteriaQuery.select(Matchers.<Root<Group>>any())).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.where(Matchers.<Expression<Boolean>>any())).thenReturn(groupCriteriaQuery);
+    when(session.createQuery(Matchers.eq(groupCriteriaQuery))).thenReturn(groupQuery);
+    when(groupQuery.getSingleResult()).thenReturn(group);
+
+    // Find group Member by name
+    when(criteriaBuilder.createQuery(Matchers.eq(GroupMember.class))).thenReturn(groupMemberCriteriaQuery);
+    when(groupMemberCriteriaQuery.from(Matchers.eq(GroupMember.class))).thenReturn(groupMemberRoot);
+    when(groupMemberCriteriaQuery.select(Matchers.<Root<GroupMember>>any())).thenReturn(groupMemberCriteriaQuery);
+    when(groupMemberCriteriaQuery.where(Matchers.<Expression<Boolean>>any())).thenReturn(groupMemberCriteriaQuery);
+    when(session.createQuery(Matchers.eq(groupMemberCriteriaQuery))).thenReturn(groupMemberQuery);
+    when(groupMemberQuery.getResultList()).thenReturn(groupMemberList);
+
+
+    Assert.assertTrue(JPAService.getInstance().userIsModerator("gro", "group"));
+  }
+
+  @Test
+  public void addFollowerTest() {
+
+    User user = new User();
+
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+    //Find user by user name
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<User>>any())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(nativeQuery.getSingleResult()).thenReturn(user);
+
+
+    Assert.assertTrue(JPAService.getInstance().addFollower("gro", "group"));
+
+  }
+
+  @Test
+  public void getUnreadMessagesForGroupTest() {
+    User user = new User();
+    user.setName("atti");
+
+    Group group = new Group();
+    group.setId(1);
+    Chat chat = new Chat();
+    chat.setFromId(user);
+    chat.setCreated(new Date());
+    chat.setMsg("abc");
+    chat.setIsGrpMsg(true);
+
+
+    List<Chat> groupChat = new ArrayList<>();
+    groupChat.add(chat);
+
+
+
+    Map<String, String > dateMap = new HashMap<>();
+
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<Chat>>any())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(nativeQuery.getResultList()).thenReturn(groupChat);
+
+
+    // Find Group Name
+    when(session.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+    when(criteriaBuilder.createQuery(Matchers.eq(Group.class))).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.from(Matchers.eq(Group.class))).thenReturn(groupRoot);
+    when(groupCriteriaQuery.select(Matchers.<Root<Group>>any())).thenReturn(groupCriteriaQuery);
+    when(groupCriteriaQuery.where(Matchers.<Expression<Boolean>>any())).thenReturn(groupCriteriaQuery);
+    when(session.createQuery(Matchers.eq(groupCriteriaQuery))).thenReturn(groupQuery);
+    when(groupQuery.getSingleResult()).thenReturn(group);
+
+
+    Assert.assertEquals(1,JPAService.getInstance().getUnreadMessagesForGroup("gro", dateMap).size());
+  }
+
+  @Test
+  public void upgradeToSuperUserTest() {
+
+    User user = new User();
+    user.setId(1);
+
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+    //Find user by user name
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<User>>any())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(nativeQuery.getSingleResult()).thenReturn(user);
+
+    when(session.createNativeQuery(Matchers.anyString())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyInt())).thenReturn(query);
+    when(query.executeUpdate()).thenReturn(1);
+
+    JPAService.getInstance().upgradeToSuperUser("atti");
+
+  }
+
+  @Test
+  public void getAllFollowersTest() {
+    User user = new User();
+
+    UserFollow userFollow = new UserFollow();
+    userFollow.setFollowedUser(user);
+
+    List<UserFollow> userFollowList = new ArrayList<>();
+    userFollowList.add(userFollow);
+
+
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+    //Find user by user name
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<User>>any())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(nativeQuery.getSingleResult()).thenReturn(user);
+
+    // Find Group Name
+    when(session.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+    when(criteriaBuilder.createQuery(Matchers.eq(UserFollow.class))).thenReturn(userFollowCriteriaQuery);
+    when(userFollowCriteriaQuery.from(Matchers.eq(UserFollow.class))).thenReturn(userFollowRoot);
+    when(userFollowCriteriaQuery.select(Matchers.<Root<UserFollow>>any())).thenReturn(userFollowCriteriaQuery);
+    when(userFollowCriteriaQuery.where(Matchers.<Expression<Boolean>>any())).thenReturn(userFollowCriteriaQuery);
+    when(session.createQuery(Matchers.eq(userFollowCriteriaQuery))).thenReturn(userFollowQuery);
+    when(userFollowQuery.getResultList()).thenReturn(userFollowList);
+
+    Assert.assertEquals(1,JPAService.getInstance().getAllFollowers("gro").size());
+
+  }
 
 
 }

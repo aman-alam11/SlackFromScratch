@@ -391,6 +391,7 @@ public class UserDao {
       String sql = "UPDATE new_test_hibernate.users SET users.is_super_user = true WHERE users.user_id =?";
       Query query = session.createNativeQuery(sql);
       query.setParameter(1, userId);
+      //TODO why this line is written twice
       session.createNativeQuery(sql);
       query.executeUpdate();
       transaction.commit();
