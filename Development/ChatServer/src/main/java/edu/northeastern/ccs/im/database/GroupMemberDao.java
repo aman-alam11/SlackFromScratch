@@ -436,13 +436,10 @@ public class GroupMemberDao {
         try {
             User user = JPAService.getInstance().findUserByName(uName);
             if (user == null) {
-                ChatLogger.info(this.getClass().getName() + USER_NOT_FOUND + " " + uName);
                 return false;
             }
-
             Group grp = JPAService.getInstance().findGroupByName(gName);
             if (grp == null) {
-                ChatLogger.info(this.getClass().getName() + GROUP_NOT_FOUND + " " + gName);
                 return false;
             }
 

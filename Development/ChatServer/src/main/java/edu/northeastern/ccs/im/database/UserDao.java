@@ -245,11 +245,10 @@ public class UserDao {
    * case.
    */
   public List<Chat> getUnreadMessages(int userId, Map<String, String> dateMap, FetchLevel fetchLevel) {
-    Session session = mSessionFactory.openSession();
     List<Chat> listUnreadChatRows = new ArrayList<>();
     StringBuilder sqlString = new StringBuilder("SELECT * FROM chat WHERE chat.To_id =?");
     String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel, dateMap);
-
+    Session session = mSessionFactory.openSession();
     try {
       Query query = session.createNativeQuery(genSqlString, Chat.class);
       query.setParameter(1, userId);
@@ -259,7 +258,7 @@ public class UserDao {
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
     } finally {
       // Close the session
-      session.close();
+    	session.close();
     }
     return listUnreadChatRows;
   }

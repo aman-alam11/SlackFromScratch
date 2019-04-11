@@ -36,11 +36,6 @@ public class ClientRunnable implements Connection {
 	/** Name that the client used when connecting to the server. */
 	private String userName;
 
-	/**
-	 * Whether this client has been initialized, set its user name, and is ready to
-	 * receive messages.
-	 */
-	private boolean initialized;
 
 	/**
 	 * Whether this client has been terminated, either because he quit or due to
@@ -73,8 +68,6 @@ public class ClientRunnable implements Connection {
 	public ClientRunnable(NetworkConnection network) {
 		// Create the class we will use to send and receive communication
 		connection = network;
-		// Mark that we are not initialized
-		initialized = false;
 		// Mark that we are not terminated
 		terminate = false;
 		// Create the queue of messages to be sent
