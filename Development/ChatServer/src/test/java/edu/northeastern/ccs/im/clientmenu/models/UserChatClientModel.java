@@ -3,6 +3,8 @@ package edu.northeastern.ccs.im.clientmenu.models;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.northeastern.ccs.im.model.ChatModel;
+
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -12,12 +14,12 @@ import static org.junit.Assert.assertTrue;
 public class UserChatClientModel {
 
 
-  private UserChat userChat;
+  private ChatModel userChat;
   private static final String MESSAGE = "message";
 
   @Before
   public void init() {
-     userChat = new UserChat();
+     userChat = new ChatModel();
   }
 
   @Test

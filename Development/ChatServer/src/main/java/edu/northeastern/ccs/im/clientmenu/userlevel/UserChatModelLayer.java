@@ -1,14 +1,13 @@
 package edu.northeastern.ccs.im.clientmenu.userlevel;
 
-import com.google.gson.Gson;
-
 import java.util.Scanner;
+
+import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
@@ -38,7 +37,7 @@ public class UserChatModelLayer implements CoreOperation {
     initReaderThread();
 
     //Sending the server status that user is about to start the chat.
-    UserChat userChatObject = new UserChat();
+    ChatModel userChatObject = new ChatModel();
     MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
             gson.toJson(userChatObject));
     connectionLayerModel.sendMessage(msg);

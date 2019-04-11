@@ -12,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
@@ -33,7 +32,7 @@ public class UserChatModelLayerTest {
 
 
   @Mock
-  private UserChat userChat;
+  private ChatModel userChat;
 
   private UserChatModelLayer userChatModelLayer;
 

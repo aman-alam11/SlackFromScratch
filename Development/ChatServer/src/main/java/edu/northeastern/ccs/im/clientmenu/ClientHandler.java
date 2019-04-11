@@ -4,14 +4,11 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
 
-import com.google.gson.Gson;
-
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.CurrentLevel;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
 import edu.northeastern.ccs.im.clientmenu.clientutils.InjectLevelUtil;
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.view.FrontEnd;
@@ -48,9 +45,7 @@ public final class ClientHandler {
         // Handle with default implementation
         inputValidate = false;
         if (choiceString.equalsIgnoreCase(QUIT)) {
-            UserChat userChat = new UserChat();
-            MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.LOG_OUT,
-                    new Gson().toJson(userChat));
+            MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.LOG_OUT,"");
             modelLayer.sendMessage(messageJson);
             modelLayer.terminate();
             FrontEnd.getView().sendToView("Bye!!");
