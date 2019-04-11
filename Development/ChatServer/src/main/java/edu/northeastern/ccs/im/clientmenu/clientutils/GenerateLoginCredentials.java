@@ -11,7 +11,7 @@ public class GenerateLoginCredentials {
 
     private static String username;
 
-    public GenerateLoginCredentials() {
+    private GenerateLoginCredentials() {
         // Default private constructor
     }
 

@@ -1,6 +1,6 @@
 package edu.northeastern.ccs.im.view;
 
-
+@SuppressWarnings({"squid:S106"})
 public class FrontEnd {
 
   private static final String ENTER_BACK_QUIT = "Or Enter \\b to go back or \\q to quit";

@@ -49,16 +49,6 @@ public class User implements Serializable {
     this.email = (email != null) ? email : "";
   }
 
-  public User(String username, String password, String email, boolean isSuperUser) {
-    if (username == null || password == null) {
-      throw new IllegalArgumentException("Username and Password can't be null");
-    }
-    this.name = username;
-    this.password = password;
-
-    this.email = (email != null) ? email : "";
-  }
-
   /**
    * This method returns the id of a user.
    *

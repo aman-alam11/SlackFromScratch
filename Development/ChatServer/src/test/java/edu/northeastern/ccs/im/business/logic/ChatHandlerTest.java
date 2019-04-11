@@ -13,8 +13,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.database.JPAService;
+import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.business.logic.handler.ChatHandler;
 
@@ -41,7 +41,7 @@ public class ChatHandlerTest {
 
   @Test
   public void handleMessageTrueTest() {
-    UserChat userChat = new UserChat();
+    ChatModel userChat = new ChatModel();
     userChat.setFromUserName("atti");
     userChat.setMsg("hello");
     userChat.setToUserName("rsa");
@@ -58,7 +58,7 @@ public class ChatHandlerTest {
 
   @Test
   public void handleMessageFalseTest() {
-    UserChat userChat = new UserChat();
+  	ChatModel userChat = new ChatModel();
     userChat.setFromUserName("atti");
     userChat.setMsg("hello");
     userChat.setToUserName("rsa");
