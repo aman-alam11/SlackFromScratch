@@ -51,6 +51,8 @@ public class JPAService {
    * Initialize the SessionFactory instance.
    */
 
+  private SessionFactory mSessionFactory = null;
+
   private static JPAService instance;
 
 
@@ -74,20 +76,23 @@ public class JPAService {
     instance = jpa;
   }
 
-  // Create the SessionFactory using the ServiceRegistry
-  SessionFactory mSessionFactory = new Configuration().
-          configure().
-          addAnnotatedClass(User.class).
-          addAnnotatedClass(Chat.class).
-          addAnnotatedClass(Group.class).
-          addAnnotatedClass(GroupMember.class).
-          addAnnotatedClass(UserFollow.class).
-          buildSessionFactory();
+
+
 
   /**
    * Constructor to initialize userdao object.
    */
   private JPAService() {
+
+    mSessionFactory = new Configuration().
+            configure().
+            addAnnotatedClass(User.class).
+            addAnnotatedClass(Chat.class).
+            addAnnotatedClass(Group.class).
+            addAnnotatedClass(GroupMember.class).
+            addAnnotatedClass(UserFollow.class).
+            buildSessionFactory();
+
     ud = new UserDao(mSessionFactory);
     cd = new ChatDao(mSessionFactory);
     gd = new GroupDao(mSessionFactory);
@@ -99,6 +104,7 @@ public class JPAService {
    * Only for testing purpose
    */
   public JPAService(SessionFactory sf) {
+    instance = this;
     mSessionFactory = sf;
     ud = new UserDao(mSessionFactory);
     cd = new ChatDao(mSessionFactory);
