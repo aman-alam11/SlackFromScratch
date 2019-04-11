@@ -45,6 +45,7 @@ public class TransLateHandler implements MessageHandler {
 
       new JsonMessageHandlerFactory().getMessageHandler(MessageType.USER_CHAT)
               .handleMessage(user,mGson.toJson(chatModel),clientConnection);
+      ChatLogger.info("TRANSLATE: " + translation.getTranslatedText());
       return true;
     }
     catch (Exception ex ){
