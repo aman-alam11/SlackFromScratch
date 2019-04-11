@@ -820,7 +820,6 @@ public class JPAServiceMockTest {
     when(nativeQuery.getResultList()).thenReturn(groupMemberList);
 
     Assert.assertEquals(0,JPAService.getInstance().getAllUsersForGroup("name").size());
-
   }
 
 
