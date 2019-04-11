@@ -42,7 +42,6 @@ public class AckModelTest {
     assertFalse(mAckModel.isUserAuthenticated());
     assertFalse(mAckModel.isLogin());
     assertEquals("", mAckModel.getErrorMessage());
-    new GenerateLoginCredentials();
   }
 
 }
