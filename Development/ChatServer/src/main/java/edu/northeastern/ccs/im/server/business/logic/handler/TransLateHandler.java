@@ -7,7 +7,10 @@ import com.google.cloud.translate.Translation;
 import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.message.MessageConstants;
+import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.ChatModel;
 import edu.northeastern.ccs.im.model.TranslateModel;
 import edu.northeastern.ccs.im.server.Connection;
@@ -46,10 +49,22 @@ public class TransLateHandler implements MessageHandler {
       new JsonMessageHandlerFactory().getMessageHandler(MessageType.USER_CHAT)
               .handleMessage(user,mGson.toJson(chatModel),clientConnection);
       ChatLogger.info("TRANSLATE: " + translation.getTranslatedText());
+
+      AckModel ackModel = new AckModel();
+      ackModel.appendErrorMessage("Translated Message Sent!");
+      MessageJson messageJson = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+              MessageType.AUTH_ACK, new Gson().toJson(ackModel));
+      sendResponse(messageJson,clientConnection);
+
       return true;
     }
     catch (Exception ex ){
       ChatLogger.info("Error in translating the string");
+      AckModel ackModel = new AckModel();
+      ackModel.appendErrorMessage("Invalid Language selected!");
+      MessageJson messageJson = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
+              MessageType.AUTH_ACK, new Gson().toJson(ackModel));
+      sendResponse(messageJson,clientConnection);
       return false;
     }
   }
