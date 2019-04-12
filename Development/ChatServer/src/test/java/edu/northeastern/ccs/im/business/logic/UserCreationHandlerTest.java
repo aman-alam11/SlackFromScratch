@@ -34,6 +34,6 @@ public class UserCreationHandlerTest {
 
     LoginCredentials loginCredentials = new LoginCredentials("atti","pass");
     String message = mGson.toJson(loginCredentials);
-    userCreationHandler.handleMessage("user",message,connection);
+     userCreationHandler.handleMessage("user",message,connection);
   }
 }

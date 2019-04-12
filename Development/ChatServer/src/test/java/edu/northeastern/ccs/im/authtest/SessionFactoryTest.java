@@ -23,7 +23,7 @@ public class SessionFactoryTest {
     MockitoAnnotations.initMocks(this);
   }
 
- // @Test
+  //@Test
   public void loginTestSessionFactory() {
 
     when(jpaService.findUserByName(eq("username"))).thenReturn(new User());
