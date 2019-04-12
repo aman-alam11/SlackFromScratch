@@ -31,13 +31,11 @@ public class GroupDao {
      * @param gName Name of the group.
      * @param gCreator User creator of the group.
      * @param isAuthRequired Mention if moderator authentication is required to add/remove users from group.
-     * @return
+     * @return The boolean flag indicating the success or failure of operation.
      */
     public boolean create(String gName, String gCreator, boolean isAuthRequired){
         boolean isTransactionSuccessful = false;
-        // Create a session
-        Session session = null;
-        session = mSessionFactory.openSession();
+        Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             User user = JPAService.getInstance().findUserByName(gCreator);
@@ -46,20 +44,15 @@ public class GroupDao {
             	return false;
             }
             Group grp = new Group(gName, user, isAuthRequired);
-            // Save the Group
             session.save(grp);
             GroupMember groupMember = new GroupMember(user,grp,true);
             session.save(groupMember);
-            // Commit the transaction
             transaction.commit();
             isTransactionSuccessful = true;
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
             transaction.rollback();
-
         } finally {
-            // Close the session
             session.close();
 
         }
@@ -69,18 +62,15 @@ public class GroupDao {
 
     /**
      * Delete a group.
-     * @param id
-     * @return
+     * @param id The id of the group that needs to be deleted.
+     * @return The boolean flag indicating the success or failure of operation.
      */
     public boolean delete(long id) {
-        // Create a session
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         boolean isOperationSuccess = false;
         try {
-            // Get the User from the database.
             Group grp = session.get(Group.class, id);
-            // Delete the User
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<GroupMember> query = builder.createQuery(GroupMember.class);
             Root<GroupMember> root = query.from(GroupMember.class);
@@ -90,7 +80,6 @@ public class GroupDao {
             for(GroupMember gm: gMembers){
                 session.delete(gm);
             }
-            // Delete all the chat relating to that group.
             CriteriaBuilder builderChat = session.getCriteriaBuilder();
             CriteriaQuery<Chat> queryChat = builderChat.createQuery(Chat.class);
             Root<Chat> rootChat = queryChat.from(Chat.class);
@@ -106,12 +95,9 @@ public class GroupDao {
             transaction.commit();
 
         } catch (HibernateException | IllegalArgumentException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
 
@@ -120,8 +106,8 @@ public class GroupDao {
 
     /**
      * This method finds a group with the specified name.
-     * @param name
-     * @return
+     * @param name The string name from which matching group with that name is to be found.
+     * @return The group.
      */
     public Group findGroupByName(String name){
         Session session = mSessionFactory.openSession();
@@ -134,10 +120,8 @@ public class GroupDao {
             Query<Group> q = session.createQuery(query);
             grp = q.getSingleResult();
         } catch (HibernateException | IllegalArgumentException | NoResultException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
         } finally {
-            // Close the session
             session.close();
         }
         return grp;
@@ -145,8 +129,8 @@ public class GroupDao {
 
     /**
      * This method finds out all the groups of particular user who is the creator for those groups.
-     * @param user
-     * @return
+     * @param user The user who is checked to be the creator of the group.
+     * @return The list of group whose creator is the given user.
      */
     public List<Group> findGroupByCreator(User user){
         Session session = mSessionFactory.openSession();
@@ -159,10 +143,8 @@ public class GroupDao {
             Query<Group> q = session.createQuery(query);
             grp = q.getResultList();
         } catch (HibernateException | IllegalArgumentException | NoResultException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
         } finally {
-            // Close the session
             session.close();
         }
         return grp;
@@ -170,8 +152,8 @@ public class GroupDao {
 
     /**
      * This method returns a list of all the groups whose name matches the query string passed.
-     * @param gName
-     * @return
+     * @param gName The string name to which the matching group names are found.
+     * @return The list of all the groups containing the given string in their name.
      */
     public List<Group> searchGroupByName(String gName) {
         List<Group> allGrps = null;
@@ -193,9 +175,9 @@ public class GroupDao {
 
     /**
      * This method updates the group name. Checks before changing if the new name is already being used.
-     * @param oldName
-     * @param newName
-     * @return
+     * @param oldName The old name of the group.
+     * @param newName The new name of the group.
+     * @return The boolean flag indicating success or failure of the operation.
      */
     public boolean updateGroupName(String oldName, String newName){
         Session session = null;
@@ -217,18 +199,14 @@ public class GroupDao {
             }
 
             grp.setgName(newName);
-            // Save the Group
             session.update(grp);
             isTransactionSuccessful = true;
 
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
         return isTransactionSuccessful;
@@ -236,9 +214,9 @@ public class GroupDao {
 
     /**
      * This method returns the list of groups in which user is a part of.
-     * @param uName
-     * @param gName
-     * @return
+     * @param uName The username of a user whose groups we want to list.
+     * @param gName The string name, matching the group name.
+     * @return The list of groups fulfilling the input criteria.
      */
     public List<Group> allGroupsOfUser(String uName, String gName){
         Session session = mSessionFactory.openSession();
@@ -262,11 +240,11 @@ public class GroupDao {
         return allGrps;
     }
 
-
     /**
      * Retrieves all unread messages for the user with the passed user id.
      *
-     * @param userId The userId for which we need to get all the unread messages for.
+     * @param group The group for which the chat messages are needed to be listed.
+     * @param dateMap The range of dates between which the messages are needed.
      * @return A List of complete chat rows from which information will be extracted based on use case.
      */
     public List<Chat> getUnreadMessagesForGroup(Group group, Map<String, String> dateMap) {
@@ -285,10 +263,8 @@ public class GroupDao {
             query.setParameter(1, group.getId());
             allGroupChats = query.getResultList();
         } catch (HibernateException | IllegalArgumentException | NoResultException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
         } finally {
-            // Close the session
             session.close();
         }
         return allGroupChats;

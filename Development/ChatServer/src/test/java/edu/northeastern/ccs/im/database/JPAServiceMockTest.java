@@ -283,6 +283,10 @@ public class JPAServiceMockTest {
     when(nativeQuery.getSingleResult()).thenReturn(fromUser);
 
     Assert.assertTrue(JPAService.getInstance().createGroup("name", "create", false));
+
+    when(nativeQuery.getSingleResult()).thenReturn(null);
+
+    Assert.assertFalse(JPAService.getInstance().createGroup("name", "create", false));
   }
 
   @Test
@@ -291,8 +295,6 @@ public class JPAServiceMockTest {
     group.setId(1);
 
     when(sessionFactoryMock.openSession()).thenReturn(session);
-
-
 
     //From user
     when(session.getCriteriaBuilder()).thenReturn(criteriaBuilder);
@@ -779,7 +781,27 @@ public class JPAServiceMockTest {
 
 
     Assert.assertEquals(0,JPAService.getInstance().allGroupsForUser("name", "gname").size());
+  }
 
+  @Test(expected = NullPointerException.class)
+  public void allGroupsForUserTestNull() {
+
+    User user = new User();
+    List<Group> groupList = new ArrayList<>();
+    groupList.add(new Group());
+    groupList.add(new Group());
+
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+
+    //Find user by user name
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<User>>any())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(nativeQuery.getSingleResult()).thenReturn(null);
+    when(query.getResultList()).thenReturn(groupList);
+
+    Assert.assertNull(JPAService.getInstance().allGroupsForUser("name", "gname").size());
   }
 
   @Test
@@ -915,6 +937,9 @@ public class JPAServiceMockTest {
 
 
     Assert.assertFalse(JPAService.getInstance().renameUpdateGroup("gro", "group"));
+
+    when(groupQuery.getSingleResult()).thenReturn(null);
+    Assert.assertFalse(JPAService.getInstance().renameUpdateGroup("gro", "group"));
   }
 
 
@@ -972,6 +997,8 @@ public class JPAServiceMockTest {
 
     Assert.assertTrue(JPAService.getInstance().addFollower("gro", "group"));
 
+    when(nativeQuery.getSingleResult()).thenReturn(null);
+    Assert.assertFalse(JPAService.getInstance().addFollower("gro", "group"));
   }
 
   @Test
@@ -1067,6 +1094,9 @@ public class JPAServiceMockTest {
     when(userFollowQuery.getResultList()).thenReturn(userFollowList);
 
     Assert.assertEquals(1,JPAService.getInstance().getAllFollowers("gro").size());
+
+    when(nativeQuery.getSingleResult()).thenReturn(null);
+    Assert.assertEquals(0,JPAService.getInstance().getAllFollowers("gro").size());
   }
 
 
