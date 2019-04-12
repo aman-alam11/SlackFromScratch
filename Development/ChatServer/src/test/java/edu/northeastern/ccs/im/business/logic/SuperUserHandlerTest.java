@@ -50,37 +50,4 @@ public class SuperUserHandlerTest {
     assertFalse(mSuperUserHandler.handleMessage(null, null, null));
   }
 
-  @Test
-  public void testNullUserAndValidUser() {
-    SuperUserMessageModel messageModel = new SuperUserMessageModel(true,
-            false, "nsa");
-    assertTrue(mSuperUserHandler.handleMessage("nsa", new Gson().toJson(messageModel), connection));
-  }
-
-  @Test
-  public void testGetUserChat() {
-    SuperUserMessageModel messageModel = new SuperUserMessageModel(true,
-            false, "nsa");
-    assertTrue(mSuperUserHandler.handleMessage("nsa", new Gson().toJson(messageModel), connection));
-  }
-
-  @Test
-  public void testGetGroupChats() {
-    SuperUserMessageModel messageModel = new SuperUserMessageModel(false,
-            true, "nsa");
-    assertTrue(mSuperUserHandler.handleMessage("nsa", new Gson().toJson(messageModel), connection));
-  }
-
-  @Test
-  public void testGetUserGroupChats() {
-    SuperUserMessageModel messageModel = new SuperUserMessageModel(true,
-            true, "nsa");
-    assertTrue(mSuperUserHandler.handleMessage("nsa", new Gson().toJson(messageModel), connection));
-  }
-
-  @Test
-  public void testGetChatsForGroup() {
-    SuperUserMessageModel messageModel = new SuperUserMessageModel("team212akwjnd");
-    assertFalse(mSuperUserHandler.handleMessage("nsa", new Gson().toJson(messageModel), connection));
-  }
 }
