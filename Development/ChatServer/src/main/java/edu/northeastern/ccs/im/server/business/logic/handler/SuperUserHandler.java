@@ -4,12 +4,14 @@ import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.database.JPAService;
+import edu.northeastern.ccs.im.database.User;
 import edu.northeastern.ccs.im.message.MessageConstants;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
@@ -49,7 +51,13 @@ public class SuperUserHandler implements MessageHandler {
 
       // First check if the sender is a super user
       // This is important if someone somehow fakes that s/he is a superuser on client side.
-      if (!mJpaService.findUserByName(user).isSuperUser()) {
+      User user1 = mJpaService.findUserByName(user);
+      if(user1 == null) {
+        sendResponseBack(new ArrayList<>());
+        return false;
+      }
+
+      if (!user1.isSuperUser()) {
         // If not a super user, simply send blank response
         AckModel ackModel = new AckModel();
         ackModel.addErrorCode(ErrorCodes.IL001);
