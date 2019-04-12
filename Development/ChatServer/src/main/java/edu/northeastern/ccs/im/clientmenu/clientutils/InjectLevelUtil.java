@@ -145,7 +145,7 @@ public final class InjectLevelUtil {
 
   private void injectUserLevel() {
     if (isSuperUser) {
-      FrontEnd.getView().sendToView("\n \nINPUT: Enter 99 for Super User Options: Tap into conversations\n \n");
+      FrontEnd.getView().sendToView("\n \nPress 99 for Super User Options: Tap into conversations\n \n");
       mClientOptionsMap.put(99, scanner -> new SuperUser());
     } else {
       FrontEnd.getView().showUserLevelOptions();

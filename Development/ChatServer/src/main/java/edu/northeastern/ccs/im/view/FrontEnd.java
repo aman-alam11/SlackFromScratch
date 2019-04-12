@@ -78,7 +78,7 @@ public class FrontEnd {
 
   public void showFollowUserLevelOptions() {
     System.out.println("1. Follow a User");
-    System.out.println("2. List Who am I following");
+    System.out.println("2. List my followers");
     System.out.println(ENTER_BACK_QUIT);
     System.out.println(INPUT_ABOVE_OPTIONS);
   }
@@ -118,12 +118,10 @@ public class FrontEnd {
   }
 
   public void showSuperUserOperations() {
-    System.out.println("INFO: Admin level options.");
     System.out.println("1. Get All Conversations for a particular User for user to user chat");
     System.out.println("2. Get All Conversations for a particular User for all group chats");
     // Basically all unread messages
     System.out.println("3. Get All Conversations for a user for both user to user chat and group");
     System.out.println("4. Get All Conversations for a particular Group");
-    System.out.println("INPUT: Enter from above options");
   }
 }
