@@ -1,7 +1,5 @@
 package edu.northeastern.ccs.im.business.logic;
 
-import com.google.gson.Gson;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,12 +9,10 @@ import org.mockito.MockitoAnnotations;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import edu.northeastern.ccs.im.model.SuperUserMessageModel;
 import edu.northeastern.ccs.im.server.Connection;
 import edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class SuperUserHandlerTest {
 
