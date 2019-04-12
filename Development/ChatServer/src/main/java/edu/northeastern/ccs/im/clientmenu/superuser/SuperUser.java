@@ -31,16 +31,16 @@ import static edu.northeastern.ccs.im.clientmenu.clientutils.WaitForResponse.wai
  */
 public class SuperUser implements CoreOperation {
 
-  private static final String INVALID_USERNAME_GROUP_NAME = "Input can't be blank. Sending you back";
-  private static final String USER_2_USER_USERNAME_REQUEST = "Enter the name of user to tap into his/her user2user chats:";
-  private static final String GROUP_CHAT_USERNAME_REQUEST = "Enter the name of user to tap into his/her group2group chats:";
-  private static final String USER_GROUP_CHAT_USERNAME_REQUEST = "Enter the name of user to tap into his/her user and group chats:";
-  private static final String GROUP_CHAT_GROUPNAME_REQUEST = "Enter the group name for which you want to get all the conversations from:";
+  private static final String INVALID_USERNAME_GROUP_NAME = "ERROR: Input can't be blank. Sending you back";
+  private static final String USER_2_USER_USERNAME_REQUEST = "INPUT: Enter the name of user to tap into his/her user2user chats:";
+  private static final String GROUP_CHAT_USERNAME_REQUEST = "INPUT: Enter the name of user to tap into his/her group2group chats:";
+  private static final String USER_GROUP_CHAT_USERNAME_REQUEST = "INPUT: Enter the name of user to tap into his/her user and group chats:";
+  private static final String GROUP_CHAT_GROUPNAME_REQUEST = "INPUT: Enter the group name for which you want to get all the conversations from:";
 
-  private static final String GUIDE_STRING_USER_2_USER = "Conversations for a particular User for user to user chat";
-  private static final String GUIDE_STRING_USERNAME_GROUP = "Conversations for a particular User for all group chats";
-  private static final String GUIDE_STRING_USER_AND_GROUP = "Conversations for a user for both user to user chat and group";
-  private static final String GUIDE_STRING_GROUPNAME_CRITERIA = "Conversations for a particular Group irrespective of user";
+  private static final String GUIDE_STRING_USER_2_USER = "INFO: Conversations for a particular User for user to user chat";
+  private static final String GUIDE_STRING_USERNAME_GROUP = "INFO: Conversations for a particular User for all group chats";
+  private static final String GUIDE_STRING_USER_AND_GROUP = "INFO: Conversations for a user for both user to user chat and group";
+  private static final String GUIDE_STRING_GROUPNAME_CRITERIA = "INFO: Conversations for a particular Group irrespective of user";
 
   private SuperUserMessageModel mSuperUserMessageModel;
   private String mGsonSerialized;
@@ -89,7 +89,7 @@ public class SuperUser implements CoreOperation {
 
       default:
         // send back to first level
-        FrontEnd.getView().sendToView("Wrong option selected. Sending you back");
+        FrontEnd.getView().sendToView("ERROR: Wrong option selected. Sending you back");
         InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
     }
   }
@@ -135,10 +135,10 @@ public class SuperUser implements CoreOperation {
    * If a user wants to get messages for a time frame, request the start and end date.
    */
   private void updateDatesForRequest() {
-    FrontEnd.getView().sendToView("Do you want to get requested chats for specific dates " +
+    FrontEnd.getView().sendToView("INFO: Do you want to get requested chats for specific dates " +
             "or do you want to get all dates of the requested types?");
-    FrontEnd.getView().sendToView("Press 1 to get all requested chats irrespective of dates");
-    FrontEnd.getView().sendToView("Press 2 to enter specific dates and get chats for those time frames");
+    FrontEnd.getView().sendToView("INPUT: 1. to get all requested chats irrespective of dates");
+    FrontEnd.getView().sendToView("INPUT: 2. to enter specific dates and get chats for those time frames");
     int choice = Integer.parseInt(mScanner.nextLine().trim());
     if (choice == 2) {
       // Get Dates from user
@@ -146,7 +146,7 @@ public class SuperUser implements CoreOperation {
     }
 
     if (choice < 1 || choice > 2) {
-      FrontEnd.getView().sendToView("Invalid input. Getting all chats as default.");
+      FrontEnd.getView().sendToView("ERROR: Invalid input. Getting all chats as default.");
     }
   }
 
@@ -154,18 +154,18 @@ public class SuperUser implements CoreOperation {
    * Request user for start and end date if user wants messages for a certain time period.
    */
   private void getDatesFromUser() {
-    FrontEnd.getView().sendToView("Dates entered should be of type: MM/DD/YYYY ." +
-            " You have to include \\/ in the date. 2 things to note: \n 1) The start date is " +
-            "inclusive and end date is exclusive \n 2) Adding invalid dates lead to removal of date " +
+    FrontEnd.getView().sendToView("CAUTION: Dates entered should be of type: MM/DD/YYYY ." +
+            " You have to include \\/ in the date. 2 things to note: \n ** The start date is " +
+            "inclusive and end date is exclusive. \n ** Adding invalid dates lead to removal of date " +
             "criteria.");
-    FrontEnd.getView().sendToView("Please enter the start date to get chats:");
+    FrontEnd.getView().sendToView("INFO: Please enter the start date to get chats:");
     String startDate = mScanner.nextLine().trim();
     if (!invalidDateCheck(startDate, true)) {
-      FrontEnd.getView().sendToView("Invalid Date Entered. Date criteria removed");
+      FrontEnd.getView().sendToView("ERROR: Invalid Date Entered. Date criteria removed");
       return;
     }
 
-    FrontEnd.getView().sendToView("Please enter the end date to get chats:");
+    FrontEnd.getView().sendToView("INFO: Please enter the end date to get chats:");
     String endDate = mScanner.nextLine().trim();
     invalidDateCheck(endDate, false);
   }
@@ -188,7 +188,7 @@ public class SuperUser implements CoreOperation {
       } else {
         if (mSuperUserMessageModel.getStartDate().after(date)) {
           // End date is still invalid
-          FrontEnd.getView().sendToView("Invalid date entered. Getting all chats of requested type");
+          FrontEnd.getView().sendToView("ERROR: Invalid date entered. Getting all chats of requested type");
           mSuperUserMessageModel.setAreDatesValid(false);
           return false;
         } else {
@@ -241,7 +241,7 @@ public class SuperUser implements CoreOperation {
     }
 
     if (listUnreadMessagesAll.isEmpty()) {
-      FrontEnd.getView().sendToView("No such results found. Sending you back");
+      FrontEnd.getView().sendToView("EMPTY: No such results found. Sending you back");
       InjectLevelUtil.getInstance().injectLevel(CurrentLevel.USER_LEVEL);
       return;
     }
