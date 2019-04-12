@@ -80,6 +80,12 @@ public class ModelTests {
     Assert.assertEquals("0\tnull", user.toString());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void userTestNull() {
+    User user = new User(null,"password","email");
+    User user2 = new User("user",null,"email");
+  }
+
   @Test
   public void userFollow() {
 
