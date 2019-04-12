@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
-public class ModelTests {
+public class ModelTest {
 
   @Test
   public void chatTest() {
