@@ -21,6 +21,9 @@ import edu.northeastern.ccs.im.ChatLogger;
 
 public class GroupMemberDao {
 
+    /**
+     * Constants to reuse in place of similar string throughout the code.
+     */
     public static final String GROUP_ID = "groupId";
     public static final String GROUP_USER = "groupUser";
     public static final String GROUP_NOT_FOUND = "Group not found :";
@@ -32,9 +35,16 @@ public class GroupMemberDao {
         mSessionFactory = sf;
     }
 
+    /**
+     * This method adds a new member to a group.
+     *
+     * @param gName The name of the group to which the member is added.
+     * @param uName The name of the user who is being added to the group.
+     * @param isModerator Flag deciding if the added user will be a moderator or not.
+     * @return The boolean flag indicating if the operation was successful or failed.
+     */
     public boolean addMemberToGroup(String gName, String uName, boolean isModerator){
         boolean isTransactionSuccessful = false;
-        // Create a session
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
@@ -49,25 +59,27 @@ public class GroupMemberDao {
                 ChatLogger.info(this.getClass().getName() + GROUP_NOT_FOUND + " " + gName);
                 return false;
             }
-            // Save the GroupMember
             GroupMember groupMember = new GroupMember(user,grp,isModerator);
             session.save(groupMember);
-            // Commit the transaction
             transaction.commit();
             isTransactionSuccessful = true;
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
 
         return isTransactionSuccessful;
     }
 
+    /**
+     * This method deletes a user from the given group.
+     *
+     * @param gName The name of the group from where the member is removed.
+     * @param uName The name of the user who is being removed from group.
+     * @return The boolean flag indicating if the operation was successful or failed.
+     */
     public boolean deleteMemberFromGroup(String gName, String uName){
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -91,17 +103,20 @@ public class GroupMemberDao {
         } catch (HibernateException ex) {
             isTransactionSuccessful = false;
             ChatLogger.error(ex.getMessage());
-
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
 
         return isTransactionSuccessful;
     }
 
+    /**
+     * This is a helper method, which takes in a group name and checks whether or not that group exists.
+     *
+     * @param gName The name of the group.
+     * @return The group with the given name.
+     */
     private Group getGroup(String gName) {
         Group grp = JPAService.getInstance().findGroupByName(gName);
         if (grp == null) {
@@ -111,6 +126,11 @@ public class GroupMemberDao {
         return grp;
     }
 
+    /**
+     * This method deletes all the members form the group.
+     *
+     * @param gName Name of the group from which all the members are deleted.
+     */
     public void deleteAllMembersFromGroup(String gName){
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -126,22 +146,24 @@ public class GroupMemberDao {
             for(GroupMember gm: gMembers){
                 session.delete(gm);
             }
-            // Commit the transaction
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
     }
 
+    /**
+     * This method is used to add bunch of users to the group as members.
+     *
+     * @param users The list of users to be added.
+     * @param gName The name of the group to which the users are to be added.
+     * @return The boolean flag indicating if the operation was successful or failed.
+     */
     public boolean addMultipleUsersToGroup(List<String> users, String gName){
         boolean isTransactionSuccessful = false;
-        // Create a session
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
@@ -151,18 +173,21 @@ public class GroupMemberDao {
             transaction.commit();
             isTransactionSuccessful = true;
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
 
         return isTransactionSuccessful;
     }
 
+    /**
+     * This method finds out all the members of a group and returns a list of them.
+     *
+     * @param gName The name of the group whose members we want to list.
+     * @return The list of users who are member of the given group.
+     */
     public List<User> findAllMembersOfGroup(String gName){
         List<User> allMembers = new ArrayList<>();
         Session session = mSessionFactory.openSession();
@@ -181,17 +206,21 @@ public class GroupMemberDao {
             }
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
         return allMembers;
     }
 
+    /**
+     * This method changes a moderator status of a user in the group.
+     *
+     * @param uName The name of the user who is a member of the group and whose moderator status is being updated.
+     * @param gName The name of the group.
+     * @param moderatorStatus The new moderator status for specified user for the specified group.
+     */
     public void updateModeratorStatus(String uName, String gName, boolean moderatorStatus){
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -208,19 +237,21 @@ public class GroupMemberDao {
             GroupMember gMemberToUpdate = q.getSingleResult();
             gMemberToUpdate.setModerator(moderatorStatus);
             session.update(gMemberToUpdate);
-            // Commit the transaction
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
     }
 
+    /**
+     * This is a helper method which takes in a user name and see if that user exists or not.
+     *
+     * @param uName The name of the user.
+     * @return The User object matching with the name given.
+     */
     private User getUser(String uName) {
         User user = JPAService.getInstance().findUserByName(uName);
         if (user == null) {
@@ -230,6 +261,12 @@ public class GroupMemberDao {
         return user;
     }
 
+    /**
+     * This method returns the list of users from given who are not member of the provided group.
+     * @param names Provided the list of names of users.
+     * @param gName The name of the group.
+     * @return The list of users who are not part of the given group from the list of users specified.
+     */
     public List<User> findNonMembers(List<String> names, String gName){
         List<User> nonMembers = new ArrayList<>();
         Session session = mSessionFactory.openSession();
@@ -253,15 +290,11 @@ public class GroupMemberDao {
                     nonMembers.add(u);
                 }
             }
-            // Commit the transaction
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
         return nonMembers;
@@ -288,10 +321,8 @@ public class GroupMemberDao {
                 groupNameList.put(member.getGroupId().getgName(), member.isModerator());
             }
         } catch (Exception ex) {
-            // If there are any exceptions, roll back the changes
             Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
         } finally {
-            // Close the session
             session.close();
         }
         return groupNameList;
@@ -309,7 +340,6 @@ public class GroupMemberDao {
         Transaction transaction = null;
         try {
             session = mSessionFactory.openSession();
-            // Begin a transaction
             transaction = session.beginTransaction();
 
             String sql = "SELECT * FROM group_member where group_id=?";
@@ -323,24 +353,27 @@ public class GroupMemberDao {
 
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             Objects.requireNonNull(transaction).rollback();
         } finally {
-            // Close the session
             Objects.requireNonNull(session).close();
         }
         return allMembers;
     }
 
+    /**
+     * This method is used to toggle the admin rights of a specified user in the group.
+     *
+     * @param userId The user id who is a member of the group.
+     * @param groupId The group id of a group in which the given user is a member.
+     * @return The boolean flag indicating if the operation was successful or failed.
+     */
     public boolean toggleAdminRightsOfUser(int userId, long groupId){
         Session session = null;
         Transaction transaction = null;
         boolean isTransSuccess = false;
         try {
             session = mSessionFactory.openSession();
-            // Begin a transaction
             transaction = session.beginTransaction();
 
             String sql = "UPDATE group_member SET isModerator =  isModerator ^ 1 WHERE user_Id = ? AND group_id = ?";
@@ -352,32 +385,32 @@ public class GroupMemberDao {
             transaction.commit();
             isTransSuccess= true;
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             Objects.requireNonNull(transaction).rollback();
         } finally {
-            // Close the session
             Objects.requireNonNull(session).close();
         }
         return isTransSuccess;
     }
 
+    /**
+     * Thie method checks if a provided user is a member of a group or not.
+     *
+     * @param uName The user name of any User.
+     * @param gName The name of any group.
+     * @return The boolean flag indicating if the given user is a member of given group or not.
+     */
     public boolean userIsMember(String uName, String gName){
         boolean isTransactionSuccessful = false;
-        // Create a session
         Session session = mSessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             User user = JPAService.getInstance().findUserByName(uName);
             if (user == null) {
-                ChatLogger.info(this.getClass().getName() + USER_NOT_FOUND + " " + uName);
                 return false;
             }
-
             Group grp = JPAService.getInstance().findGroupByName(gName);
             if (grp == null) {
-                ChatLogger.info(this.getClass().getName() + GROUP_NOT_FOUND + " " + gName);
                 return false;
             }
 
@@ -391,15 +424,11 @@ public class GroupMemberDao {
             if(!q.getResultList().isEmpty()){
                 isTransactionSuccessful = true;
             }
-            // Commit the transaction
             transaction.commit();
         } catch (HibernateException ex) {
-            // Print the Exception
             ChatLogger.error(ex.getMessage());
-            // If there are any exceptions, roll back the changes
             transaction.rollback();
         } finally {
-            // Close the session
             session.close();
         }
 

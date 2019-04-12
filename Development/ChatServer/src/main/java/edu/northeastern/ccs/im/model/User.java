@@ -8,11 +8,18 @@ public class User implements Serializable{
 	private String email;
 	private String firstName;
 	private String lastName;
-	
+	private boolean isOnline;
+
+
 	public User(String userName, String password, String email) {
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
+	}
+	
+	public User(String userName, boolean isOnline) {
+		this.userName = userName;
+		this.isOnline = isOnline;
 	}
 	public String getUserName() {
 		return userName;
@@ -43,6 +50,13 @@ public class User implements Serializable{
 	}
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	public boolean isOnline() {
+		return isOnline;
+	}
+
+	public void setOnline(boolean isOnline) {
+		this.isOnline = isOnline;
 	}
 	
 }

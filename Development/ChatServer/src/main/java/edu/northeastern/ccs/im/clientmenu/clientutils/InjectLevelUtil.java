@@ -18,8 +18,8 @@ import edu.northeastern.ccs.im.clientmenu.grouplevel.DeleteUsersFromGroup;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.GroupSearchModelLayer;
 import edu.northeastern.ccs.im.clientmenu.grouplevel.UpdateGroupModelLayer;
-import edu.northeastern.ccs.im.clientmenu.userlevel.UnreadMessages;
-import edu.northeastern.ccs.im.clientmenu.userlevel.UserSearchModelLayer;
+import edu.northeastern.ccs.im.clientmenu.superuser.SuperUser;
+import edu.northeastern.ccs.im.clientmenu.userlevel.*;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public final class InjectLevelUtil {
@@ -29,6 +29,8 @@ public final class InjectLevelUtil {
   private ModuleFactory moduleFactory;
   private static Map<CurrentLevel,CurrentLevel> levelMap;
   private static CurrentLevel currentLevel;
+  private boolean isSuperUser;
+  private int maxCount = -1;
 
 
   public static Map<Integer, Function<Scanner, CoreOperation>> getOptionsMap() {
@@ -59,6 +61,7 @@ public final class InjectLevelUtil {
     levelMap.put(CurrentLevel.USER_LEVEL,CurrentLevel.USER_LEVEL);
     levelMap.put(CurrentLevel.GROUP_LEVEL,CurrentLevel.USER_LEVEL);
     levelMap.put(CurrentLevel.GROUP_USERS_CRUD_LEVEL,CurrentLevel.GROUP_LEVEL);
+    levelMap.put(CurrentLevel.FOLLOW_USER_LEVEL,CurrentLevel.USER_LEVEL);
   }
 
   /**
@@ -105,13 +108,18 @@ public final class InjectLevelUtil {
         injectUpdateModeratorsLevel();
         break;
 
+      case FOLLOW_USER_LEVEL:
+        setCurrentLevel(CurrentLevel.FOLLOW_USER_LEVEL);
+        injectFollowUserLevel();
+        break;
+
       case DEFAULT_LEVEL:
         injectDefaultLevel();
         break;
 
       default:
-        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
         injectLoginLevel();
+        setCurrentLevel(CurrentLevel.LOGIN_LEVEL);
     }
     // Feed the appropriate options
   }
@@ -136,12 +144,17 @@ public final class InjectLevelUtil {
   }
 
   private void injectUserLevel() {
-    FrontEnd.getView().showUserLevelOptions();
-    mClientOptionsMap.put(1, scanner -> new UnreadMessages());
-    mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
-    mClientOptionsMap.put(3, scanner -> new GroupLayer());
+    if (isSuperUser) {
+      FrontEnd.getView().sendToView("\n \nPress 99 for Super User Options: Tap into conversations\n \n");
+      mClientOptionsMap.put(99, scanner -> new SuperUser());
+    } else {
+      FrontEnd.getView().showUserLevelOptions();
+      mClientOptionsMap.put(1, scanner -> new UnreadMessages());
+      mClientOptionsMap.put(2, scanner -> new UserSearchModelLayer());
+      mClientOptionsMap.put(3, scanner -> new GroupLayer());
+      mClientOptionsMap.put(4, scanner -> new UserFollowLayer());
+    }
   }
-
 
   private void injectGroupLevel() {
     FrontEnd.getView().showGroupLevelOptions();
@@ -149,6 +162,12 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(2, scanner -> new UpdateGroupModelLayer());
     mClientOptionsMap.put(3, scanner -> new GroupSearchModelLayer());
     mClientOptionsMap.put(4, scanner -> new DeleteGroupModelLayer());
+  }
+
+  private void injectFollowUserLevel() {
+    FrontEnd.getView().showFollowUserLevelOptions();
+    mClientOptionsMap.put(1, scanner -> new CreateUserFollowLayer());
+    mClientOptionsMap.put(2, scanner -> new ListUserFollowerLayer());
   }
 
   private void injectGroupUsersCrudLevel() {
@@ -163,4 +182,11 @@ public final class InjectLevelUtil {
     mClientOptionsMap.put(2, scanner -> new DeleteModeratorGroup());
   }
 
+  public void setSuperUser(boolean superUser) {
+    // Allow Update only once during program
+    if(maxCount < 0){
+      maxCount++;
+      isSuperUser = superUser;
+    }
+  }
 }

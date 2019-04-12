@@ -16,6 +16,7 @@ import java.util.Objects;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.model.FetchLevel;
 import edu.northeastern.ccs.im.model.UnreadMessageModel;
 
 public class JPAService {
@@ -32,15 +33,27 @@ public class JPAService {
    */
   private ChatDao cd;
 
+  /**
+   * Creating an object of GroupDao to call the methods to perform operations on group.
+   */
   private GroupDao gd;
 
+  /**
+   * Creating an object of GroupMemberDao to call the methods to perform operations on group member.
+   */
   private GroupMemberDao gmd;
+
+  /**
+   * Creating an object of UserFollowDao to call the methods to perform operations on followers.
+   */
+  private UserFollwDao ufd;
   /**
    * Initialize the SessionFactory instance.
    */
 
-  private static JPAService instance;
+  private SessionFactory mSessionFactory = null;
 
+  private static JPAService instance;
 
 
   /**
@@ -55,43 +68,50 @@ public class JPAService {
     }
     return instance;
   }
-  
+
   /**
    * Only for testing purpose
-   * @param jpa
    */
   public static synchronized void setJPAService(JPAService jpa) {
-      instance = jpa;
+    instance = jpa;
   }
 
-  // Create the SessionFactory using the ServiceRegistry
-  SessionFactory mSessionFactory = new Configuration().
-          configure().
-          addAnnotatedClass(User.class).
-          addAnnotatedClass(Chat.class).
-          addAnnotatedClass(Group.class).
-          addAnnotatedClass(GroupMember.class).
-          buildSessionFactory();
+
+
 
   /**
    * Constructor to initialize userdao object.
    */
   private JPAService() {
+
+    mSessionFactory = new Configuration().
+            configure().
+            addAnnotatedClass(User.class).
+            addAnnotatedClass(Chat.class).
+            addAnnotatedClass(Group.class).
+            addAnnotatedClass(GroupMember.class).
+            addAnnotatedClass(UserFollow.class).
+            buildSessionFactory();
+
     ud = new UserDao(mSessionFactory);
     cd = new ChatDao(mSessionFactory);
     gd = new GroupDao(mSessionFactory);
     gmd = new GroupMemberDao(mSessionFactory);
+    ufd = new UserFollwDao(mSessionFactory);
   }
 
   /**
    * Only for testing purpose
    */
+  @SuppressWarnings({"squid:S3010"})
   public JPAService(SessionFactory sf) {
+    instance = this;
     mSessionFactory = sf;
     ud = new UserDao(mSessionFactory);
     cd = new ChatDao(mSessionFactory);
     gd = new GroupDao(mSessionFactory);
     gmd = new GroupMemberDao(mSessionFactory);
+    ufd = new UserFollwDao(mSessionFactory);
   }
 
   /**
@@ -231,7 +251,16 @@ public class JPAService {
     return gmd.addMultipleUsersToGroup(usersToAdd, grpToAddTo);
   }
 
-  public List<UnreadMessageModel> getUnreadMessages(String username) {
+  /**
+   * Get all messages based on Fetch Level.
+   *
+   * @param username   The username to get unread messages for.
+   * @param dateMap    The date constraint on the messages that we need to fetch.
+   * @param fetchLevel The multiple fetching details that we need to modify queries on.
+   * @return A list of Messages which are based on {@link UnreadMessageModel}.
+   */
+  public List<UnreadMessageModel> getUnreadMessages(String username, Map<String, String> dateMap,
+                                                    FetchLevel fetchLevel) {
 
     Session session = null;
     Transaction transaction = null;
@@ -241,22 +270,23 @@ public class JPAService {
       session = mSessionFactory.openSession();
       transaction = session.beginTransaction();
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
+      if (validIdMap.get(username) == null) {
         return unreadMessageModels;
       }
 
-      List<Chat> listRows = ud.getUnreadMessages(userId);
+
+      List<Chat> listRows = ud.getUnreadMessages(validIdMap.get(username), dateMap, fetchLevel);
       for (Chat listRow : listRows) {
         String fromPersonName = listRow.getFromId().getName();
         Date timestamp = listRow.getCreated();
         String message = listRow.getMsg();
         unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
       }
-      ud.setDeliverAllUnreadMessages(username);
+
+      if (fetchLevel == FetchLevel.UNREAD_MESSAGE_HANDLER) {
+        ud.setDeliverAllUnreadMessages(username);
+      }
 
       transaction.commit();
     } catch (HibernateException ex) {
@@ -269,15 +299,44 @@ public class JPAService {
     return unreadMessageModels;
   }
 
+  private Map<String, Integer> isValidIdForUsernameHelper(String username) {
+    Map<String, Integer> resultMap = new HashMap<>();
+    // Get the userId for the user for which we need the username
+    BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
+    int userId = userIdBigInt.intValue();
+    if (userId <= 0) {
+      ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      return resultMap;
+    }
+
+    resultMap.put(username, userId);
+    return resultMap;
+  }
+
 
   /**
    * Set all the messages to deliver by specific username.
-   * @param username - user name of the user you want to set delivery true;
+   *
+   * @param username - user name of the user you want to set delivery true.
    * @return - True or false according to the result.
    */
   public boolean setDeliveredUnreadMessages(String username) {
 
     return ud.setDeliverAllUnreadMessages(username);
+  }
+
+  /**
+   * Set number of messages from some user to user a user to isDelivered. So that other user cannot
+   * see the messages.
+   *
+   * @param toUserName    - user name of the user you want to set delivery true.
+   * @param fromUserName  - user name of the user from whom you want to set delivery true.
+   * @param numOfMessages - total number of messages to set delivered true.
+   * @return - True or false according to the result.
+   */
+  public int setRollBackMessages(String toUserName, String fromUserName, int numOfMessages) {
+
+    return ud.setRollbackMessage(toUserName, fromUserName, numOfMessages);
   }
 
 
@@ -293,8 +352,8 @@ public class JPAService {
     return gmd.findNonMembers(names, gName);
   }
 
-  public List<Group> allGroupsForUser(String uName, String gName){
-    return gd.allGroupsOfUser(uName,gName);
+  public List<Group> allGroupsForUser(String uName, String gName) {
+    return gd.allGroupsOfUser(uName, gName);
   }
 
 
@@ -302,8 +361,8 @@ public class JPAService {
    * Get all the groups for a particular user that s/he is in.
    *
    * @param username The username of the user for which we want to extract all the groups for.
-   * @return A List of Pair where the key is the group name and the value is a boolean that represents
-   * whether s/he is a moderator in that particular group or not.
+   * @return A List of Pair where the key is the group name and the value is a boolean that
+   * represents whether s/he is a moderator in that particular group or not.
    */
   public Map<String, Boolean> getAllGroupsForUser(String username) {
     Session session = null;
@@ -313,15 +372,12 @@ public class JPAService {
       session = mSessionFactory.openSession();
       transaction = session.beginTransaction();
 
-      // Get the userId for the user for which we need the username
-      BigInteger userIdBigInt = ud.getUserIdFromUserName(username);
-      int userId = userIdBigInt.intValue();
-      if (userId <= 0) {
-        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + username);
+      Map<String, Integer> validIdMap = isValidIdForUsernameHelper(username);
+      if (validIdMap.get(username) == null) {
         return allGroupsForUser;
       }
 
-      allGroupsForUser = gmd.getAllGroupsForUser(userId);
+      allGroupsForUser = gmd.getAllGroupsForUser(validIdMap.get(username));
 
       // Commit the transaction
       transaction.commit();
@@ -340,8 +396,8 @@ public class JPAService {
    * Gets all the users in a particular group.
    *
    * @param groupName The group name for which we need yo get all the users for.
-   * @return A Map where the key is the userName of members of the group and the value is a boolean representing if
-   * s/he is a moderator in that group.
+   * @return A Map where the key is the userName of members of the group and the value is a boolean
+   * representing if s/he is a moderator in that group.
    */
   public Map<String, Boolean> getAllUsersForGroup(String groupName) {
     Session session = null;
@@ -374,8 +430,7 @@ public class JPAService {
   }
 
 
-
-  public boolean toggleAdminRights(String username, String groupName){
+  public boolean toggleAdminRights(String username, String groupName) {
     Session session = null;
     Transaction transaction = null;
     boolean isOperationSuccessful = false;
@@ -412,11 +467,73 @@ public class JPAService {
     return isOperationSuccessful;
   }
 
-  public boolean renameUpdateGroup(String oldName, String newName){
+  public boolean renameUpdateGroup(String oldName, String newName) {
     return gd.updateGroupName(oldName, newName);
   }
 
-  public boolean userIsModerator(String uName, String gName){
-    return gmd.userIsMember(uName,gName);
+  public boolean userIsModerator(String uName, String gName) {
+    return gmd.userIsMember(uName, gName);
+  }
+
+  public boolean addFollower(String uName, String fName) {
+    return ufd.addFollower(uName, fName);
+  }
+
+  /**
+   * Get all messages for a group.
+   *
+   * @param groupname The group for which we need to fetch messages.
+   * @param dateMap   The HashMap that contains the start and end date.
+   * @return The List of messages parsed according to the mode  {@link UnreadMessageModel}.
+   */
+  public List<UnreadMessageModel> getUnreadMessagesForGroup(String groupname, Map<String, String> dateMap) {
+    Session session = null;
+    Transaction transaction = null;
+    List<UnreadMessageModel> unreadMessageModels = new ArrayList<>();
+
+    try {
+      session = mSessionFactory.openSession();
+      transaction = session.beginTransaction();
+
+      // Get the userId for the user for which we need the username
+      Group validGroup = gd.findGroupByName(groupname);
+      long groupId = validGroup.getId();
+      if (groupId <= 0) {
+        ChatLogger.info(this.getClass().getName() + USERNOTFOUND + groupname);
+        return unreadMessageModels;
+      }
+
+      List<Chat> listRows = gd.getUnreadMessagesForGroup(validGroup, dateMap);
+      for (Chat listRow : listRows) {
+        String fromPersonName = listRow.getFromId().getName();
+        Date timestamp = listRow.getCreated();
+        String message = listRow.getMsg();
+        unreadMessageModels.add(new UnreadMessageModel(fromPersonName, message, timestamp, listRow.getIsGrpMsg()));
+      }
+
+      transaction.commit();
+    } catch (HibernateException ex) {
+      ChatLogger.error(ex.getMessage());
+      Objects.requireNonNull(transaction).rollback();
+    } finally {
+      Objects.requireNonNull(session).close();
+    }
+
+    return unreadMessageModels;
+  }
+
+  /**
+   * This is explicitly written so that only admin can call it from server side. This is not called
+   * from client side. This is called on special request from government.
+   *
+   * @param userName The username to be upgraded to superUser.
+   */
+  public void upgradeToSuperUser(String userName) {
+    long id = this.findUserByName(userName).getId();
+    ud.setAsSuperUser(id);
+  }
+
+  public List<User> getAllFollowers(String uName) {
+    return ufd.getAllFollowers(uName);
   }
 }

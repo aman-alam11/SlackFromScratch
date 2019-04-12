@@ -1,25 +1,30 @@
 package edu.northeastern.ccs.im.clientmenu.userlevel;
 
-import com.google.gson.Gson;
-
 import java.util.Scanner;
+
+import com.google.gson.Gson;
 
 import edu.northeastern.ccs.im.ChatLogger;
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
 import edu.northeastern.ccs.im.clientmenu.clientutils.GenerateLoginCredentials;
-import edu.northeastern.ccs.im.clientmenu.models.UserChat;
 import edu.northeastern.ccs.im.message.MessageJson;
 import edu.northeastern.ccs.im.message.MessageType;
+import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.ChatModel;
+import edu.northeastern.ccs.im.model.RecallModel;
+import edu.northeastern.ccs.im.model.TranslateModel;
 import edu.northeastern.ccs.im.view.FrontEnd;
 
 public class UserChatModelLayer implements CoreOperation {
 
   private static final String QUIT = "\\q";
+  private static final String REVERSE = "\\r";
+  private static final String TRANSLATE = "\\t";
   private Connection connLocal;
   private Gson gson;
   private ChatModel chatModel;
+  private String userToChat;
   private boolean shouldListenForMessages = true;
 
 
@@ -32,7 +37,7 @@ public class UserChatModelLayer implements CoreOperation {
     initReaderThread();
 
     //Sending the server status that user is about to start the chat.
-    UserChat userChatObject = new UserChat();
+    ChatModel userChatObject = new ChatModel();
     MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
             gson.toJson(userChatObject));
     connectionLayerModel.sendMessage(msg);
@@ -40,19 +45,71 @@ public class UserChatModelLayer implements CoreOperation {
     while (scanner.hasNext()) {
 
       String message = scanner.nextLine().trim();
+      if (message.isEmpty()) {
+        continue;
+      }
 
-      if (!message.equals(QUIT)) {
-        chatModel.setMsg(message);
-        MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
-                gson.toJson(chatModel));
-        connectionLayerModel.sendMessage(messageJson);
-        initReaderThread();
-      } else {
-        shouldListenForMessages = false;
-        FrontEnd.getView().sendToView("INFO: Ending Chat.");
-        breakFromConversation(connectionLayerModel);
-        FrontEnd.getView().showUserLevelOptions();
-        break;
+      switch (message) {
+
+        case QUIT:
+          // Quitting the chat
+          shouldListenForMessages = false;
+          FrontEnd.getView().sendToView("INFO: Ending Chat.");
+          breakFromConversation(connectionLayerModel);
+          FrontEnd.getView().showUserLevelOptions();
+          return;
+
+
+        case REVERSE:
+          FrontEnd.getView().sendToView("INPUT: Enter Number of messages you want to unsend.");
+          FrontEnd.getView().sendToView("CAUTION: Only unseen messages can be unsend.");
+          try {
+            int num = Integer.parseInt(scanner.next());
+            FrontEnd.getView().sendToView(String.valueOf(num));
+            RecallModel recallModel = new RecallModel(userToChat, num);
+            MessageJson messageJs = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.CHAT_RECALL,
+                    gson.toJson(recallModel));
+            connectionLayerModel.sendMessage(messageJs);
+
+          }
+          catch (NumberFormatException ex) {
+            FrontEnd.getView().sendToView("ERROR: Not a number, try again by entering \\r.");
+          }
+          break;
+
+
+        case TRANSLATE:
+          FrontEnd.getView().sendToView("INPUT: Enter the language you want to translate to, e.g en for english, es for spanish");
+          try {
+            String language = scanner.nextLine();
+            if (language.length()>2) {
+
+              FrontEnd.getView().sendToView("ERROR: Invalid language type, please refer Google Translate language codes.");
+              FrontEnd.getView().sendToView("LINK: https://cloud.google.com/translate/docs/languages");
+            }
+            else  {
+              FrontEnd.getView().sendToView("INPUT: Enter the message");
+              String messageConvert = scanner.nextLine();
+              TranslateModel translateModel = new TranslateModel(messageConvert, language);
+              translateModel.setFromUser(GenerateLoginCredentials.getUsername());
+              translateModel.setToUser(this.userToChat);
+              MessageJson messageTranslate = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.TRANSLATE_MESSAGE,
+                      gson.toJson(translateModel));
+              connectionLayerModel.sendMessage(messageTranslate);
+            }
+
+          }
+          catch (Exception ex) {
+            FrontEnd.getView().sendToView("ERROR: error sending message \\r.");
+          }
+          break;
+
+          default:
+            // Send chat to server
+            chatModel.setMsg(message);
+            MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT,
+                    gson.toJson(chatModel));
+            connectionLayerModel.sendMessage(messageJson);
       }
     }
   }
@@ -62,19 +119,20 @@ public class UserChatModelLayer implements CoreOperation {
       return;
     }
 
-    new Thread(() -> {
-      while (shouldListenForMessages) {
-        try {
-          Thread.sleep(500);
-          if(connLocal.hasNext()){
-            displayResponse(connLocal.next());
-          }
-        } catch (Exception e) {
-          ChatLogger.error("Unable to make the Thread sleep");
-        }
-      }
-    }).start();
+    new Thread(this::displayMessagesFromQueue).start();
+  }
 
+  private void displayMessagesFromQueue() {
+    while (shouldListenForMessages) {
+      try {
+        Thread.sleep(500);
+        if(connLocal.hasNext()){
+          displayResponse(connLocal.next());
+        }
+      } catch (Exception e) {
+        ChatLogger.error("Unable to make the Thread sleep");
+      }
+    }
   }
 
 
@@ -88,6 +146,7 @@ public class UserChatModelLayer implements CoreOperation {
 
   public UserChatModelLayer(String userToChat) {
     // Create Object
+    this.userToChat = userToChat;
     chatModel = new ChatModel();
     chatModel.setFromUserName(GenerateLoginCredentials.getUsername());
     chatModel.setToUserName(userToChat);
@@ -108,6 +167,13 @@ public class UserChatModelLayer implements CoreOperation {
 
       ChatModel chat = gson.fromJson(response.getMessage(), ChatModel.class);
       String messageToDisplay = response.getMessageType().name() + "-" + response.getFromUser() + ": " + chat.getMsg();
+      FrontEnd.getView().sendToView(messageToDisplay);
+    }
+
+    else if (response.getMessageType().equals(MessageType.AUTH_ACK)){
+
+      AckModel ackModel = gson.fromJson(response.getMessage(), AckModel.class);
+      String messageToDisplay = response.getMessageType().name() + " " + ackModel.getErrorMessage();
       FrontEnd.getView().sendToView(messageToDisplay);
     }
   }

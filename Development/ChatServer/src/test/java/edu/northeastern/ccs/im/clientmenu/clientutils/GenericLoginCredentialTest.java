@@ -12,14 +12,10 @@ public class GenericLoginCredentialTest {
 
   private GenerateLoginCredentials generateLoginCredentials;
 
-  @Before
-  public void init() {
-    generateLoginCredentials =  new GenerateLoginCredentials();
-  }
 
   @Test
   public void genericTest() {
-    generateLoginCredentials.generateLoginCredentials(null, "user", MessageType.LOGIN);
+  	GenerateLoginCredentials.generateLoginCredentials(null, "user", MessageType.LOGIN);
     assertEquals("",GenerateLoginCredentials.getUsername());
   }
 }

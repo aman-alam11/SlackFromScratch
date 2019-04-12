@@ -9,7 +9,7 @@ import org.mockito.MockitoAnnotations;
 
 import edu.northeastern.ccs.im.model.GroupSearchModel;
 import edu.northeastern.ccs.im.server.Connection;
-import edu.northeastern.ccs.im.server.business.logic.GroupCreationHandler;
+import edu.northeastern.ccs.im.server.business.logic.handler.GroupCreationHandler;
 
 
 public class GroupCreationHandlerTest {

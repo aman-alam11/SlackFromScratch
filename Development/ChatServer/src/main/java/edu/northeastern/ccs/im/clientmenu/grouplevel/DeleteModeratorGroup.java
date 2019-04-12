@@ -25,7 +25,12 @@ public class DeleteModeratorGroup implements CoreOperation {
     mScanner = scanner;
     mConnectionLayerModel = connectionLayerModel;
 
-    parseResponse(getAllUserGroup(connectionLayerModel));
+    Map<String, Boolean> userMap = getAllUserGroup(connectionLayerModel);
+    if (userMap != null) {
+      parseResponse(userMap);
+    } else {
+      FrontEnd.getView().sendToView("ERROR: Operation Failed. Please try again");
+    }
   }
 
   private void parseResponse(Map<String, Boolean> userModMap) {

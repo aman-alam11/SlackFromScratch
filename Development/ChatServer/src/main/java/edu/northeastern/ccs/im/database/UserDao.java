@@ -6,19 +6,26 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import javax.persistence.NoResultException;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import edu.northeastern.ccs.im.ChatLogger;
+import javax.persistence.NoResultException;
 
-@SuppressWarnings("all")
+import edu.northeastern.ccs.im.ChatLogger;
+import edu.northeastern.ccs.im.model.FetchLevel;
+import edu.northeastern.ccs.im.view.FrontEnd;
+
+import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.END_DATE;
+import static edu.northeastern.ccs.im.server.business.logic.handler.SuperUserHandler.START_DATE;
+
 public class UserDao {
 
-  SessionFactory mSessionFactory;
+  private static final String LOG_TAG = UserDao.class.getSimpleName();
+
+  private SessionFactory mSessionFactory;
 
   public UserDao(SessionFactory sf) {
     mSessionFactory = sf;
@@ -32,10 +39,11 @@ public class UserDao {
     // Create a session
     Session session = null;
     Transaction transaction = null;
+
+    session = mSessionFactory.openSession();
+    // Begin a transaction
+    transaction = session.beginTransaction();
     try {
-      session = mSessionFactory.openSession();
-      // Begin a transaction
-      transaction = session.beginTransaction();
       User user = new User(name, password, email);
 
       // Save the User
@@ -67,10 +75,10 @@ public class UserDao {
     // Create a session
     Session session = null;
     Transaction transaction = null;
+    session = mSessionFactory.openSession();
+    // Begin a transaction
+    transaction = session.beginTransaction();
     try {
-      session = mSessionFactory.openSession();
-      // Begin a transaction
-      transaction = session.beginTransaction();
       users = session.createQuery("FROM User").list();
 
       // Commit the transaction
@@ -94,11 +102,11 @@ public class UserDao {
     // Create a session
     Session session = mSessionFactory.openSession();
     Transaction transaction = null;
+    // Begin a transaction
+    transaction = session.beginTransaction();
     try {
-      // Begin a transaction
-      transaction = session.beginTransaction();
       // Get the User from the database.
-      User user = session.get(User.class, Integer.valueOf(id));
+      User user = session.get(User.class, id);
       // Delete the User
       session.delete(user);
       // Commit the transaction
@@ -121,11 +129,11 @@ public class UserDao {
     // Create a session
     Session session = null;
     Transaction transaction = null;
-    try {
-      session = mSessionFactory.openSession();
-      // Begin a transaction
-      transaction = session.beginTransaction();
 
+    session = mSessionFactory.openSession();
+    // Begin a transaction
+    transaction = session.beginTransaction();
+    try {
       // Get the User from the database.
       User user = session.get(User.class, id);
 
@@ -155,17 +163,17 @@ public class UserDao {
    */
   public User findUserByName(String name) {
     Session session = null;
+    session = mSessionFactory.openSession();
     User user = null;
     try{
-      session = mSessionFactory.openSession();
       String sql = "select * from users where users.user_name = ?";
 
       Query query = session.createNativeQuery(sql, User.class);
       query.setParameter(1, name);
       user = (User) query.getSingleResult();
-    }catch (HibernateException | NoResultException ex){
+    } catch (HibernateException | NoResultException ex) {
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
-    }finally {
+    } finally {
       session.close();
     }
     return user;
@@ -173,22 +181,21 @@ public class UserDao {
 
   /**
    * Search user with keyword given
-   * @param name
-   * @return
    */
   public List<String> searchUserByName(String name) {
+    List<String> allUsers = new ArrayList<>();
 	    Session session = mSessionFactory.openSession();
 	    try{
 	      String sql = "select users.user_name from users where users.user_name like ?";
 	      Query query = session.createNativeQuery(sql);
 	      query.setParameter(1, "%"+ name+ "%");
-	      return query.getResultList();
+	      allUsers = query.getResultList();
 	    }catch (Exception ex){
 	      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
 	    }finally {
 	      session.close();
 	    }
-	    return null;
+	    return allUsers;
 	  }
 
   public String findHashForUsername(String username) {
@@ -213,7 +220,7 @@ public class UserDao {
 
   public BigInteger getUserIdFromUserName(String username) {
     Session session = mSessionFactory.openSession();
-    BigInteger userId = new BigInteger("-1");
+    BigInteger userId = BigInteger.valueOf(-1);
     try {
       String sql = "SELECT users.user_id FROM new_test_hibernate.users WHERE new_test_hibernate.users.user_name =?";
 
@@ -234,15 +241,16 @@ public class UserDao {
    * Retrieves all unread messages for the user with the passed user id.
    *
    * @param userId The userId for which we need to get all the unread messages for.
-   * @return A List of complete chat rows from which information will be extracted based on use case.
+   * @return A List of complete chat rows from which information will be extracted based on use
+   * case.
    */
-  public List<Chat> getUnreadMessages(int userId) {
-    Session session = mSessionFactory.openSession();
+  public List<Chat> getUnreadMessages(int userId, Map<String, String> dateMap, FetchLevel fetchLevel) {
     List<Chat> listUnreadChatRows = new ArrayList<>();
-
+    StringBuilder sqlString = new StringBuilder("SELECT * FROM chat WHERE chat.To_id =?");
+    String genSqlString = generateAppropriateSqlString(sqlString, fetchLevel, dateMap);
+    Session session = mSessionFactory.openSession();
     try {
-      String sql = "SELECT * FROM chat WHERE chat.To_id =? AND NOT chat.isDelivered";
-      Query query = session.createNativeQuery(sql, Chat.class);
+      Query query = session.createNativeQuery(genSqlString, Chat.class);
       query.setParameter(1, userId);
       listUnreadChatRows.addAll(query.getResultList());
     } catch (Exception ex) {
@@ -250,19 +258,99 @@ public class UserDao {
       Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
     } finally {
       // Close the session
-      session.close();
+    	session.close();
     }
     return listUnreadChatRows;
+  }
+
+  private String generateAppropriateSqlString(StringBuilder sqlString, FetchLevel fetchLevel, Map<String, String> dateMap) {
+    switch (fetchLevel) {
+      case FETCH_USER_LEVEL:
+        appendDatesIfAvailable(sqlString, dateMap);
+        sqlString.append(" and NOT chat.isGrpMsg");
+        break;
+
+      case FETCH_GROUP_LEVEL:
+        appendDatesIfAvailable(sqlString, dateMap);
+        sqlString.append(" and chat.isGrpMsg");
+        break;
+
+      case UNREAD_MESSAGE_HANDLER:
+        appendDatesIfAvailable(sqlString, dateMap);
+        sqlString.append(" AND NOT chat.isDelivered");
+        break;
+
+      case FETCH_BOTH_USER_GROUP_LEVEL:
+        appendDatesIfAvailable(sqlString, dateMap);
+        // Intentional fall through
+
+      default:
+        // Dont append anything
+        break;
+    }
+
+    return sqlString.toString();
+  }
+
+  /**
+   * Update the StringBuilder Object that ultimately leads to Sql String.
+   * @param sqlQueryString The stringbuilder object that contains parts of query.
+   * @param dateMap The date map that contains start and end date.
+   */
+  private void appendDatesIfAvailable(StringBuilder sqlQueryString, Map<String, String> dateMap) {
+    if (dateMap == null) {
+      FrontEnd.getView().sendToView("Dates Invalid.");
+      return;
+    }
+    sqlQueryString.append(" and chat.Creation_date >= \"");
+    sqlQueryString.append(dateMap.get(START_DATE));
+    sqlQueryString.append("\" AND chat.Creation_date <= \"");
+    sqlQueryString.append(dateMap.get(END_DATE));
+    sqlQueryString.append("\"");
+  }
+
+
+  public int setRollbackMessage(String toUser, String fromUser, int numberOfMessages) {
+    Session session = mSessionFactory.openSession();
+    int res = 0;
+    try {
+      Transaction transaction = session.beginTransaction();
+      BigInteger toUserId = this.getUserIdFromUserName(toUser);
+      BigInteger fromUserID = this.getUserIdFromUserName(fromUser);
+
+      if (toUserId.intValue() <= 0 || fromUserID.intValue() <= 0) {
+        ChatLogger.info(this.getClass().getName() + "User not found to user : " + toUser);
+        ChatLogger.info(this.getClass().getName() + "User not found  from user : " + fromUser);
+        return res;
+      }
+      String sql = "update chat set chat.isDelivered = true where To_id =? and From_user_id=? " +
+              "and isDelivered = false order by Creation_date desc limit ?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, toUserId.intValue());
+      query.setParameter(2, fromUserID.intValue());
+      query.setParameter(3, numberOfMessages);
+      res = query.executeUpdate();
+      ChatLogger.info("Rows Affected: " + res);
+      transaction.commit();
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      Logger.getLogger(this.getClass().getSimpleName()).info(ex.getMessage());
+
+    } finally {
+      // Close the session
+      session.close();
+    }
+    return res;
   }
 
   public boolean setDeliverAllUnreadMessages(String username) {
 
     Session session = null;
     boolean result = false;
-    try {
-      session = mSessionFactory.openSession();
-      Transaction transaction = session.beginTransaction();
 
+    session = mSessionFactory.openSession();
+    Transaction transaction = session.beginTransaction();
+    try {
       BigInteger userIdBigInt = this.getUserIdFromUserName(username);
       int userId = userIdBigInt.intValue();
       if (userId <= 0) {
@@ -286,5 +374,29 @@ public class UserDao {
       session.close();
     }
     return result;
+  }
+
+
+  /**
+   * A simple method to upgrade the user as super user. This method cannot be called from client
+   * side and can called only from server side for special requests from government agencies.
+   *
+   * @param userId The userid of the super user.
+   */
+  public void setAsSuperUser(long userId) {
+    Session session = mSessionFactory.openSession();
+    try {
+      Transaction transaction = session.beginTransaction();
+
+      String sql = "UPDATE new_test_hibernate.users SET users.is_super_user = true WHERE users.user_id =?";
+      Query query = session.createNativeQuery(sql);
+      query.setParameter(1, userId);
+      query.executeUpdate();
+      transaction.commit();
+    } catch (Exception e) {
+      ChatLogger.info(LOG_TAG + "Unable to update as superUser");
+    } finally {
+        session.close();
+    }
   }
 }

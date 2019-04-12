@@ -90,7 +90,7 @@ public class NetworkConnectionTest {
     InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
     clientSocket = SocketChannel.open(hostAddress);
     netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
-    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+    MessageJson messageJson =  GenerateLoginCredentials.generateLoginCredentials("user",
             "pass",
             MessageType.LOGIN);
     boolean b = netConn.sendMessage(messageJson);
@@ -107,7 +107,7 @@ public class NetworkConnectionTest {
     InetSocketAddress hostAddress = new InetSocketAddress("localhost", 4444);
     clientSocket = SocketChannel.open(hostAddress);
     netConn = new NetworkConnection(clientSocket, messageHandlerFactory);
-    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+    MessageJson messageJson = GenerateLoginCredentials.generateLoginCredentials("user",
             "pass",
             MessageType.LOGIN);
     boolean b = netConn.sendMessage(messageJson);
@@ -167,7 +167,7 @@ public class NetworkConnectionTest {
       //System.out.println(messageItr.next().getText());
       messageItr.next();
     }
-    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+    MessageJson messageJson =  GenerateLoginCredentials.generateLoginCredentials("user",
             "pass",
             MessageType.LOGIN);
 		boolean b = netConn.sendMessage(messageJson);
@@ -198,7 +198,7 @@ public class NetworkConnectionTest {
       //System.out.println(messageItr.next().getText());
       messageItr.next();
     }
-    MessageJson messageJson = new GenerateLoginCredentials().generateLoginCredentials("user",
+    MessageJson messageJson = GenerateLoginCredentials.generateLoginCredentials("user",
             "pass",
             MessageType.LOGIN);
 		boolean b = netConn.sendMessage(messageJson);

@@ -23,7 +23,7 @@ public class SocketConnection implements Connection {
   private static Connection instance;
   private static SocketChannel channel;
   private static final int BUFFER_SIZE = 64 * 1024;
-  private static final String CHARSET_NAME = "us-ascii";
+  private static final String CHARSET_NAME = "utf-8";
   private static final String MESSAGE_START_KEY = "#{";
   private static final String MESSAGE_END_KEY = "}#";
   private static final String MESSAGE_SEPARATOR = "#";
@@ -97,16 +97,17 @@ public class SocketConnection implements Connection {
     boolean isMessageDecoded = false;
     if (messageBuffer.length() > 0) {
       String msgBufferString = messageBuffer.toString();
+      ChatLogger.info(TAG + "Message in buffer :" + msgBufferString);
       if (msgBufferString.contains(MESSAGE_START_KEY) && msgBufferString.contains(MESSAGE_END_KEY)) {
         int start = msgBufferString.indexOf(MESSAGE_START_KEY) + 1;
         int end = msgBufferString.indexOf(MESSAGE_END_KEY) + 1;
         String msg = msgBufferString.substring(start, end);
+        ChatLogger.info(TAG + "Message extracted from buffer :" + msg);
         try {
           // Extract message
           MessageJson extractedMessage = gson.fromJson(msg, MessageJson.class);
           isMessageDecoded = true;
           messageQueue.add(extractedMessage);
-
           messageBuffer.delete(start - 1, end + 1);
         } catch (JsonSyntaxException e) {
           ChatLogger.error(e.getMessage());
@@ -129,7 +130,10 @@ public class SocketConnection implements Connection {
 
   @Override
   public MessageJson next() {
-      return messageQueue.poll();
+  		ChatLogger.info(TAG + "Number of messages in queue :" + messageQueue.size());
+      MessageJson msg = messageQueue.poll();
+      ChatLogger.info(TAG + "Next Message :" + msg);
+      return msg;
   }
 
   @Override

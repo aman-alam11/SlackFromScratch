@@ -23,7 +23,7 @@ public class User implements Serializable {
   @Column(name = "user_id", unique = true)
   private long id;
 
-  @Column(name = "user_name", nullable = false, unique = true)
+  @Column(name = "user_name", nullable = false, unique = true, length = 100)
   private String name;
 
   @Column(name = "user_email", nullable = false)
@@ -32,6 +32,8 @@ public class User implements Serializable {
   @Column(name = "user_password", nullable = false)
   private String password;
 
+  @Column(name = "is_super_user", nullable = false)
+  private boolean isSuperUser;
 
   public User() {
 
@@ -127,4 +129,13 @@ public class User implements Serializable {
   public String toString() {
     return id + "\t" + name;
   }
+
+  public boolean isSuperUser() {
+    return isSuperUser;
+  }
+
+  public void setSuperUser(boolean b) {
+    this.isSuperUser = b;
+  }
+
 }

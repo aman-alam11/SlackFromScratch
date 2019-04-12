@@ -7,6 +7,7 @@ import org.jsoup.helper.StringUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import edu.northeastern.ccs.im.client.communication.Connection;
 import edu.northeastern.ccs.im.clientmenu.clientinterfaces.CoreOperation;
@@ -31,14 +32,14 @@ public class AddUserToGroupModelLayer implements CoreOperation {
     Gson mGson = new Gson();
 
     FrontEnd.getView().sendToView("INPUT: Enter name of users to be added split by \",\"");
-    FrontEnd.getView().sendToView("CAUTION: Don't add space");
-    String scr = scanner.nextLine().trim();
+    String scr = scanner.nextLine();
     String[] users = scr.split(",");
+    List<String> userList = Arrays.stream(users).map(String::trim).collect(Collectors.toList());
 
 
     AddDeleteGroupUsers addDeleteGroupUsers = new AddDeleteGroupUsers();
     addDeleteGroupUsers.setGroupName(CurrentGroupName.getGroupName());
-    addDeleteGroupUsers.setUsersList(Arrays.asList(users));
+    addDeleteGroupUsers.setUsersList(userList);
 
     MessageJson messageJson = new MessageJson(GenerateLoginCredentials.getUsername(),
             MessageType.ADD_USER_IN_GROUP, mGson.toJson(addDeleteGroupUsers));

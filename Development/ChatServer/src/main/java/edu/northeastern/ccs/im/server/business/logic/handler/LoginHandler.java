@@ -1,4 +1,4 @@
-package edu.northeastern.ccs.im.server.business.logic;
+package edu.northeastern.ccs.im.server.business.logic.handler;
 
 import com.google.gson.Gson;
 
@@ -11,6 +11,7 @@ import edu.northeastern.ccs.im.message.MessageType;
 import edu.northeastern.ccs.im.model.AckModel;
 import edu.northeastern.ccs.im.model.LoginCredentials;
 import edu.northeastern.ccs.im.server.Connection;
+import edu.northeastern.ccs.im.server.business.logic.MessageHandler;
 
 /**
  * This is a login handler which handles login.
@@ -20,6 +21,7 @@ public class LoginHandler implements MessageHandler {
 
   private Gson gson;
   private static final String TAG = LoginHandler.class.getSimpleName();
+  private boolean isSuperUser;
 
   public LoginHandler() {
     gson = new Gson();
@@ -34,6 +36,8 @@ public class LoginHandler implements MessageHandler {
               JPAService.getInstance());
 
       boolean isAuthenticated = sessionFactory.login();
+      isSuperUser = JPAService.getInstance().findUserByName(lgn.getUserName()).isSuperUser();
+
       respond(isAuthenticated, conn);
       if (isAuthenticated) {
     	  isAuthenticated = conn.signInUser(lgn.getUserName());
@@ -49,7 +53,7 @@ public class LoginHandler implements MessageHandler {
   private void respond(boolean isAuthenticated, Connection conn) {
     String strMsg = isAuthenticated ? MessageConstants.LOGIN_SUCCESS :
             MessageConstants.LOGIN_FAILURE;
-    AckModel responseMessage = new AckModel(isAuthenticated, strMsg, true);
+    AckModel responseMessage = new AckModel(isAuthenticated, strMsg, true, isSuperUser);
     MessageJson responsePacket = new MessageJson(MessageConstants.SYSTEM_MESSAGE,
             MessageType.AUTH_ACK,
             gson.toJson(responseMessage));
