@@ -24,10 +24,13 @@ public class AddModeratorGroup implements CoreOperation {
         mConnectionLayerModel = connectionLayerModel;
 
         Map<String, Boolean> userMap = getAllUserGroup(connectionLayerModel);
-        if (userMap != null) {
-            parseResponse(userMap);
-        } else {
+
+        if (userMap == null) {
             FrontEnd.getView().sendToView("ERROR: Operation Failed. Please try again");
+        }
+
+        else {
+            parseResponse(userMap);
         }
     }
 
