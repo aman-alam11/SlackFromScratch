@@ -40,13 +40,14 @@ public class GroupChatModelLayer implements CoreOperation {
 
     FrontEnd.getView().sendToView("INFO: Chat initiated.");
     FrontEnd.getView().sendToView("INPUT: Enter Message or enter \\q to quit");
-    initReaderThread();
+
 
     //Sending the server status that user is about to start the chat.
     ChatModel userChatObject = new ChatModel();
     MessageJson msg = new MessageJson(GenerateLoginCredentials.getUsername(), MessageType.USER_CHAT_START,
             gson.toJson(userChatObject));
     connectionLayerModel.sendMessage(msg);
+    initReaderThread();
 
     while (scanner.hasNext()) {
 
