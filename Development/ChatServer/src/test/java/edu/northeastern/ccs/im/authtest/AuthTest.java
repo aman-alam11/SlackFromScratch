@@ -1,9 +1,17 @@
 package edu.northeastern.ccs.im.authtest;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -20,16 +28,27 @@ public class AuthTest {
 
   private JPAService mJpaService;
 
-  @Mock
-  private JPAService mockedJPAService;
 
-  private AuthModulesImpl authModules;
+  @Mock
+  Session session;
+
+  @Mock
+  Transaction transaction;
+
+  @Mock
+  org.hibernate.SessionFactory sessionFactoryMock;
+
+  @Mock
+  Query query;
+
+  @Mock
+  NativeQuery nativeQuery;
+
 
   @Before
   public void init() {
     MockitoAnnotations.initMocks(this);
-    mJpaService = JPAService.getInstance();
-    authModules = new AuthModulesImpl();
+    mJpaService = new JPAService(sessionFactoryMock);
   }
 
   @Test
@@ -84,48 +103,24 @@ public class AuthTest {
     }
   }
 
-
-  @Test
-  public void loginUserTest() {
-//    for (User user : mJpaService.readAllUsers()) {
-//      System.out.println(user.toString());
-//    }
-
-    // Now we try to login with correct password
-    // assertTrue(SessionFactory.getInstance("cheetah", "pwd123", mJpaService).login());
-
-    // Now we try to login with wrong password
-    // assertFalse(SessionFactory.getInstance("cheetah", "pwd3", mJpaService).login());
-
-    // Username does not exists
-    // assertFalse(SessionFactory.getInstance("usernameDoesNotExists","pwd3", mJpaService).login());
-  }
-
-
-  @Test
+  //@Test
   public void loginUserFailedTest() {
 
-    when(mockedJPAService.findUserByName(eq("user"))).thenReturn(null);
-    assertFalse(authModules.loginIn("user","pass", mockedJPAService));
+    User user = new User();
+    String hash = "$2a$10$KjdkJgd.RKn4jgiViFzOne1xhRLcFkLQ371rViEYpjC6rxq0HMXa.";
 
+    when(sessionFactoryMock.openSession()).thenReturn(session);
+    when(session.beginTransaction()).thenReturn(transaction);
+
+    //From user
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<User>>any())).thenReturn(nativeQuery);
+    when(session.createNativeQuery(Matchers.anyString())).thenReturn(nativeQuery);
+    when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(query.getSingleResult()).thenReturn(null);
+
+    assertFalse(SessionFactory.getInstance("username", "pawd", mJpaService).login());
   }
 
-  @Test
-  public void loginUserNewTest() {
 
-//    when(mockedJPAService.findUserByName(eq("user"))).thenReturn(new User());
-//    String hash = "$2a$10$8vfK8KcwZ9xw7I8Ek5OzkuwZp75cKxaEbc7m6lmzr.YVzDadBI162";
-//    when(mockedJPAService.getHashFromUsername(eq("user"))).thenReturn(hash);
-//    assertFalse(authModules.loginIn("user","pass",mockedJPAService));
-  }
 
-  //@Test
-  public void createUserTest() {
-    // Try to create a user with a username
-    String username = "cheetahaknd";
-//    assertTrue(SessionFactory.getInstance(username, "pwd123", mJpaService).createAccount());
-
-    // Now create another account with same username
-    assertFalse(SessionFactory.getInstance(username, "pwd123", mJpaService).createAccount());
-  }
 }

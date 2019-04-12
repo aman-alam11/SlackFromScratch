@@ -54,11 +54,5 @@ public class UserChatClientModel {
     assertEquals(Date.class,userChat.getTimestamp().getClass());
   }
 
-  @Test
-  public void toStringTest() {
-    userChat.setFromUserName("from");
-    userChat.setMsg(MESSAGE);
-    assertEquals("from: message",userChat.toString());
-  }
 
 }

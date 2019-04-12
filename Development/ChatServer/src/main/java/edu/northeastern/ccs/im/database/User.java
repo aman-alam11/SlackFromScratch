@@ -134,4 +134,8 @@ public class User implements Serializable {
     return isSuperUser;
   }
 
+  public void setSuperUser(boolean b) {
+    this.isSuperUser = b;
+  }
+
 }

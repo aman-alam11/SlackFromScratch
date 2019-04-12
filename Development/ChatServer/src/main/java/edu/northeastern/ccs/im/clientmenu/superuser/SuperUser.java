@@ -161,6 +161,7 @@ public class SuperUser implements CoreOperation {
     FrontEnd.getView().sendToView("Please enter the start date to get chats:");
     String startDate = mScanner.nextLine().trim();
     if (!invalidDateCheck(startDate, true)) {
+      FrontEnd.getView().sendToView("Invalid Date Entered. Date criteria removed");
       return;
     }
 
@@ -234,7 +235,6 @@ public class SuperUser implements CoreOperation {
     try {
       listUnreadMessagesAll = new Gson().fromJson(resp, chatModelList);
     } catch (Exception e) {
-      //
       AckModel ackModel = new Gson().fromJson(resp, AckModel.class);
       FrontEnd.getView().sendToView(ackModel.getErrorMessage());
       return;
