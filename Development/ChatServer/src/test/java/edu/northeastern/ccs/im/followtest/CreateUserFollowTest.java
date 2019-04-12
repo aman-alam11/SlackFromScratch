@@ -26,7 +26,7 @@ import edu.northeastern.ccs.im.model.UserSearch;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class CreateUserFollowTests {
+public class CreateUserFollowTest {
 
   private CreateUserFollowLayer mCreateUserFollowLayer;
   private ByteArrayOutputStream mOutputStream;
