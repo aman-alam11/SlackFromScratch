@@ -69,6 +69,9 @@ public class JPAServiceMockTest {
   Query<Group> groupQuery;
 
   @Mock
+  Query<Chat> chatQuery;
+
+  @Mock
   Query<GroupMember> groupMemberQuery;
 
   @Mock
@@ -545,8 +548,21 @@ public class JPAServiceMockTest {
 
   @Test
   public void getUnreadMessagesTest() {
+    User user = new User();
+
+    Chat chat = new Chat();
+    chat.setFromId(user);
+    chat.setCreated(new Date());
+    chat.setMsg("hello");
+    chat.setIsGrpMsg(true);
 
     BigInteger userId = BigInteger.ONE;
+
+    List<Chat> chats = new ArrayList<>();
+
+    chats.add(chat);
+
+
 
     Map<String, String> dateMap = new HashMap<>();
 
@@ -557,11 +573,14 @@ public class JPAServiceMockTest {
     //Get user from UserID
     when(sessionFactoryMock.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
+    when(session.createNativeQuery(Matchers.anyString(), Matchers.<Class<Chat>>any())).thenReturn(nativeQuery);
     when(session.createNativeQuery(Matchers.anyString())).thenReturn(nativeQuery);
     when(query.setParameter(Matchers.anyInt(), Matchers.anyString())).thenReturn(query);
+    when(nativeQuery.setParameter(Matchers.anyInt(), Matchers.<Class<Chat>>any())).thenReturn(nativeQuery);
     when(nativeQuery.getSingleResult()).thenReturn(userId);
+    when(nativeQuery.getResultList()).thenReturn(chats);
 
-    Assert.assertEquals(0, JPAService.getInstance().getUnreadMessages("user", dateMap, FetchLevel.FETCH_USER_LEVEL).size());
+    Assert.assertEquals(1, JPAService.getInstance().getUnreadMessages("user", dateMap, FetchLevel.FETCH_USER_LEVEL).size());
 
   }
 
