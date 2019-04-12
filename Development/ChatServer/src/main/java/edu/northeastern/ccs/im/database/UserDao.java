@@ -388,7 +388,7 @@ public class UserDao {
     try {
       Transaction transaction = session.beginTransaction();
 
-      String sql = "UPDATE new_test_hibernate.users SET users.is_super_user = true WHERE users.user_id =?";
+      String sql = "UPDATE users SET users.is_super_user = true WHERE users.user_id =?";
       Query query = session.createNativeQuery(sql);
       query.setParameter(1, userId);
       query.executeUpdate();
