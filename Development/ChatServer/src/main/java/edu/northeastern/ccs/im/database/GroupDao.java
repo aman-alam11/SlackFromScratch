@@ -250,7 +250,7 @@ public class GroupDao {
     public List<Chat> getUnreadMessagesForGroup(Group group, Map<String, String> dateMap) {
         Session session = mSessionFactory.openSession();
         List<Chat> allGroupChats = null;
-        StringBuilder sqlQueryBuilder = new StringBuilder("SELECT * FROM new_test_hibernate.chat WHERE chat.Group_id=?");
+        StringBuilder sqlQueryBuilder = new StringBuilder("SELECT * FROM chat WHERE chat.Group_id=?");
         try {
             if(dateMap != null) {
                 sqlQueryBuilder.append(" and chat.Creation_date >= \"");
